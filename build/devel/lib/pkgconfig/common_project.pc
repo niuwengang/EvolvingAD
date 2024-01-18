@@ -1,0 +1,8 @@
+prefix=/home/g/workspace/common_project/build/devel
+
+Name: common_project
+Description: Description of common_project
+Version: 0.0.0
+Cflags: 
+Libs: -L${prefix}/lib 
+Requires: 

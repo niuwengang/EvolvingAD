@@ -1,0 +1,3 @@
+[submodule "source/pipe/glins"]
+	path = source/pipe/glins
+	url = git@github.com:niuwengang/glins.git
