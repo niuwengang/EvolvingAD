@@ -1,1 +1,0 @@
-add_subdirectory(glins_pipe)

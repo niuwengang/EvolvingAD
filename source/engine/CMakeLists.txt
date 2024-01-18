@@ -14,5 +14,5 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/lib)#编译过程中的
 
 
 
-add_executable(node node.cpp)
-target_link_libraries(node ${catkin_LIBRARIES} ${PROJECT_NAME}.glins_pipe)
+add_executable(node test_node.cpp)
+target_link_libraries(node ${catkin_LIBRARIES} )#${PROJECT_NAME}.glins_pipe

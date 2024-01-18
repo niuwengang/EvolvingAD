@@ -1,4 +1,3 @@
-#include "../pipe/glins_pipe/glins_pipe.hpp"
 #include <memory>
 #include <ros/ros.h>
 #include <signal.h>
@@ -15,7 +14,7 @@ int main(int argc, char **argv)
     ros::init(argc, argv, "talker");
     ros::NodeHandle nh;
     signal(SIGINT, sigintHandler); // 注册SIGINT信号处理器
-    GlinsPipe glins_obj;
+    // GlinsPipe glins_obj;
 
     // std::shared_ptr<GlinsPipe> glins_pipe_ptr = nullptr;
     // glins_pipe_ptr = std::make_shared<GlinsPipe>();

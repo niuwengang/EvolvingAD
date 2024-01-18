@@ -1,6 +1,6 @@
 project_params:
-  dataset_path: /home/g/workspace/dataset
-  result_path: /home/g/workspace/common_project/result
+  dataset_path: /home/g/workspace/dataset #数据集文件夹
+  result_path: /home/g/workspace/common_project/result #工程结果文件夹
 
 algorithm_params:
   cloud_filter_params: #点云滤波参数
@@ -10,20 +10,21 @@ algorithm_params:
   optimizer_params: #优化器参数
     method: "g2o"
 
+topic_name:
+  imu_topic: /alphasense_driver_ros/imu
+  lidar_topic: /hesai/pandar
+  raw_gnss_topic: /ublox_driver/range_meas
+  solved_gnss_topic: /ublox_driver/receiver_lla
+
 lidar_params: #激光雷达参数
   T_body_lidar:
     t: 0.479112, 0.052000, -0.019785 #xyz
     q: 0.001234, 0.001234, 0.707106, 0.707106 #xyzw
-  topic: /hesai/pandar
-  sequence: 10 #hz
 
 gnss_params: #GNSS参数
   T_body_gnss:
     t: 0.0, 0.0, 0.0 #xyz
     q: 0.0, 0.0, 0.0, 1.0 #xyzw
-  raw_gnss_topic: /ublox_driver/range_meas
-  solved_gnss_topic: /ublox_driver/receiver_lla
-  sequence: 5
 
 imu_params:
   accel_noise_std: 0.0014929303436999736
@@ -33,6 +34,4 @@ imu_params:
   T_body_imu:
     t: 0.516857, 0.043450, -0.092900 #xyz
     q: 0.999998, 0.000000, -0.001745, 0.000000 #xyzw
-  topic: /alphasense_driver_ros/imu
-  sequence: 100 #hz
 
