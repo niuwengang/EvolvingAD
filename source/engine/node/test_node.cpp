@@ -15,7 +15,7 @@ int main(int argc, char **argv)
     ros::NodeHandle nh;
     signal(SIGINT, sigintHandler); // 注册SIGINT信号处理器
     // GlinsPipe glins_obj;
-
+    std::cout << "测试节点" << std::endl;
     // std::shared_ptr<GlinsPipe> glins_pipe_ptr = nullptr;
     // glins_pipe_ptr = std::make_shared<GlinsPipe>();
     ros::Rate delay(1); // 1hz

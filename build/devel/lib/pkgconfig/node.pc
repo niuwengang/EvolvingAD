@@ -1,7 +1,7 @@
 prefix=/home/g/workspace/common_project/build/devel
 
-Name: common_project
-Description: Description of common_project
+Name: node
+Description: Description of node
 Version: 0.0.0
 Cflags: 
 Libs: -L${prefix}/lib 
