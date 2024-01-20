@@ -7,4 +7,4 @@ func()
     git push
     git log --oneline -3
 }
-func commit_str
+func ${commit_str}
