@@ -11,7 +11,10 @@ import os
 
    
 #Add、“Remove”、“Refactor”、“Update”
+commit_str=""
 
 if __name__ == "__main__":
+    if len(sys.argv) <= 2:
+        commit_str=sys.argv[0]
     os.system('git add .')
     os.system('git commit -m "demo"')
