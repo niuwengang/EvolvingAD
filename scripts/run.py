@@ -1,0 +1,21 @@
+# -*- coding: utf-8 -*-
+#!/usr/bin/env python3
+
+import os
+import sys
+
+status=os.system("cd build  && make -j$(nproc)")
+if status==0:
+    print("--编译成功")
+else:
+    print("--编译失败")
+    sys.exit(1)
+
+status=os.system("./bin/yaml_test j$(nproc)")
+if status==0:
+    print("--运行成功")
+else:
+    print("--运行失败")
+    sys.exit(1)
+
+
