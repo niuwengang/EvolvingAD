@@ -1,3 +1,4 @@
+#cmake && make
 cd build
 cmake -j$(nproc) ..
 make -j$(nproc)

@@ -1,3 +1,5 @@
+#make并运行
+
 cd build
 # cmake -j$(nproc) ..
 make -j$(nproc)
