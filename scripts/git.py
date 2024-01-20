@@ -1,10 +1,9 @@
 # -*- coding: utf-8 -*-
 #!/usr/bin/env python3
 
-demo="hello"
+import sys
 import os
-os.system('git add .')
-os.system('git commit -m "demo"')
+
 # 
 # git commit -m $1
 # git push
@@ -12,3 +11,7 @@ os.system('git commit -m "demo"')
 
    
 #Add、“Remove”、“Refactor”、“Update”
+
+if __name__ == "__main__":
+    os.system('git add .')
+    os.system('git commit -m "demo"')
