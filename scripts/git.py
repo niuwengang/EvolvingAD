@@ -19,6 +19,7 @@ if __name__ == "__main__":
         print(commit_str)
     else:
         print("未输入commit message")
+        sys.exit(1)
 
     os.system('git add .')
     os.system('git commit -m "commit_message"')
