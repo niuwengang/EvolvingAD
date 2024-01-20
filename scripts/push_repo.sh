@@ -1,4 +1,4 @@
-commit_str=$1
+
 
 func()
 {
@@ -7,4 +7,4 @@ func()
     git push
     git log --oneline -3
 }
-func ${commit_str}
+func $1
