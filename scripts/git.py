@@ -22,7 +22,7 @@ if __name__ == "__main__":
 
     os.system('git add .')
     os.system('git commit -m "commit_message"')
-    os.system('git log --oneline 3')
+    os.system('git log --oneline -3')
 
 # fix(controller): 修复用户登录时的数据验证错误
     
