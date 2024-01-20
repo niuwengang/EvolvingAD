@@ -14,8 +14,11 @@ import os
 commit_str=""
 
 if __name__ == "__main__":
-    print(sys.argv)
-    # if len(sys.argv) <= 2:
-    #     commit_str=sys.argv[0]
+    if len(sys.argv) == 2:
+        commit_message=sys.argv[1]
+        print(commit_str)
+    else:
+        print("未输入commit message")
+
     os.system('git add .')
     os.system('git commit -m "demo"')
