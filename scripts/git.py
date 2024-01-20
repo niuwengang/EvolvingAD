@@ -21,4 +21,4 @@ if __name__ == "__main__":
         print("未输入commit message")
 
     os.system('git add .')
-    os.system('git commit -m "demo"')
+    os.system('git commit -m "commit_message"')
