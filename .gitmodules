@@ -1,3 +1,0 @@
-[submodule "source/algorithm/glins"]
-	path = source/algorithm/glins
-	url = git@github.com:niuwengang/glins.git
