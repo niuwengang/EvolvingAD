@@ -22,7 +22,7 @@ if __name__ == "__main__":
         print("--编译失败")
         sys.exit(1)
 
-    status=os.system('./bin/\"exec_bin\" -j$(nproc)')
+    status=os.system('./bin/'+exec_bin+' -j$(nproc)')
     if status==0:
         print("--运行成功")
     else:
