@@ -3,11 +3,11 @@
 
 import subprocess
 
-commit_message = "commit_message"  # 您希望传递的提交信息
-cmd = ["git", "commit", "-m", commit_message]
+# 定义您想要运行的终端命令
+command = ["ls", "-l"]
 
-# 使用subprocess.run()执行命令，捕获输出并打印
-result = subprocess.run(cmd, capture_output=True, text=True)
+# 使用subprocess.run()执行命令
+result = subprocess.run(command, capture_output=True, text=True)
 
 # 打印命令的标准输出
 print(result.stdout)
