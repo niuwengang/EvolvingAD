@@ -15,8 +15,15 @@ int main(int argc, char **argv)
 
     const std::string project_folder_path = get_current_dir_name();
     const std::string image_file_path = project_folder_path + "/data/lane.jpg";
+
     cv::Mat image = cv::imread(image_file_path);
-    imshow("lane", image);
+    if (image.empty())
+    {
+        std::cerr << "无法加载图片" << std::endl;
+        return -1;
+    }
+    cv::imshow("lane", image);
     cv::waitKey(0);
+
     return 0;
 }
