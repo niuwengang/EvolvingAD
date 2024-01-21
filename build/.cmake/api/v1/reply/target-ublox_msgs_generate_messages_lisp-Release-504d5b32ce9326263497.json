@@ -1,0 +1,58 @@
+{
+	"backtrace" : 5,
+	"backtraceGraph" : 
+	{
+		"commands" : 
+		[
+			"add_custom_target",
+			"find_package"
+		],
+		"files" : 
+		[
+			"/opt/ros/noetic/share/ublox_msgs/cmake/ublox_msgsConfig.cmake",
+			"/opt/ros/noetic/share/catkin/cmake/catkinConfig.cmake",
+			"source/algorithm/glins/CMakeLists.txt"
+		],
+		"nodes" : 
+		[
+			{
+				"file" : 2
+			},
+			{
+				"command" : 1,
+				"file" : 2,
+				"line" : 3,
+				"parent" : 0
+			},
+			{
+				"file" : 1,
+				"parent" : 1
+			},
+			{
+				"command" : 1,
+				"file" : 1,
+				"line" : 76,
+				"parent" : 2
+			},
+			{
+				"file" : 0,
+				"parent" : 3
+			},
+			{
+				"command" : 0,
+				"file" : 0,
+				"line" : 184,
+				"parent" : 4
+			}
+		]
+	},
+	"id" : "ublox_msgs_generate_messages_lisp::@ca0902a2d6b6abe1c39d",
+	"name" : "ublox_msgs_generate_messages_lisp",
+	"paths" : 
+	{
+		"build" : "source/algorithm/glins",
+		"source" : "source/algorithm/glins"
+	},
+	"sources" : [],
+	"type" : "UTILITY"
+}
