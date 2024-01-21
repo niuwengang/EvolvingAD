@@ -1,8 +1,0 @@
-prefix=/home/g/workspace/common_project/build/devel
-
-Name: node
-Description: Description of node
-Version: 0.0.0
-Cflags: 
-Libs: -L${prefix}/lib 
-Requires: 
