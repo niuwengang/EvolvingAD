@@ -1,7 +1,5 @@
 {
     "files.associations": {
-        "ostream": "cpp",
-        "string": "cpp",
         "cctype": "cpp",
         "clocale": "cpp",
         "cmath": "cpp",
@@ -40,6 +38,7 @@
         "random": "cpp",
         "ratio": "cpp",
         "set": "cpp",
+        "string": "cpp",
         "string_view": "cpp",
         "system_error": "cpp",
         "tuple": "cpp",
@@ -56,6 +55,7 @@
         "limits": "cpp",
         "mutex": "cpp",
         "new": "cpp",
+        "ostream": "cpp",
         "shared_mutex": "cpp",
         "sstream": "cpp",
         "stdexcept": "cpp",

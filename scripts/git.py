@@ -14,7 +14,7 @@ if __name__ == "__main__":
         sys.exit(1)
 
     os.system('git add .')
-    os.system('git commit -m "commit_message"')
+    os.system('git commit -m sys.argv[1]')
     os.system('git log --oneline -3')
 
 

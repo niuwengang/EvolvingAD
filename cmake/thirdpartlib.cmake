@@ -7,6 +7,8 @@ execute_process(COMMAND "pkg-config" "--modversion" "yaml-cpp" OUTPUT_VARIABLE Y
 message("yaml-cpp已安装 版本:${YAML_CPP_VERSION}")
 
 # opencv 
-# find_package (OpenCV REQUIRED)
-# include_directories (${OpenCV_INCLUDE_DIRS}
-# target_link_libraries (${thirdpartlib} ${OpenCV_LIBS})
+find_package (OpenCV REQUIRED)
+include_directories (${OpenCV_INCLUDE_DIRS})
+list(APPEND thirdpartlib  ${OpenCV_LIBS})
+execute_process(COMMAND "pkg-config" "--modversion" "opencv4" OUTPUT_VARIABLE OPENCV4_VERSION)
+message("opencv4已安装 版本:${OPENCV4_VERSION}")
