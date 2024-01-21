@@ -4,8 +4,8 @@
 import sys
 import os
 
-
 if __name__ == "__main__":
+    commit_message=''
     if len(sys.argv) == 2:
         commit_message=sys.argv[1]
         print(commit_message)
@@ -14,7 +14,7 @@ if __name__ == "__main__":
         sys.exit(1)
 
     os.system('git add .')
-    os.system('git commit -m sys.argv[1]')
+    os.system('git commit -m {commit_message}' )
     os.system('git log --oneline -3')
 
 
