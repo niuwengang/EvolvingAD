@@ -16,8 +16,6 @@ if __name__ == "__main__":
         print("未输入commit message")
         sys.exit(1)
     
-
-
 # <type>(<scope>): <subject>
 # <BLANK LINE>
 # <body>
