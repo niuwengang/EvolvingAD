@@ -12,3 +12,6 @@ include_directories (${OpenCV_INCLUDE_DIRS})
 list(APPEND thirdpartlib  ${OpenCV_LIBS})
 execute_process(COMMAND "pkg-config" "--modversion" "opencv4" OUTPUT_VARIABLE OPENCV4_VERSION)
 message("opencv4已安装 版本:${OPENCV4_VERSION}")
+
+
+
