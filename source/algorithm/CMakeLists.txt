@@ -1,2 +1,2 @@
-add_subdirectory(glins)
-add_subdirectory(lane_localmap)#优化器
+add_subdirectory(glins)# ros版
+add_subdirectory(lane_localmap)
