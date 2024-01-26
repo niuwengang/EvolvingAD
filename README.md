@@ -10,12 +10,21 @@ sudo apt-get install libyaml-cpp-dev
 sudo apt-get install libjsoncpp-dev
 
 ```
+
+
+## 编译
+```
+git clone git@github.com:niuwengang/ad_common_project.git
+cd ad_common_project
+git submodule init
+git submodule update
+python3 scripts/build.py
+python3 scripts/run.py ${exec_bin} # exec_bin替换
+
+```
  
 
-## 更新
-
-
-# 规格  
+## 规格  
 注释doxygen
 
 
