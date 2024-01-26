@@ -25,8 +25,8 @@ python3 scripts/run.py ${exec_bin} # exec_bin替换
  
 
 ## 规格  
-注释doxygen
-
+注释规范Doxygen 
+提交消息规范Angular 
 
 ## todo
 增加pangolin
