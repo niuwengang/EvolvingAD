@@ -47,7 +47,7 @@
 				}
 			],
 			"type" : "INTERNAL",
-			"value" : "/home/g/workspace/common_project/build/catkin_generated/env_cached.sh"
+			"value" : "/home/g/workspace/ad_common_project/build/catkin_generated/env_cached.sh"
 		},
 		{
 			"name" : "CATKIN_PACKAGE_PREFIX",
@@ -95,7 +95,7 @@
 				}
 			],
 			"type" : "INTERNAL",
-			"value" : "/home/g/workspace/common_project/build/test_results"
+			"value" : "/home/g/workspace/ad_common_project/build/test_results"
 		},
 		{
 			"name" : "CMAKE_ADDR2LINE",
@@ -135,11 +135,11 @@
 			[
 				{
 					"name" : "HELPSTRING",
-					"value" : "No help, variable specified on the command line."
+					"value" : "Choose the type of build, options are: None Debug Release RelWithDebInfo MinSizeRel ..."
 				}
 			],
 			"type" : "STRING",
-			"value" : "Debug"
+			"value" : ""
 		},
 		{
 			"name" : "CMAKE_CACHEFILE_DIR",
@@ -151,7 +151,7 @@
 				}
 			],
 			"type" : "INTERNAL",
-			"value" : "/home/g/workspace/common_project/build"
+			"value" : "/home/g/workspace/ad_common_project/build"
 		},
 		{
 			"name" : "CMAKE_CACHE_MAJOR_VERSION",
@@ -188,6 +188,22 @@
 			],
 			"type" : "INTERNAL",
 			"value" : "3"
+		},
+		{
+			"name" : "CMAKE_COLOR_MAKEFILE",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "Enable/Disable color output during build."
+				}
+			],
+			"type" : "BOOL",
+			"value" : "ON"
 		},
 		{
 			"name" : "CMAKE_COMMAND",
@@ -599,11 +615,11 @@
 				},
 				{
 					"name" : "HELPSTRING",
-					"value" : "No help, variable specified on the command line."
+					"value" : "Enable/Disable output of compile commands during generation."
 				}
 			],
 			"type" : "BOOL",
-			"value" : "TRUE"
+			"value" : "OFF"
 		},
 		{
 			"name" : "CMAKE_EXTRA_GENERATOR",
@@ -627,7 +643,7 @@
 				}
 			],
 			"type" : "INTERNAL",
-			"value" : "Ninja"
+			"value" : "Unix Makefiles"
 		},
 		{
 			"name" : "CMAKE_GENERATOR_INSTANCE",
@@ -723,7 +739,7 @@
 				}
 			],
 			"type" : "INTERNAL",
-			"value" : "/home/g/workspace/common_project"
+			"value" : "/home/g/workspace/ad_common_project"
 		},
 		{
 			"name" : "CMAKE_INSTALL_BINDIR",
@@ -1031,11 +1047,11 @@
 				},
 				{
 					"name" : "HELPSTRING",
-					"value" : "Program used to build from build.ninja files."
+					"value" : "Path to a program."
 				}
 			],
 			"type" : "FILEPATH",
-			"value" : "/usr/bin/ninja"
+			"value" : "/usr/bin/make"
 		},
 		{
 			"name" : "CMAKE_MODULE_LINKER_FLAGS",
@@ -1143,7 +1159,7 @@
 				}
 			],
 			"type" : "INTERNAL",
-			"value" : "13"
+			"value" : "11"
 		},
 		{
 			"name" : "CMAKE_OBJCOPY",
@@ -1223,7 +1239,7 @@
 				}
 			],
 			"type" : "STATIC",
-			"value" : "common_project"
+			"value" : "ad_common_project"
 		},
 		{
 			"name" : "CMAKE_PROJECT_VERSION",
@@ -1626,6 +1642,18 @@
 			"value" : "[/usr/lib/python3/dist-packages/em.py][v()]"
 		},
 		{
+			"name" : "FIND_PACKAGE_MESSAGE_DETAILS_PkgConfig",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Details about finding PkgConfig"
+				}
+			],
+			"type" : "INTERNAL",
+			"value" : "[/usr/bin/pkg-config][v0.29.1()]"
+		},
+		{
 			"name" : "FIND_PACKAGE_MESSAGE_DETAILS_PythonInterp",
 			"properties" : 
 			[
@@ -1635,7 +1663,7 @@
 				}
 			],
 			"type" : "INTERNAL",
-			"value" : "[/usr/bin/python3][v3.8.10()]"
+			"value" : "[/usr/bin/python3][v3.8.10(3)]"
 		},
 		{
 			"name" : "FIND_PACKAGE_MESSAGE_DETAILS_Threads",
@@ -1648,6 +1676,30 @@
 			],
 			"type" : "INTERNAL",
 			"value" : "[TRUE][v()]"
+		},
+		{
+			"name" : "GMOCK_BOTH_LIBRARIES",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : ""
+				}
+			],
+			"type" : "INTERNAL",
+			"value" : "gmock;gmock_main"
+		},
+		{
+			"name" : "GMOCK_FOUND",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : ""
+				}
+			],
+			"type" : "INTERNAL",
+			"value" : "TRUE"
 		},
 		{
 			"name" : "GMOCK_FROM_SOURCE_FOUND",
@@ -1695,10 +1747,46 @@
 				}
 			],
 			"type" : "INTERNAL",
-			"value" : "/home/g/workspace/common_project/build/gmock"
+			"value" : "/home/g/workspace/ad_common_project/build/gmock"
 		},
 		{
 			"name" : "GMOCK_FROM_SOURCE_MAIN_LIBRARIES",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : ""
+				}
+			],
+			"type" : "INTERNAL",
+			"value" : "gmock_main"
+		},
+		{
+			"name" : "GMOCK_INCLUDE_DIRS",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : ""
+				}
+			],
+			"type" : "INTERNAL",
+			"value" : "/usr/src/googletest/googlemock/include"
+		},
+		{
+			"name" : "GMOCK_LIBRARIES",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : ""
+				}
+			],
+			"type" : "INTERNAL",
+			"value" : "gmock"
+		},
+		{
+			"name" : "GMOCK_MAIN_LIBRARIES",
 			"properties" : 
 			[
 				{
@@ -1720,6 +1808,30 @@
 			],
 			"type" : "PATH",
 			"value" : "GMock_DIR-NOTFOUND"
+		},
+		{
+			"name" : "GTEST_BOTH_LIBRARIES",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : ""
+				}
+			],
+			"type" : "INTERNAL",
+			"value" : "gmock;gmock_main"
+		},
+		{
+			"name" : "GTEST_FOUND",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : ""
+				}
+			],
+			"type" : "INTERNAL",
+			"value" : "TRUE"
 		},
 		{
 			"name" : "GTEST_FROM_SOURCE_FOUND",
@@ -1767,7 +1879,7 @@
 				}
 			],
 			"type" : "INTERNAL",
-			"value" : "/home/g/workspace/common_project/build/gtest"
+			"value" : "/home/g/workspace/ad_common_project/build/gtest"
 		},
 		{
 			"name" : "GTEST_FROM_SOURCE_MAIN_LIBRARIES",
@@ -1780,6 +1892,54 @@
 			],
 			"type" : "INTERNAL",
 			"value" : "gtest_main"
+		},
+		{
+			"name" : "GTEST_INCLUDE_DIRS",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : ""
+				}
+			],
+			"type" : "INTERNAL",
+			"value" : "/usr/src/googletest/googlemock/include"
+		},
+		{
+			"name" : "GTEST_LIBRARIES",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : ""
+				}
+			],
+			"type" : "INTERNAL",
+			"value" : "gmock"
+		},
+		{
+			"name" : "GTEST_LIBRARY_DIRS",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : ""
+				}
+			],
+			"type" : "INTERNAL",
+			"value" : ""
+		},
+		{
+			"name" : "GTEST_MAIN_LIBRARIES",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : ""
+				}
+			],
+			"type" : "INTERNAL",
+			"value" : "gmock_main"
 		},
 		{
 			"name" : "GTest_DIR",
@@ -1852,6 +2012,22 @@
 			],
 			"type" : "PATH",
 			"value" : "/usr/lib/x86_64-linux-gnu/cmake/opencv4"
+		},
+		{
+			"name" : "PKG_CONFIG_EXECUTABLE",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "pkg-config executable"
+				}
+			],
+			"type" : "FILEPATH",
+			"value" : "/usr/bin/pkg-config"
 		},
 		{
 			"name" : "PYTHON_EXECUTABLE",
@@ -2026,6 +2202,30 @@
 			"value" : "/usr/src/gtest/src/gtest.cc"
 		},
 		{
+			"name" : "ad_common_project_BINARY_DIR",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Value Computed by CMake"
+				}
+			],
+			"type" : "STATIC",
+			"value" : "/home/g/workspace/ad_common_project/build"
+		},
+		{
+			"name" : "ad_common_project_SOURCE_DIR",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Value Computed by CMake"
+				}
+			],
+			"type" : "STATIC",
+			"value" : "/home/g/workspace/ad_common_project"
+		},
+		{
 			"name" : "catkin_DIR",
 			"properties" : 
 			[
@@ -2036,30 +2236,6 @@
 			],
 			"type" : "PATH",
 			"value" : "/opt/ros/noetic/share/catkin/cmake"
-		},
-		{
-			"name" : "common_project_BINARY_DIR",
-			"properties" : 
-			[
-				{
-					"name" : "HELPSTRING",
-					"value" : "Value Computed by CMake"
-				}
-			],
-			"type" : "STATIC",
-			"value" : "/home/g/workspace/common_project/build"
-		},
-		{
-			"name" : "common_project_SOURCE_DIR",
-			"properties" : 
-			[
-				{
-					"name" : "HELPSTRING",
-					"value" : "Value Computed by CMake"
-				}
-			],
-			"type" : "STATIC",
-			"value" : "/home/g/workspace/common_project"
 		},
 		{
 			"name" : "cpp_common_DIR",
@@ -2095,7 +2271,7 @@
 				}
 			],
 			"type" : "STATIC",
-			"value" : "/home/g/workspace/common_project/build/source/algorithm/glins"
+			"value" : "/home/g/workspace/ad_common_project/build/source/algorithm/glins"
 		},
 		{
 			"name" : "glins_SOURCE_DIR",
@@ -2107,7 +2283,7 @@
 				}
 			],
 			"type" : "STATIC",
-			"value" : "/home/g/workspace/common_project/source/algorithm/glins"
+			"value" : "/home/g/workspace/ad_common_project/source/algorithm/glins"
 		},
 		{
 			"name" : "gmock_BINARY_DIR",
@@ -2119,7 +2295,7 @@
 				}
 			],
 			"type" : "STATIC",
-			"value" : "/home/g/workspace/common_project/build/gtest/googlemock"
+			"value" : "/home/g/workspace/ad_common_project/build/gtest/googlemock"
 		},
 		{
 			"name" : "gmock_LIB_DEPENDS",
@@ -2183,7 +2359,7 @@
 				}
 			],
 			"type" : "STATIC",
-			"value" : "/home/g/workspace/common_project/build/gtest"
+			"value" : "/home/g/workspace/ad_common_project/build/gtest"
 		},
 		{
 			"name" : "googletest-distribution_SOURCE_DIR",
@@ -2207,7 +2383,7 @@
 				}
 			],
 			"type" : "STATIC",
-			"value" : "/home/g/workspace/common_project/build/gtest/googletest"
+			"value" : "/home/g/workspace/ad_common_project/build/gtest/googletest"
 		},
 		{
 			"name" : "gtest_SOURCE_DIR",

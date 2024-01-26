@@ -2,7 +2,7 @@
 	"artifacts" : 
 	[
 		{
-			"path" : "devel/lib/glins/glins_node"
+			"path" : "/home/g/workspace/ad_common_project/lib/libfirstpartylib.imu_sub.so"
 		}
 	],
 	"backtrace" : 1,
@@ -10,7 +10,7 @@
 	{
 		"commands" : 
 		[
-			"add_executable",
+			"add_library",
 			"add_definitions",
 			"include",
 			"find_package",
@@ -19,14 +19,14 @@
 		],
 		"files" : 
 		[
-			"source/algorithm/glins/CMakeLists.txt",
+			"source/module/topic/CMakeLists.txt",
 			"/opt/ros/noetic/share/rosconsole/cmake/rosconsole-extras.cmake",
 			"/opt/ros/noetic/share/rosconsole/cmake/rosconsoleConfig.cmake",
 			"/opt/ros/noetic/share/roscpp/cmake/roscppConfig.cmake",
 			"/opt/ros/noetic/share/catkin/cmake/catkinConfig.cmake",
 			"/opt/ros/noetic/share/catkin/cmake/tools/libraries.cmake",
 			"/opt/ros/noetic/share/catkin/cmake/all.cmake",
-			"cmake/thirdpartlib.cmake",
+			"cmake/thirdpartylib.cmake",
 			"CMakeLists.txt"
 		],
 		"nodes" : 
@@ -37,13 +37,13 @@
 			{
 				"command" : 0,
 				"file" : 0,
-				"line" : 12,
+				"line" : 7,
 				"parent" : 0
 			},
 			{
 				"command" : 3,
 				"file" : 0,
-				"line" : 3,
+				"line" : 1,
 				"parent" : 0
 			},
 			{
@@ -120,7 +120,7 @@
 			{
 				"command" : 2,
 				"file" : 8,
-				"line" : 12,
+				"line" : 14,
 				"parent" : 16
 			},
 			{
@@ -136,7 +136,7 @@
 			{
 				"command" : 5,
 				"file" : 0,
-				"line" : 10,
+				"line" : 6,
 				"parent" : 0
 			}
 		]
@@ -147,7 +147,7 @@
 			"compileCommandFragments" : 
 			[
 				{
-					"fragment" : "-O3 -DNDEBUG  "
+					"fragment" : "-g -fPIC  "
 				},
 				{
 					"fragment" : "-std=gnu++17"
@@ -165,7 +165,10 @@
 				},
 				{
 					"backtrace" : 15,
-					"define" : "ROS_PACKAGE_NAME=\"glins\""
+					"define" : "ROS_PACKAGE_NAME=\"ad_common_project\""
+				},
+				{
+					"define" : "firstpartylib_imu_sub_EXPORTS"
 				}
 			],
 			"includes" : 
@@ -190,104 +193,24 @@
 			]
 		}
 	],
-	"id" : "glins_node::@ca0902a2d6b6abe1c39d",
+	"id" : "firstpartylib.imu_sub::@fde0724138d3c0b3927a",
 	"link" : 
 	{
 		"commandFragments" : 
 		[
 			{
-				"fragment" : "-O3 -DNDEBUG",
-				"role" : "flags"
-			},
-			{
 				"fragment" : "",
 				"role" : "flags"
-			},
-			{
-				"fragment" : "-Wl,-rpath,/opt/ros/noetic/lib",
-				"role" : "libraries"
-			},
-			{
-				"fragment" : "/opt/ros/noetic/lib/libublox_msgs.so",
-				"role" : "libraries"
-			},
-			{
-				"fragment" : "/opt/ros/noetic/lib/libroscpp.so",
-				"role" : "libraries"
-			},
-			{
-				"fragment" : "/usr/lib/x86_64-linux-gnu/libpthread.so",
-				"role" : "libraries"
-			},
-			{
-				"fragment" : "/usr/lib/x86_64-linux-gnu/libboost_chrono.so.1.71.0",
-				"role" : "libraries"
-			},
-			{
-				"fragment" : "/usr/lib/x86_64-linux-gnu/libboost_filesystem.so.1.71.0",
-				"role" : "libraries"
-			},
-			{
-				"fragment" : "/opt/ros/noetic/lib/librosconsole.so",
-				"role" : "libraries"
-			},
-			{
-				"fragment" : "/opt/ros/noetic/lib/librosconsole_log4cxx.so",
-				"role" : "libraries"
-			},
-			{
-				"fragment" : "/opt/ros/noetic/lib/librosconsole_backend_interface.so",
-				"role" : "libraries"
-			},
-			{
-				"fragment" : "/usr/lib/x86_64-linux-gnu/liblog4cxx.so",
-				"role" : "libraries"
-			},
-			{
-				"fragment" : "/usr/lib/x86_64-linux-gnu/libboost_regex.so.1.71.0",
-				"role" : "libraries"
-			},
-			{
-				"fragment" : "/opt/ros/noetic/lib/libxmlrpcpp.so",
-				"role" : "libraries"
-			},
-			{
-				"fragment" : "/opt/ros/noetic/lib/libroscpp_serialization.so",
-				"role" : "libraries"
-			},
-			{
-				"fragment" : "/opt/ros/noetic/lib/librostime.so",
-				"role" : "libraries"
-			},
-			{
-				"fragment" : "/usr/lib/x86_64-linux-gnu/libboost_date_time.so.1.71.0",
-				"role" : "libraries"
-			},
-			{
-				"fragment" : "/opt/ros/noetic/lib/libcpp_common.so",
-				"role" : "libraries"
-			},
-			{
-				"fragment" : "/usr/lib/x86_64-linux-gnu/libboost_system.so.1.71.0",
-				"role" : "libraries"
-			},
-			{
-				"fragment" : "/usr/lib/x86_64-linux-gnu/libboost_thread.so.1.71.0",
-				"role" : "libraries"
-			},
-			{
-				"fragment" : "/usr/lib/x86_64-linux-gnu/libconsole_bridge.so.0.4",
-				"role" : "libraries"
 			}
 		],
 		"language" : "CXX"
 	},
-	"name" : "glins_node",
-	"nameOnDisk" : "glins_node",
+	"name" : "firstpartylib.imu_sub",
+	"nameOnDisk" : "libfirstpartylib.imu_sub.so",
 	"paths" : 
 	{
-		"build" : "source/algorithm/glins",
-		"source" : "source/algorithm/glins"
+		"build" : "source/module/topic",
+		"source" : "source/module/topic"
 	},
 	"sourceGroups" : 
 	[
@@ -304,9 +227,9 @@
 		{
 			"backtrace" : 1,
 			"compileGroupIndex" : 0,
-			"path" : "source/algorithm/glins/glins_node.cpp",
+			"path" : "source/module/topic/imu_sub.cpp",
 			"sourceGroupIndex" : 0
 		}
 	],
-	"type" : "EXECUTABLE"
+	"type" : "SHARED_LIBRARY"
 }

@@ -67,8 +67,8 @@ set(glins_CONFIG_INCLUDED TRUE)
 
 # set variables for source/devel/install prefixes
 if("FALSE" STREQUAL "TRUE")
-  set(glins_SOURCE_PREFIX /home/g/workspace/common_project/source/algorithm/glins)
-  set(glins_DEVEL_PREFIX /home/g/workspace/common_project/build/devel)
+  set(glins_SOURCE_PREFIX /home/g/workspace/ad_common_project/source/algorithm/glins)
+  set(glins_DEVEL_PREFIX /home/g/workspace/ad_common_project/build/devel)
   set(glins_INSTALL_PREFIX "")
   set(glins_PREFIX ${glins_DEVEL_PREFIX})
 else()

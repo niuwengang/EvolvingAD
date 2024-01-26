@@ -2,7 +2,7 @@
 	"artifacts" : 
 	[
 		{
-			"path" : "/home/g/workspace/common_project/bin/yaml_test"
+			"path" : "/home/g/workspace/ad_common_project/bin/json_test"
 		}
 	],
 	"backtrace" : 1,
@@ -18,7 +18,7 @@
 		"files" : 
 		[
 			"source/test/CMakeLists.txt",
-			"cmake/thirdpartlib.cmake",
+			"cmake/thirdpartylib.cmake",
 			"CMakeLists.txt"
 		],
 		"nodes" : 
@@ -29,13 +29,13 @@
 			{
 				"command" : 0,
 				"file" : 0,
-				"line" : 4,
+				"line" : 8,
 				"parent" : 0
 			},
 			{
 				"command" : 1,
 				"file" : 0,
-				"line" : 5,
+				"line" : 9,
 				"parent" : 0
 			},
 			{
@@ -44,7 +44,7 @@
 			{
 				"command" : 3,
 				"file" : 2,
-				"line" : 12,
+				"line" : 14,
 				"parent" : 3
 			},
 			{
@@ -65,7 +65,7 @@
 			"compileCommandFragments" : 
 			[
 				{
-					"fragment" : "-O3 -DNDEBUG  "
+					"fragment" : "-g  "
 				},
 				{
 					"fragment" : "-std=gnu++17"
@@ -86,13 +86,13 @@
 			]
 		}
 	],
-	"id" : "yaml_test::@2f28ae4dd3ba0456b366",
+	"id" : "json_test::@2f28ae4dd3ba0456b366",
 	"link" : 
 	{
 		"commandFragments" : 
 		[
 			{
-				"fragment" : "-O3 -DNDEBUG",
+				"fragment" : "-g",
 				"role" : "flags"
 			},
 			{
@@ -347,8 +347,8 @@
 		],
 		"language" : "CXX"
 	},
-	"name" : "yaml_test",
-	"nameOnDisk" : "yaml_test",
+	"name" : "json_test",
+	"nameOnDisk" : "json_test",
 	"paths" : 
 	{
 		"build" : "source/test",
@@ -369,7 +369,7 @@
 		{
 			"backtrace" : 1,
 			"compileGroupIndex" : 0,
-			"path" : "source/test/yaml_test.cpp",
+			"path" : "source/test/json_test.cpp",
 			"sourceGroupIndex" : 0
 		}
 	],
