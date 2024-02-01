@@ -14,10 +14,16 @@ execute_process(COMMAND "pkg-config" "--modversion" "opencv4" OUTPUT_VARIABLE OP
 message("opencv4已安装 版本:${OPENCV4_VERSION}")
 
 
-## json
-# find_package(PkgConfig REQUIRED)
-# # pkg_check_modules(JSONCPP jsoncpp)
-# list(APPEND thirdpartlib  ${JSONCPP_LIBRARIES})
-# execute_process(COMMAND "pkg-config" "--modversion" "jsoncpp" OUTPUT_VARIABLE JSONCPP_VERSION)
-# message("jsoncpp已安装 版本:${JSONCPP_VERSION}")
+
+project(glins)
+#ros 配置
+find_package(catkin REQUIRED COMPONENTS
+  roscpp
+  std_msgs
+  ublox_msgs
+)
+# catkin_package()
+include_directories(${catkin_INCLUDE_DIRS} )
+# 
+
 

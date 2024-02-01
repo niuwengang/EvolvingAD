@@ -1,8 +1,0 @@
-prefix=/home/g/workspace/ad_common_project/build/devel
-
-Name: glins
-Description: Description of glins
-Version: 0.0.0
-Cflags: 
-Libs: -L${prefix}/lib 
-Requires: 

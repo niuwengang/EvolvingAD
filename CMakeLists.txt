@@ -11,7 +11,9 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/lib)
 
 set(firstpartylib "firstpartylib")
 set(thirdpartylib "")
+
 include(cmake/thirdpartylib.cmake)
+include_directories(source)
 
 add_subdirectory(source)
 

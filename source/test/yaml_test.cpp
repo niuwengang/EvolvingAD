@@ -16,7 +16,7 @@ int main(int argc, char **argv)
     std::cout << "yaml-cpp 简单使用测试" << std::endl;
 
     const std::string project_folder_path = get_current_dir_name();
-    const std::string yaml_file_path = project_folder_path + "/config/config.yaml";
+    const std::string yaml_file_path = project_folder_path + "/data/test/config.yaml";
 
     /*1--读取文件*/
     YAML::Node config = YAML::LoadFile(yaml_file_path);
