@@ -6,9 +6,9 @@ ros (含opencv4.0)
 ```shell
 #yaml
 sudo apt-get install libyaml-cpp-dev
-#json
-sudo apt-get install libjsoncpp-dev
-
+#jsk
+sudo apt-get install ros-noetic-jsk-recognition-msgs
+sudo apt-get install ros-noetic-jsk-rviz-plugins
 ```
 
 
@@ -31,4 +31,7 @@ python3 scripts/run.py ${exec_bin} # exec_bin替换
 ## todo
 增加pangolin
 https://github.com/yhirose/cpp-httplib
+
+
+https://jsk-visualization.readthedocs.io/en/latest/jsk_rviz_plugins/plugins/pictogram.html
 

@@ -15,15 +15,14 @@ message("opencv4已安装 版本:${OPENCV4_VERSION}")
 
 
 
-project(glins)
-#ros 配置
+#ros noetic
 find_package(catkin REQUIRED COMPONENTS
   roscpp
   std_msgs
   ublox_msgs
 )
-# catkin_package()
 include_directories(${catkin_INCLUDE_DIRS} )
-# 
+execute_process(COMMAND "rosversion" "-d"  OUTPUT_VARIABLE ROS_VERSION)
+message("Ros已安装 版本:${ROS_VERSION}") 
 
 
