@@ -25,13 +25,12 @@ python3 scripts/run.py ${exec_bin} # exec_bin替换
  
 
 ## 规格  
-注释规范Doxygen 
+注释规范Doxygen  
 提交消息规范Angular 
 
 ## todo
-增加pangolin
+增加pangolin  
 https://github.com/yhirose/cpp-httplib
-
 
 https://jsk-visualization.readthedocs.io/en/latest/jsk_rviz_plugins/plugins/pictogram.html
 
