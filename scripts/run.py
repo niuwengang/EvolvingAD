@@ -5,7 +5,6 @@ import os
 import sys
 
 
-
 if __name__ == "__main__":
     exec_bin="_test"
     if len(sys.argv) == 2:

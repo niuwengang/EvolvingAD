@@ -13,8 +13,6 @@ list(APPEND thirdpartylib  ${OpenCV_LIBS})
 execute_process(COMMAND "pkg-config" "--modversion" "opencv4" OUTPUT_VARIABLE OPENCV4_VERSION)
 message("opencv4已安装 版本:${OPENCV4_VERSION}")
 
-
-
 #ros noetic
 find_package(catkin REQUIRED COMPONENTS
   roscpp

@@ -13,7 +13,7 @@ set(firstpartylib "firstpartylib")
 set(thirdpartylib "")
 
 include(cmake/thirdpartylib.cmake)
-include_directories(source)
+include_directories(source)#头文件从source开始找
 
 add_subdirectory(source)
 
