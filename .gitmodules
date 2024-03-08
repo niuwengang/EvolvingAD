@@ -1,3 +1,6 @@
 [submodule "source/algorithm/glins"]
 	path = source/algorithm/glins
 	url = git@github.com:niuwengang/glins.git
+[submodule "source/algorithm/urban_canyon_loc"]
+	path = source/algorithm/urban_canyon_loc
+	url = git@github.com:niuwengang/urban_canyon_loc.git
