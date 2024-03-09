@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <package format="2">
-  <name>glins</name>
+  <name>urban_canyon_loc</name>
   <version>0.0.0</version>
-  <description>The glins package</description>
+  <description>The urban_canyon_loc package</description>
 
   <maintainer email="niu_wengang@163.com">g</maintainer>
 

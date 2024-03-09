@@ -2,7 +2,7 @@
 	"artifacts" : 
 	[
 		{
-			"path" : "devel/lib/glins/glins_node"
+			"path" : "devel/lib/urban_canyon_loc/urban_canyon_loc"
 		}
 	],
 	"backtrace" : 1,
@@ -19,7 +19,7 @@
 		],
 		"files" : 
 		[
-			"source/algorithm/glins/CMakeLists.txt",
+			"source/algorithm/urban_canyon_loc/CMakeLists.txt",
 			"/opt/ros/noetic/share/rosconsole/cmake/rosconsole-extras.cmake",
 			"/opt/ros/noetic/share/rosconsole/cmake/rosconsoleConfig.cmake",
 			"/opt/ros/noetic/share/roscpp/cmake/roscppConfig.cmake",
@@ -200,7 +200,7 @@
 			]
 		}
 	],
-	"id" : "glins_node::@ca0902a2d6b6abe1c39d",
+	"id" : "urban_canyon_loc::@002f39c9f5bbdb62ba9a",
 	"link" : 
 	{
 		"commandFragments" : 
@@ -292,12 +292,12 @@
 		],
 		"language" : "CXX"
 	},
-	"name" : "glins_node",
-	"nameOnDisk" : "glins_node",
+	"name" : "urban_canyon_loc",
+	"nameOnDisk" : "urban_canyon_loc",
 	"paths" : 
 	{
-		"build" : "source/algorithm/glins",
-		"source" : "source/algorithm/glins"
+		"build" : "source/algorithm/urban_canyon_loc",
+		"source" : "source/algorithm/urban_canyon_loc"
 	},
 	"sourceGroups" : 
 	[
@@ -314,7 +314,7 @@
 		{
 			"backtrace" : 1,
 			"compileGroupIndex" : 0,
-			"path" : "source/algorithm/glins/node/node.cpp",
+			"path" : "source/algorithm/urban_canyon_loc/node/node.cpp",
 			"sourceGroupIndex" : 0
 		}
 	],

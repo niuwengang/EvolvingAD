@@ -1,7 +1,7 @@
 prefix=/usr/local
 
-Name: glins
-Description: Description of glins
+Name: urban_canyon_loc
+Description: Description of urban_canyon_loc
 Version: 0.0.0
 Cflags: 
 Libs: -L${prefix}/lib 

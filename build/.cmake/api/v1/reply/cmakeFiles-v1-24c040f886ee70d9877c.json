@@ -796,7 +796,7 @@
 			"path" : "source/algorithm/CMakeLists.txt"
 		},
 		{
-			"path" : "source/algorithm/glins/CMakeLists.txt"
+			"path" : "source/algorithm/urban_canyon_loc/CMakeLists.txt"
 		},
 		{
 			"isExternal" : true,
@@ -832,18 +832,18 @@
 		},
 		{
 			"isGenerated" : true,
-			"path" : "build/source/algorithm/glins/catkin_generated/ordered_paths.cmake"
+			"path" : "build/source/algorithm/urban_canyon_loc/catkin_generated/ordered_paths.cmake"
 		},
 		{
 			"isGenerated" : true,
-			"path" : "build/source/algorithm/glins/catkin_generated/ordered_paths.cmake"
+			"path" : "build/source/algorithm/urban_canyon_loc/catkin_generated/ordered_paths.cmake"
 		},
 		{
-			"path" : "source/algorithm/glins/package.xml"
+			"path" : "source/algorithm/urban_canyon_loc/package.xml"
 		},
 		{
 			"isGenerated" : true,
-			"path" : "build/source/algorithm/glins/catkin_generated/package.cmake"
+			"path" : "build/source/algorithm/urban_canyon_loc/catkin_generated/package.cmake"
 		},
 		{
 			"isExternal" : true,
@@ -876,9 +876,6 @@
 		{
 			"isExternal" : true,
 			"path" : "/opt/ros/noetic/share/catkin/cmake/templates/pkgConfig-version.cmake.in"
-		},
-		{
-			"path" : "source/algorithm/lane_localmap/CMakeLists.txt"
 		},
 		{
 			"path" : "source/module/CMakeLists.txt"
