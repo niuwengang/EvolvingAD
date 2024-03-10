@@ -1,5 +1,5 @@
-# common_project
-通用工程框架:积累复现常见算法及个人开源闭源算法的通用库
+# ad_common_project
+复现常见的智驾算法或机器人算法
 
 ## 依赖
 ros (含opencv4.0) 
@@ -17,20 +17,22 @@ sudo apt-get install ros-noetic-jsk-rviz-plugins
 git clone git@github.com:niuwengang/ad_common_project.git
 cd ad_common_project
 git submodule init
-git submodule update
+git submodule update #获取子模块(部分不开源)
 python3 scripts/build.py
-python3 scripts/run.py ${exec_bin} # exec_bin替换
-
 ```
  
 
-## 规格  
-注释规范Doxygen  
-提交消息规范Angular 
+## 规范
+注释规范遵循Doxygen,git提交规范遵循Angular  
+具体规则可见[必要规范](docs/必要规范.md)
 
 ## todo
-增加pangolin  
-https://github.com/yhirose/cpp-httplib
+1. 增加pangolin自定义可视化
+2. 增加cpp-httplib应用
+3. 图优化可视化
 
-https://jsk-visualization.readthedocs.io/en/latest/jsk_rviz_plugins/plugins/pictogram.html
+## 联系及反馈
+niu_wengang@163.com或提交issue到仓库
+
+
 
