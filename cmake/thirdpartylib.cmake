@@ -13,6 +13,12 @@ list(APPEND thirdpartylib  ${OpenCV_LIBS})
 execute_process(COMMAND "pkg-config" "--modversion" "opencv4" OUTPUT_VARIABLE OPENCV4_VERSION)
 message("opencv4已安装 版本:${OPENCV4_VERSION}")
 
+# pcl 
+find_package(PCL REQUIRED)
+include_directories(${PCL_INCLUDE_DIRS})
+list(APPEND thirdpartylib  ${PCL_LIBRARIES})
+
+
 #ros noetic
 find_package(catkin REQUIRED COMPONENTS
   roscpp
@@ -22,5 +28,8 @@ find_package(catkin REQUIRED COMPONENTS
 include_directories(${catkin_INCLUDE_DIRS} )
 execute_process(COMMAND "rosversion" "-d"  OUTPUT_VARIABLE ROS_VERSION)
 message("Ros已安装 版本:${ROS_VERSION}") 
+
+
+
 
 

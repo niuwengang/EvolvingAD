@@ -9,7 +9,7 @@ class FixGnssSub
     void ParseData();
 
   private:
-    void MsgCallback(const sensor_msgs::NavSatFix::ConstPtr &msg);
+    void MsgCallback(const sensor_msgs::NavSatFix::ConstPtr &msg_ptr);
 
-    ros::Subscriber gnss_sub_;
+      ros::Subscriber gnss_sub_;
 };

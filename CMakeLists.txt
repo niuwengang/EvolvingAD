@@ -9,7 +9,7 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/lib)#编译过程中的
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/lib)
 
 
-set(firstpartylib "firstpartylib")
+set(firstpartylib "firstpartylib")#相当于全局变量
 set(thirdpartylib "")
 
 include(cmake/thirdpartylib.cmake)
