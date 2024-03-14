@@ -11,14 +11,14 @@
 #include <pcl_ros/point_cloud.h>
 
 /**
- * @brief 激光雷达订阅
- * @param[in] a - 第一个加数
- * @param[in] b - 第二个加数
- * @return 两个加数的和
+ * @brief 点云订阅注册函数
+ * @param[in] nh ros句柄
+ * @param[in] topic_name 话题名
+ * @param[in] buffer_size 缓冲区大小
+ * @return none
  */
 CloudSub::CloudSub(ros::NodeHandle &nh, const std::string topic_name, const size_t buffer_size)
 {
-
     cloud_sub_ = nh.subscribe(topic_name, buffer_size, &CloudSub::MsgCallback, this);
 }
 
@@ -26,10 +26,16 @@ void CloudSub::ParseData()
 {
 }
 
+/**
+ * @brief 点云订阅回调函数
+ * @param[in] msg_ptr ros句柄
+ * @param[in] topic_name 话题名
+ * @param[in] buffer_size 缓冲区大小
+ * @return none
+ */
 void CloudSub::MsgCallback(const sensor_msgs::PointCloud2::ConstPtr &msg_ptr)
 {
-    std::cout << "接收.." << std::endl;
     pcl::PointCloud<pcl::PointXYZI>::Ptr cloud_ptr(new pcl::PointCloud<pcl::PointXYZI>);
     pcl::fromROSMsg(*msg_ptr, *cloud_ptr);
-    std::cout << "点云数量:" << cloud_ptr->points.size() << std::endl;
+    std::cout << "已接收到点云数量:" << cloud_ptr->points.size() << std::endl;
 }

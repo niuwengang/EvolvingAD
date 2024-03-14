@@ -14,7 +14,7 @@ int main(int argc, char **argv)
     std::cout << "opencv 简单使用测试" << std::endl;
 
     const std::string project_folder_path = get_current_dir_name();
-    const std::string image_file_path = project_folder_path + "/data/test/lane.jpg";
+    const std::string image_file_path = project_folder_path + "/data/lane.jpg";
 
     cv::Mat image = cv::imread(image_file_path);
     if (image.empty())
