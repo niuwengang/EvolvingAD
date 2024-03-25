@@ -44,13 +44,13 @@
 			{
 				"command" : 0,
 				"file" : 0,
-				"line" : 33,
+				"line" : 37,
 				"parent" : 0
 			},
 			{
 				"command" : 1,
 				"file" : 0,
-				"line" : 34,
+				"line" : 38,
 				"parent" : 0
 			},
 			{
@@ -352,6 +352,10 @@
 		},
 		{
 			"backtrace" : 2,
+			"id" : "mark_pub::@002f39c9f5bbdb62ba9a"
+		},
+		{
+			"backtrace" : 2,
 			"id" : "node_sub::@002f39c9f5bbdb62ba9a"
 		},
 		{
@@ -485,6 +489,11 @@
 			{
 				"backtrace" : 2,
 				"fragment" : "../../../devel/lib/libdor.so",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 2,
+				"fragment" : "../../../devel/lib/libmark_pub.so",
 				"role" : "libraries"
 			},
 			{
