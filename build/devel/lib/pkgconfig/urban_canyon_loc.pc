@@ -1,8 +1,0 @@
-prefix=/home/g/workspace/ad_common_project/build/devel
-
-Name: urban_canyon_loc
-Description: Description of urban_canyon_loc
-Version: 0.0.0
-Cflags: 
-Libs: -L${prefix}/lib 
-Requires: 

@@ -1,0 +1,8 @@
+prefix=/home/g/workspace/urban_code/SimpleUrbanNOA/devel
+
+Name: urban_nav
+Description: Description of urban_nav
+Version: 0.0.0
+Cflags: 
+Libs: -L${prefix}/lib 
+Requires: 

@@ -1,0 +1,2 @@
+urban_nav
+-DCATKIN_DEVEL_PREFIX=/home/g/workspace/urban_code/SimpleUrbanNOA/devel -DCMAKE_INSTALL_PREFIX=/home/g/workspace/urban_code/SimpleUrbanNOA/install -G Unix Makefiles
