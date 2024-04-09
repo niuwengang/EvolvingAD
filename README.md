@@ -1,7 +1,7 @@
 # SimpleUrbanNOA
 
 ## 1.Introduce
-a simple demo for urban navigate on autopilot. <br>
+A simple demo for urban navigate on autopilot. <br>
 
 ## 2.Pipeline
 
