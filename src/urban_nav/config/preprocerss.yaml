@@ -1,0 +1,26 @@
+# @brief   preprocerss YAML
+# @date    2024-04-09 update
+# @version 0.1.1
+
+#topic subscriber------------------------------------------------
+topic_sub: #
+  imu_sub_topic: /kitti/oxts/imu #sensor_msgs/Imu
+  cloud_sub_topic: /kitti/velo/pointcloud #sensor_msgs/PointCloud2
+  gnss_sub_topic: /kitti/oxts/gps/fix #sensor_msgs/NavSatFix
+
+#seonsors extrinsic-------------------------------------------------
+extrinsic:
+  lidar_to_body:
+    [
+      0.999998,-0.000785403,0.00202441,0.810544,
+      0.000755307, 0.99989,0.0148245,-0.307054,
+      -0.00203583,-0.014823,0.999888,0.802724,
+      0.0,0.0,0.0,1.0,
+    ]
+  imu_to_body:
+    [
+      1.0,0.0,0.0,0.0, 
+      0.0,1.0,0.0,0.0, 
+      0.0,0.0,1.0,0.0, 
+      0.0,0.0,0.0,1.0, 
+    ]

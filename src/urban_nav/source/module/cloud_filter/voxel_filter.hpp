@@ -8,6 +8,7 @@
 
 #include "cloud_filter_interface.hpp"
 // pcl
+#include <pcl/filters/approximate_voxel_grid.h>
 #include <pcl/filters/voxel_grid.h>
 
 namespace Module
@@ -20,6 +21,7 @@ class VoxelFilter : public CloudFilterInterface
     bool Filter(const CloudMsg::CLOUD_PTR &source_cloud_ptr, CloudMsg::CLOUD_PTR &filtered_cloud_ptr) override;
 
   private:
+    // pcl::ApproximateVoxelGrid<CloudMsg::POINT> voxel_filter_;
     pcl::VoxelGrid<CloudMsg::POINT> voxel_filter_;
 };
 } // namespace Module

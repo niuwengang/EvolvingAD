@@ -1,36 +1,64 @@
 /**
  * @file    test_node.cpp
- * @brief   测试节点
+ * @brief   test node
  * @author  niu_wengang@163.com
- * @date    2024-03-27
- * @version 1.0
+ * @date    2024-04-12
+ * @version v0.1.1
  */
 
-// ros lib
+// ros
 #include <ros/ros.h>
-// signal lib
-#include <glog/logging.h> // glog 头文件
+// signal
 #include <signal.h>
+// spdlog
+#include <spdlog/spdlog.h>
+// user msg
+#include "user_msg/ods_msg.hpp"
+// tools--pub
+#include "tools/publisher/bbx_pub.hpp"
 
+/**
+ * @brief signal handle
+ * @param[in] sig
+ * @return
+ */
 void sigintHandler(int sig)
 {
-    // 处理SIGINT信号（通常是用户按下Ctrl+C）
-    std::cout << "test_node节点关闭" << std::endl;
+    spdlog::info("test_node$ shutdown");
     ros::shutdown();
     exit(EXIT_SUCCESS);
 }
 
-/*main 入口函数*/
+/**
+ * @brief main function
+ * @param[in] argc param nums
+ * @param[in] argv param array
+ * @return
+ */
 int main(int argc, char **argv)
 {
-    std::cout << "test_node节点启动" << std::endl;
-    ros::init(argc, argv, "odom");
-    ros::NodeHandle node_handle;
-    signal(SIGINT, sigintHandler); // 注册SIGINT信号处理器
+
+    ros::init(argc, argv, "test_node");
+    ros::NodeHandle nh;
+    signal(SIGINT, sigintHandler);
+    spdlog::info("test_node$ start");
+
+    ros::Rate delay(100);
+
+    OdsMsg ods_msg;
+    OdMsg od_msg;
+    od_msg.pos = Eigen::Vector3f(2, 5, 0);
+    od_msg.dim = Eigen::Vector3f(3, 2, 2);
+    ods_msg.ods_queue.push_back(od_msg);
+
+    std::shared_ptr<Tools::BbxPub> bbx_pub_ptr = std::make_shared<Tools::BbxPub>(nh, "ods", "map");
 
     while (ros::ok())
     {
         ros::spinOnce();
+        spdlog::info("this is test program");
+        bbx_pub_ptr->Publish(ods_msg);
+        delay.sleep();
     }
     return 0;
 }

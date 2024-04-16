@@ -1,18 +1,18 @@
 #include "gnss_msg.hpp"
 
 // 静态成员变量必须在类外初始化
-bool GnssMsg::pos_init_flag = false;
-GeographicLib::LocalCartesian GnssMsg::geo_converter;
+bool GnssMsg::gnss_init_flag_ = false;
+GeographicLib::LocalCartesian GnssMsg::geo_converter_;
 
 /**
  * @brief Gnss站心初始化
  * @param[in]
  * @return
  */
-void GnssMsg::PosInit()
+void GnssMsg::InitEnu()
 {
-    geo_converter.Reset(latitude, longitude, altitude);
-    pos_init_flag = true;
+    geo_converter_.Reset(latitude, longitude, altitude);
+    gnss_init_flag_ = true;
     // std::cout << "起点设置为:" << "经度:" << latitude << " 纬度:" << latitude << " 高度:" << altitude << std::endl;
 }
 
@@ -23,14 +23,14 @@ void GnssMsg::PosInit()
  */
 Eigen::Vector3f GnssMsg::OdomUpdate()
 {
-    if (!pos_init_flag)
+    if (!gnss_init_flag_)
     {
         exit(EXIT_FAILURE);
-        // std::cerr << "起点未设定" << std::endl;
+        std::cerr << "gnss起点未设定" << std::endl;
     }
 
     double local_e, local_n, local_u;
-    geo_converter.Forward(latitude, longitude, altitude, local_e, local_n, local_u);
+    geo_converter_.Forward(latitude, longitude, altitude, local_e, local_n, local_u);
     return Eigen::Vector3f(local_e, local_n, local_u);
 }
 

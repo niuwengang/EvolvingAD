@@ -21,19 +21,18 @@ find_package (GeographicLib REQUIRED)
 include_directories(${GeographicLib_INCLUDE_DIRS})
 list(APPEND thirdpartylib  ${GeographicLib_LIBRARIES})
 
-#openmp
+#openmp no need install 
 find_package(OpenMP REQUIRED)
 list(APPEND thirdpartylib  OpenMP::OpenMP_CXX)
 
 #glog
-find_package(glog 0.7.0 REQUIRED)
-include_directories( ${GLOG_INCLUDE_DIRS})
-list(APPEND thirdpartylib  glog::glog)
+# find_package(glog 0.7.0 REQUIRED)
+# include_directories( ${GLOG_INCLUDE_DIR})
+# list(APPEND thirdpartylib  glog::glog)
 
 
-
-
-
+#spdlog 1.5.1
+## header only 
 
 
 

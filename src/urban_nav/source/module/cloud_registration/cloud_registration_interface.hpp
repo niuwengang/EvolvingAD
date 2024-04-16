@@ -1,9 +1,9 @@
 /**
  * @file    cloud_registration_interface.hpp
- * @brief   点云滤波虚接口cloud_registration_interface
+ * @brief   cloud_registration_interface
  * @author  niu_wengang@163.com
- * @date    2024-03-30
- * @version 1.0
+ * @date    2024-04-10
+ * @version 0.1.1
  */
 
 #ifndef CLOUD_REGISTRATION_INTERFACE_HPP
@@ -26,6 +26,6 @@ class CloudRegistrationInterface
                               CloudMsg::CLOUD_PTR &result_cloud_ptr) = 0;
 };
 
-} // namespace module
+} // namespace Module
 
 #endif

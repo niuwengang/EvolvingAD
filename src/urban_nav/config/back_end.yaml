@@ -1,0 +1,9 @@
+# @brief    backend YAML
+# @date    2024-04-09 update
+# @version 0.1.1
+
+#topic subscriber------------------------------------------------
+topic_sub: #
+  cloud_sub_topic: /synced_cloud #sensor_msgs/PointCloud2
+  gnss_sub_topic: /synced_gnss
+  lidar_odom_sub_topic: /lidar_odom

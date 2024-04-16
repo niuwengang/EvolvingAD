@@ -1,5 +1,0 @@
-class ImuPreintegration
-{
-  public:
-    ImuPreintegration();
-};

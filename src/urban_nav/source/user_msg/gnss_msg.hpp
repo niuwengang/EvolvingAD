@@ -56,11 +56,11 @@ class GnssMsg
                          const double sync_time);
 
   private:
-    static GeographicLib::LocalCartesian geo_converter;
-    static bool pos_init_flag; // 站心初始化
+    static GeographicLib::LocalCartesian geo_converter_;
+    static bool gnss_init_flag_; // 站心初始化
 
   public:
-    void PosInit();
+    void InitEnu();
     Eigen::Vector3f OdomUpdate();
 };
 

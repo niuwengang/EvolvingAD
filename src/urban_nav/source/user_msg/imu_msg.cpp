@@ -1,6 +1,6 @@
 /**
  * @file    imu_msg.cpp
- * @brief   imu消息封装
+ * @brief   message
  * @author  niu_wengang@163.com
  * @date    2024-03-29
  * @version 1.0

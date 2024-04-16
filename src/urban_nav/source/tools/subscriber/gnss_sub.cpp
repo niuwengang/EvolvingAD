@@ -13,7 +13,7 @@
 namespace Tools
 {
 /**
- * @brief imu订阅回调
+ * @brief gnss subscriber init
  * @param[in] nh
  * @param[in] topic_name
  * @param[in] buffer_size
@@ -25,13 +25,14 @@ GnssSub::GnssSub(ros::NodeHandle &nh, const std::string topic_name, const size_t
 }
 
 /**
- * @brief imu订阅回调
- * @param[in] gnss_msg_ptr gnss消息指针
+ * @brief gnss message callback
+ * @param[in] gnss_msg_ptr
  * @return
  */
 void GnssSub::MsgCallback(const sensor_msgs::NavSatFixConstPtr &gnss_msg_ptr)
 {
     mutex_.lock();
+    /*[1]--load mesage*/
     GnssMsg gnss_msg;
     gnss_msg.time_stamp = gnss_msg_ptr->header.stamp.toSec();
     gnss_msg.latitude = gnss_msg_ptr->latitude;
@@ -40,14 +41,17 @@ void GnssSub::MsgCallback(const sensor_msgs::NavSatFixConstPtr &gnss_msg_ptr)
     gnss_msg.status = gnss_msg_ptr->status.status;
     gnss_msg.service = gnss_msg_ptr->status.service;
 
+    /*[2]--add msg to queue*/
     gnss_msg_queue_.push_back(gnss_msg);
 
     mutex_.unlock();
+
+    return;
 }
 
 /**
- * @brief gnss读取
- * @param[in] gnss_msg_queue gnss消息队列
+ * @brief read gnss buffer
+ * @param[in] gnss_msg_ptr
  * @return
  */
 void GnssSub::ParseData(std::deque<GnssMsg> &gnss_msg_queue)
@@ -57,5 +61,7 @@ void GnssSub::ParseData(std::deque<GnssMsg> &gnss_msg_queue)
         gnss_msg_queue.insert(gnss_msg_queue.end(), gnss_msg_queue_.begin(), gnss_msg_queue_.end());
         gnss_msg_queue_.clear();
     }
+
+    return;
 }
 } // namespace Tools

@@ -1,9 +1,9 @@
 /**
  * @file    cloud_pub.cpp
- * @brief   点云消息发布
+ * @brief   publish cloud
  * @author  niu_wengang@163.com
- * @date    2024-03-29
- * @version 1.0
+ * @date    2024-04-09 updae
+ * @version 0.1.1
  */
 
 #include "cloud_pub.hpp"
@@ -11,8 +11,11 @@
 namespace Tools
 {
 /**
- * @brief 点云数据发布注册
- * @param[in]
+ * @brief
+ * @param[in] nh
+ * @param[in] topic_name
+ * @param[in] frame_id
+ * @param[in] buffer_size
  * @return
  */
 CloudPub::CloudPub(ros::NodeHandle &nh, const std::string topic_name, const std::string frame_id,
@@ -24,23 +27,27 @@ CloudPub::CloudPub(ros::NodeHandle &nh, const std::string topic_name, const std:
 }
 
 /**
- * @brief 点云发布
+ * @brief publish (overloaded)
  * @param[in]
  * @return
+ * @note use extern timestamp
  */
-void CloudPub::Publish(const CloudMsg::CLOUD_PTR &cloud_ptr)
+void CloudPub::Publish(const CloudMsg::CLOUD_PTR &cloud_ptr, const double time_stamp)
 {
+
     sensor_msgs::PointCloud2Ptr cloud_ptr_output(new sensor_msgs::PointCloud2());
     pcl::toROSMsg(*cloud_ptr, *cloud_ptr_output);
-    cloud_ptr_output->header.stamp = ros::Time::now();
+    cloud_ptr_output->header.stamp = ros::Time(time_stamp);
     cloud_ptr_output->header.frame_id = frame_id_;
+
     pub_.publish(*cloud_ptr_output);
 }
 
 /**
- * @brief 点云发布 重载
- * @param[in]
+ * @brief publish (overloaded)
+ * @param[in] cloud_msg
  * @return
+ * @note use interior timestamp
  */
 void CloudPub::Publish(const CloudMsg &cloud_msg)
 {
@@ -48,6 +55,7 @@ void CloudPub::Publish(const CloudMsg &cloud_msg)
     pcl::toROSMsg(*cloud_msg.cloud_ptr, *cloud_ptr_output);
     cloud_ptr_output->header.stamp = ros::Time(cloud_msg.time_stamp);
     cloud_ptr_output->header.frame_id = frame_id_;
+
     pub_.publish(*cloud_ptr_output);
 }
 } // namespace Tools

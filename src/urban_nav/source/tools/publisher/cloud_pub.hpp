@@ -1,13 +1,13 @@
 /**
  * @file    cloud_pub.hpp
- * @brief   点云消息发布
+ * @brief   cloud publisher
  * @author  niu_wengang@163.com
- * @date    2024-03-29
- * @version 1.0
+ * @date    2024-04-09
+ * @version 0.1.1
  */
 
-#ifndef CLOUD_PUB_HPP
-#define CLOUD_PUB_HPP
+#ifndef CLOUD_PUB_HPP_
+#define CLOUD_PUB_HPP_
 
 // msg lib
 #include "user_msg/cloud_msg.hpp"
@@ -25,10 +25,10 @@ class CloudPub
   public:
     CloudPub() = default;
     CloudPub(ros::NodeHandle &nh, const std::string topic_name, const std::string frame_id,
-             const size_t buffer_size = 1);
+             const size_t buffer_size = 10e2);
     ~CloudPub() = default;
 
-    void Publish(const CloudMsg::CLOUD_PTR &cloud_ptr);
+    void Publish(const CloudMsg::CLOUD_PTR &cloud_ptr, const double time_stamp);
     void Publish(const CloudMsg &cloud_msg);
 
   private:
@@ -37,4 +37,4 @@ class CloudPub
 };
 
 } // namespace Tools
-#endif
+#endif // CLOUD_PUB_HPP_

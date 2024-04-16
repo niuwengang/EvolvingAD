@@ -1,9 +1,9 @@
 /**
  * @file    cloud_registration_interface.hpp
- * @brief   点云滤波虚接口cloud_registration_interface
+ * @brief   gicp
  * @author  niu_wengang@163.com
  * @date    2024-03-30
- * @version 1.0
+ * @version 0.1.1
  */
 
 #include "fast_gicp_registration.hpp"
@@ -19,8 +19,8 @@ namespace Module
 FastGicpRegistration::FastGicpRegistration(const float resolution, const float step_size, const float trans_eps,
                                            const int max_iter)
 {
-    vgicp.setResolution(1.0);
-    vgicp.setNumThreads(omp_get_max_threads());
+    gicp_.setResolution(resolution);
+    gicp_.setNumThreads(omp_get_max_threads());
 }
 
 /**
@@ -31,7 +31,7 @@ FastGicpRegistration::FastGicpRegistration(const float resolution, const float s
  */
 void FastGicpRegistration::SetSourceCloud(const CloudMsg::CLOUD_PTR &source_cloud_ptr)
 {
-    vgicp.setInputSource(source_cloud_ptr);
+    gicp_.setInputSource(source_cloud_ptr);
 }
 
 /**
@@ -42,7 +42,7 @@ void FastGicpRegistration::SetSourceCloud(const CloudMsg::CLOUD_PTR &source_clou
  */
 void FastGicpRegistration::SetTargetCloud(const CloudMsg::CLOUD_PTR &target_cloud_ptr)
 {
-    vgicp.setInputTarget(target_cloud_ptr);
+    gicp_.setInputTarget(target_cloud_ptr);
 }
 
 /**
@@ -54,8 +54,8 @@ void FastGicpRegistration::SetTargetCloud(const CloudMsg::CLOUD_PTR &target_clou
 bool FastGicpRegistration::Registration(const Eigen::Matrix4f &predict_pose, Eigen::Matrix4f &result_pose,
                                         CloudMsg::CLOUD_PTR &result_cloud_ptr)
 {
-    vgicp.align(*result_cloud_ptr, predict_pose);
-    result_pose = vgicp.getFinalTransformation();
+    gicp_.align(*result_cloud_ptr, predict_pose);
+    result_pose = gicp_.getFinalTransformation();
     return true;
 }
 

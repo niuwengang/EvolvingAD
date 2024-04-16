@@ -23,7 +23,7 @@ class GnssPub
   public:
     GnssPub() = default;
     GnssPub(ros::NodeHandle &nh, const std::string topic_name, const std::string frame_id,
-            const size_t buffer_size = 1);
+            const size_t buffer_size = 100);
     ~GnssPub() = default;
 
     void Publish(const GnssMsg &gnss_msg);

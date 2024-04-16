@@ -10,6 +10,7 @@
 
 #include "cloud_registration_interface.hpp"
 // pcl lib
+#include "thirdpartylib/fast_gicp/include/fast_gicp.hpp"
 #include "thirdpartylib/fast_gicp/include/fast_vgicp.hpp"
 
 namespace Module
@@ -24,7 +25,8 @@ class FastGicpRegistration : public CloudRegistrationInterface
                       CloudMsg::CLOUD_PTR &result_cloud_ptr) override;
 
   private:
-    fast_gicp::FastVGICP<CloudMsg::POINT, CloudMsg::POINT> vgicp;
+    fast_gicp::FastVGICP<CloudMsg::POINT, CloudMsg::POINT> gicp_; // vgicp
+    // fast_gicp::FastGICP<CloudMsg::POINT, CloudMsg::POINT> gicp_; // 多线程gicp
 };
 } // namespace Module
 

@@ -1,13 +1,13 @@
 /**
  * @file    imu_msg.hpp
- * @brief   imu消息封装
+ * @brief   imu meesage
  * @author  niu_wengang@163.com
  * @date    2024-03-29
  * @version 1.0
  */
 
-#ifndef IMU_SUB_HPP
-#define IMU_SUB_HPP
+#ifndef _IMU_MSG_HPP_
+#define _IMU_MSG_HPP_
 
 // msg lib
 #include "user_msg/imu_msg.hpp"

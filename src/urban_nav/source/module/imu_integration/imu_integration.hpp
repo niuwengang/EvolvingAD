@@ -1,4 +1,0 @@
-class ImuIntegration
-{
-  public:
-};

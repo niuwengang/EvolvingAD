@@ -1,21 +1,21 @@
 /**
  * @file    imu_pub.hpp
- * @brief   imu消息发布
+ * @brief   publish imu
  * @author  niu_wengang@163.com
- * @date    2024-03-29
- * @version 1.0
+ * @date    2024-04-09
+ * @version 0.1.1
  */
 
-#ifndef IMU_PUB_HPP
-#define IMU_PUB_HPP
+#ifndef _IMU_PUB_HPP_
+#define _IMU_PUB_HPP_
 
 // user msg
 #include "user_msg/imu_msg.hpp"
-// c++ lib
+// c++
 #include <deque>
-// ros lib
-#include "sensor_msgs/Imu.h"
+// ros
 #include <ros/ros.h>
+#include <sensor_msgs/Imu.h>
 
 namespace Tools
 {
@@ -23,10 +23,10 @@ namespace Tools
 class ImuPub
 {
   public:
-    ImuPub() = default;
-    ImuPub(ros::NodeHandle &nh, const std::string topic_name, const std::string frame_id, const size_t buffer_size = 1);
+    ImuPub() = delete;
+    ImuPub(ros::NodeHandle &nh, const std::string topic_name, const std::string frame_id,
+           const size_t buffer_size = 10e2);
     ~ImuPub() = default;
-
     void Publish(const ImuMsg &imu_msg);
 
   private:
@@ -35,4 +35,4 @@ class ImuPub
 };
 
 } // namespace Tools
-#endif // IMU_PUB_HPP
+#endif // _IMU_PUB_HPP_
