@@ -1,15 +1,36 @@
 cmake_minimum_required(VERSION 3.0.2)
 project(urban_nav)
 
+#compile option
 SET(CMAKE_BUILD_TYPE "Release")
 SET(CMAKE_CXX_FLAGS_RELEASE "$ENV{CXXFLAGS} -O3 -Wall")
-add_compile_options(-std=c++17)
-add_definitions(-std=c++17)
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED True)
+add_compile_options(-W) 
+option(USE_CUDA "Enable the use of CUDA" ON)
 
+if(USE_CUDA)
+  set(CUDA_TOOLKIT_ROOT_DIR /usr/local/cuda)
+  set(CUDA_INCLUDE_DIRS ${CUDA_TOOLKIT_ROOT_DIR}/${CUDA_INSTALL_TARGET_DIR}/include)
+  set( SMS 30 32 35 37 50 52 53 60 61 62 70 72 75 87)
+  foreach(sm ${SMS})
+	  set(GENCODE ${GENCODE} -gencode arch=compute_${sm},code=sm_${sm})
+  endforeach()
+  set(HIGHEST_SM 87)
+  set(GENCODE ${GENCODE} -gencode arch=compute_${HIGHEST_SM},code=compute_${HIGHEST_SM})
+
+  find_package(CUDA REQUIRED)
+  include_directories(
+    ${CUDA_INCLUDE_DIRS}
+    ${TENSORRT_INCLUDE_DIRS})
+endif()
+
+#ros
 find_package(catkin REQUIRED COMPONENTS roscpp std_msgs roslib tf)
-
-
+include_directories(${catkin_INCLUDE_DIRS})
 catkin_package()
+
+
 
 include_directories(${catkin_INCLUDE_DIRS} source)
 
@@ -35,9 +56,17 @@ target_link_libraries(tools_group  ${catkin_LIBRARIES} ${thirdpartylib} user_msg
 
 #thirdparty--------------------------------------------------------------------------------------------
 ##thirdparty--fasticp
-aux_source_directory(source/thirdpartylib/fast_gicp/src      THIRDPARTY_FAST_GICP_SRC)
+aux_source_directory(source/thirdpartylib/fast_gicp/src  THIRDPARTY_FAST_GICP_SRC)
 add_library(thirdparty_fast_gicp   ${THIRDPARTY_FAST_GICP_SRC})
 target_link_libraries(thirdparty_fast_gicp ${thirdpartylib} ) 
+
+#thirdparty--------------------------------------------------------------------------------------------
+##thirdparty--pointpillar
+if(USE_CUDA)
+  file(GLOB_RECURSE THIRDPARTY_POINT_PILLAR_SRC source/thirdpartylib/pointpillar/src/*.cu source/thirdpartylib/pointpillar/src/*.cpp)
+  add_library(thirdparty_pointpillar   ${THIRDPARTY_POINT_PILLAR_SRC})
+  target_link_libraries(thirdparty_pointpillar     libnvinfer.so libnvonnxparser.so) 
+endif()
 
 
 #module_group--------------------------------------------------------------------------------------------
@@ -48,7 +77,9 @@ source/module/cloud_filter/voxel_filter.cpp
 source/module/gnss_odom/gnss_odom.cpp
 source/module/lidar_odom/lidar_odom.cpp
 source/module/pose_graph/pose_graph.cpp
-source/module/graph_optimizer/g2o/g2o_opter.cpp)
+source/module/graph_optimizer/g2o/g2o_opter.cpp
+source/module/object_detection/object_detection.cpp
+)
 target_link_libraries(module_group ${catkin_LIBRARIES} ${thirdpartylib} user_msg_group thirdparty_fast_gicp) 
 
 

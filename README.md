@@ -47,6 +47,7 @@ cmake ..
 make 
 sudo make  install
 ```
++ tensoRT
 
 
 ## 3.Pipeline
