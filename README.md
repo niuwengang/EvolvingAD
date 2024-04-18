@@ -1,7 +1,11 @@
 # SimpleUrbanNOA
 
 ## 1.Introduce
-A simple demo for urban navigate on autopilot. <br>
+A simple demo for urban navigation on autopilot. However, it's just a personal toy program. <br>
+
+<img src="/pic/display.jpeg" alt="图片alt" title="图片title">
+
+
 
 ## 2.Installation
 + ros component
