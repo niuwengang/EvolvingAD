@@ -13,6 +13,7 @@
 #include <jsk_recognition_msgs/BoundingBox.h>
 #include <jsk_recognition_msgs/BoundingBoxArray.h>
 #include <ros/ros.h>
+#include <tf/transform_datatypes.h>
 
 #include "user_msg/ods_msg.hpp"
 

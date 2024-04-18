@@ -14,9 +14,11 @@
 // spdlog
 #include <spdlog/spdlog.h>
 // user msg
+#include "user_msg/cloud_msg.hpp"
 #include "user_msg/ods_msg.hpp"
 // tools--pub
 #include "tools/publisher/bbx_pub.hpp"
+#include "tools/subscriber/cloud_sub.hpp"
 // module--object_detection
 #include "module/object_detection/object_detection.hpp"
 
@@ -48,14 +50,26 @@ int main(int argc, char **argv)
 
     ros::Rate delay(100);
 
-    std::string model_file_path = ros::package::getPath("urban_nav");
+    const std::string model_file_path = ros::package::getPath("urban_nav") + "/model//pointpillar.onnx";
+    spdlog::info("model_file_path:{}", model_file_path);
 
+    std::shared_ptr<Tools::CloudSub> cloud_sub_ptr_ = std::make_shared<Tools::CloudSub>(nh, "/kitti/velo/pointcloud");
+    std::shared_ptr<Tools::BbxPub> bbx_pub_ptr = std::make_shared<Tools::BbxPub>(nh, "ods", "map");
     std::shared_ptr<ObjectDetection> object_detection_ptr = std::make_shared<ObjectDetection>(model_file_path);
+
+    std::deque<CloudMsg> cloud_msg_queue;
+    OdsMsg ods_msg;
 
     while (ros::ok())
     {
+        cloud_sub_ptr_->ParseData(cloud_msg_queue);
+        if (cloud_msg_queue.size() != 0)
+        {
+            CloudMsg cloud_msg = cloud_msg_queue.front();
+            object_detection_ptr->Detect(cloud_msg, ods_msg);
+            bbx_pub_ptr->Publish(ods_msg);
+        }
         ros::spinOnce();
-        spdlog::info("this is test program");
 
         delay.sleep();
     }
@@ -68,4 +82,3 @@ int main(int argc, char **argv)
 // od_msg.dim = Eigen::Vector3f(3, 2, 2);
 // ods_msg.ods_queue.push_back(od_msg);
 // bbx_pub_ptr->Publish(ods_msg);
-// std::shared_ptr<Tools::BbxPub> bbx_pub_ptr = std::make_shared<Tools::BbxPub>(nh, "ods", "map");

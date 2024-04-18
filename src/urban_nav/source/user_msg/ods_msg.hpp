@@ -28,14 +28,13 @@ class OdMsg
     };
 
   public:
-    Eigen::Vector3f pos = Eigen::Vector3f::Zero();
-    Eigen::Vector4f orientation = Eigen::Vector4f(0, 0, 0, 1); // xyz+w
-    Eigen::Vector3f dim = Eigen::Vector3f::Zero();
-    Eigen::Vector3f linear_speed = Eigen::Vector3f::Zero();
-    Eigen::Vector3f angular_speed = Eigen::Vector3f::Zero();
-    float confidence = 0.0; // 0.0~1.0
-    Label label;            // od semantic class
-    unsigned int id = 0;
+    float x, y, z; // center
+    float w, l, h; // dim
+    float heading;
+    int id;
+    float score;
+    Label label; // od semantic class
+    double time_stamp = 0.0;
 };
 
 class OdsMsg

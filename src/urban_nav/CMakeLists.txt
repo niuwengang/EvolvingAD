@@ -113,4 +113,4 @@ target_link_libraries(module_group ${catkin_LIBRARIES} ${thirdpartylib} user_msg
 
 #test---------------------------------------------------------------------------------------------
 add_executable(test_node source/exec/test_node.cpp)
-target_link_libraries(test_node  ${catkin_LIBRARIES}  tools_group   module_group  )
+target_link_libraries(test_node  ${catkin_LIBRARIES}  tools_group   module_group )

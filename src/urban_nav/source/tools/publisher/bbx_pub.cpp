@@ -41,17 +41,21 @@ void BbxPub::Publish(const OdsMsg &ods_msg)
         jsk_recognition_msgs::BoundingBox od_bbox;
 
         od_bbox.header.stamp = ros::Time(ods_msg.time_stamp);
+
         od_bbox.header.frame_id = "map";
-        od_bbox.pose.position.x = od_msg.pos(0);
-        od_bbox.pose.position.y = od_msg.pos(1);
-        od_bbox.pose.position.z = od_msg.pos(2);
-        od_bbox.pose.orientation.x = od_msg.orientation(0);
-        od_bbox.pose.orientation.y = od_msg.orientation(1);
-        od_bbox.pose.orientation.z = od_msg.orientation(2);
-        od_bbox.pose.orientation.w = od_msg.orientation(3);
-        od_bbox.dimensions.x = od_msg.dim(0);
-        od_bbox.dimensions.y = od_msg.dim(1);
-        od_bbox.dimensions.z = od_msg.dim(2);
+        od_bbox.pose.position.x = od_msg.x;
+        od_bbox.pose.position.y = od_msg.y;
+        od_bbox.pose.position.z = od_msg.z;
+
+        tf::Quaternion q = tf::createQuaternionFromRPY(0, 0, od_msg.heading);
+        od_bbox.pose.orientation.x = q.x();
+        od_bbox.pose.orientation.y = q.y();
+        od_bbox.pose.orientation.z = q.z();
+        od_bbox.pose.orientation.w = q.w();
+        od_bbox.dimensions.x = od_msg.l; //! may have issue
+        od_bbox.dimensions.y = od_msg.w;
+        od_bbox.dimensions.z = od_msg.h;
+        od_bbox.value = od_msg.score;
 
         ods_bbox.boxes.push_back(od_bbox);
     }
