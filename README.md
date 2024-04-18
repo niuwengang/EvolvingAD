@@ -3,7 +3,7 @@
 ## 1.Introduce
 A simple demo for urban navigation on autopilot. However, it's just a personal toy program. <br>
 
-<img src="/pic/display.jpeg" alt="图片alt" title="图片title">
+<img src="/pic/display.jpeg" alt="图片alt" title="图片title" width="300px" height="200px" objectfit="cover">
 
 
 
