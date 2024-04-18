@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-#include "kernel.h"
+#include "../include/kernel.h"
 
 __global__ void generateVoxels_random_kernel(float *points, size_t points_size,
         float min_x_range, float max_x_range,

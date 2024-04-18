@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-#include "kernel.h"
+#include "../include/kernel.h"
 
 __global__ void pillarScatterHalfkernel(const half *pillar_features_data,
                                         const unsigned int *coords_data, const unsigned int *params_data,

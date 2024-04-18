@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.0.2)
+cmake_minimum_required(VERSION 3.9.0)
 project(urban_nav)
 
 #compile option
@@ -9,20 +9,29 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 add_compile_options(-W) 
 option(USE_CUDA "Enable the use of CUDA" ON)  #if use cuda 
 
+
+#cuda
 if(USE_CUDA)
+  enable_language(CUDA)
   set(CUDA_TOOLKIT_ROOT_DIR /usr/local/cuda)
   set(CUDA_INCLUDE_DIRS ${CUDA_TOOLKIT_ROOT_DIR}/${CUDA_INSTALL_TARGET_DIR}/include)
   set( SMS 30 32 35 37 50 52 53 60 61 62 70 72 75 87)
   foreach(sm ${SMS})
-	  set(GENCODE ${GENCODE} -gencode arch=compute_${sm},code=sm_${sm})
+	set(GENCODE ${GENCODE} -gencode arch=compute_${sm},code=sm_${sm})
   endforeach()
   set(HIGHEST_SM 87)
   set(GENCODE ${GENCODE} -gencode arch=compute_${HIGHEST_SM},code=compute_${HIGHEST_SM})
-
+  set(CUDA_NVCC_FLAGS ${CUDA_NVCC_FLAGS}
+    -ccbin ${CMAKE_CXX_COMPILER}
+    -Xcompiler -DWIN_INTERFACE_CUSTOM
+    -Xcompiler -I/usr/aarch64-linux-gnu/include/
+    -Xlinker -lsocket
+    -Xlinker -rpath=/usr/lib/aarch64-linux-gnu/
+    -Xlinker -rpath=/usr/aarch64-linux-gnu/lib/
+    -Xlinker -L/usr/lib/aarch64-linux-gnu/
+    -Xlinker -L/usr/aarch64-linux-gnu/lib/)
   find_package(CUDA REQUIRED)
-  include_directories(
-    ${CUDA_INCLUDE_DIRS}
-    ${TENSORRT_INCLUDE_DIRS})
+  include_directories(${CUDA_INCLUDE_DIRS}  ${TENSORRT_INCLUDE_DIRS} )
 endif()
 
 #ros
@@ -32,7 +41,7 @@ catkin_package()
 
 
 
-include_directories(${catkin_INCLUDE_DIRS} source)
+include_directories(source)
 
 set(thirdpartylib "")
 include(cmake/thirdpartylib.cmake)
@@ -63,9 +72,9 @@ target_link_libraries(thirdparty_fast_gicp ${thirdpartylib} )
 #thirdparty--------------------------------------------------------------------------------------------
 ##thirdparty--pointpillar
 if(USE_CUDA)
-  file(GLOB_RECURSE THIRDPARTY_POINT_PILLAR_SRC source/thirdpartylib/pointpillar/src/*.cu source/thirdpartylib/pointpillar/src/*.cpp)
-  add_library(thirdparty_pointpillar   ${THIRDPARTY_POINT_PILLAR_SRC})
-  target_link_libraries(thirdparty_pointpillar     libnvinfer.so libnvonnxparser.so) 
+  file(GLOB_RECURSE THIRDPARTY_POINT_PILLAR_SRC source/thirdpartylib/pointpillar/src/*.cpp source/thirdpartylib/pointpillar/src/*.cu )
+  cuda_add_library(thirdparty_pointpillar   ${THIRDPARTY_POINT_PILLAR_SRC})
+  target_link_libraries(thirdparty_pointpillar   libnvinfer.so libnvonnxparser.so) 
 endif()
 
 
@@ -80,7 +89,7 @@ source/module/pose_graph/pose_graph.cpp
 source/module/graph_optimizer/g2o/g2o_opter.cpp
 source/module/object_detection/object_detection.cpp
 )
-target_link_libraries(module_group ${catkin_LIBRARIES} ${thirdpartylib} user_msg_group thirdparty_fast_gicp) 
+target_link_libraries(module_group ${catkin_LIBRARIES} ${thirdpartylib} user_msg_group thirdparty_fast_gicp thirdparty_pointpillar) 
 
 
 # # preprocess ---------------------------------------------------------------------------------------------
@@ -103,5 +112,5 @@ target_link_libraries(module_group ${catkin_LIBRARIES} ${thirdpartylib} user_msg
 # target_link_libraries(back_end_node back_end_pipe )
 
 #test---------------------------------------------------------------------------------------------
-add_library(test_node source/exec/test_node.cpp)
-target_link_libraries(test_node  ${catkin_LIBRARIES}  tools_group module_group)
+add_executable(test_node source/exec/test_node.cpp)
+target_link_libraries(test_node  ${catkin_LIBRARIES}  tools_group   module_group  )

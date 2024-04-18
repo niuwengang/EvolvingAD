@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-#include "kernel.h"
+#include "../include/kernel.h"
 
 __device__ float sigmoid(const float x) { return 1.0f / (1.0f + expf(-x)); }
 

@@ -7,6 +7,7 @@
  */
 
 // ros
+#include <ros/package.h>
 #include <ros/ros.h>
 // signal
 #include <signal.h>
@@ -16,6 +17,8 @@
 #include "user_msg/ods_msg.hpp"
 // tools--pub
 #include "tools/publisher/bbx_pub.hpp"
+// module--object_detection
+#include "module/object_detection/object_detection.hpp"
 
 /**
  * @brief signal handle
@@ -45,20 +48,24 @@ int main(int argc, char **argv)
 
     ros::Rate delay(100);
 
-    OdsMsg ods_msg;
-    OdMsg od_msg;
-    od_msg.pos = Eigen::Vector3f(2, 5, 0);
-    od_msg.dim = Eigen::Vector3f(3, 2, 2);
-    ods_msg.ods_queue.push_back(od_msg);
+    std::string model_file_path = ros::package::getPath("urban_nav");
 
-    std::shared_ptr<Tools::BbxPub> bbx_pub_ptr = std::make_shared<Tools::BbxPub>(nh, "ods", "map");
+    std::shared_ptr<ObjectDetection> object_detection_ptr = std::make_shared<ObjectDetection>(model_file_path);
 
     while (ros::ok())
     {
         ros::spinOnce();
         spdlog::info("this is test program");
-        bbx_pub_ptr->Publish(ods_msg);
+
         delay.sleep();
     }
     return 0;
 }
+
+// OdsMsg ods_msg;
+// OdMsg od_msg;
+// od_msg.pos = Eigen::Vector3f(2, 5, 0);
+// od_msg.dim = Eigen::Vector3f(3, 2, 2);
+// ods_msg.ods_queue.push_back(od_msg);
+// bbx_pub_ptr->Publish(ods_msg);
+// std::shared_ptr<Tools::BbxPub> bbx_pub_ptr = std::make_shared<Tools::BbxPub>(nh, "ods", "map");
