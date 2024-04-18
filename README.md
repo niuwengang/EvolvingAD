@@ -47,16 +47,19 @@ cmake ..
 make 
 sudo make  install
 ```
-+ tensoRT
++ tensorRT
+```
+
+```
 
 
 ## 3.Pipeline
 
 
 ## 4.Acknowledgements
-
-
-
+https://github.com/SmallMunich/nutonomy_pointpillars <br>
+https://github.com/SMRT-AIST/fast_gicp <br>
+https://github.com/Little-Potato-1990/localization_in_auto_driving <br>
 ## 5.Licence
 The source code is released under GPLv3 license. <br>
 

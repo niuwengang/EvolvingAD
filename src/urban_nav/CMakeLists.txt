@@ -7,7 +7,7 @@ SET(CMAKE_CXX_FLAGS_RELEASE "$ENV{CXXFLAGS} -O3 -Wall")
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 add_compile_options(-W) 
-option(USE_CUDA "Enable the use of CUDA" ON)
+option(USE_CUDA "Enable the use of CUDA" ON)  #if use cuda 
 
 if(USE_CUDA)
   set(CUDA_TOOLKIT_ROOT_DIR /usr/local/cuda)
@@ -83,24 +83,25 @@ source/module/object_detection/object_detection.cpp
 target_link_libraries(module_group ${catkin_LIBRARIES} ${thirdpartylib} user_msg_group thirdparty_fast_gicp) 
 
 
-# preprocess ---------------------------------------------------------------------------------------------
-add_library(preprocerss_pipe source/pipe/preprocerss_pipe.cpp )
-target_link_libraries(preprocerss_pipe  ${catkin_LIBRARIES}  tools_group module_group)
-add_executable(preprocerss_node source/exec/preprocerss_node.cpp )
-target_link_libraries(preprocerss_node  preprocerss_pipe)
+# # preprocess ---------------------------------------------------------------------------------------------
+# add_library(preprocerss_pipe source/pipe/preprocerss_pipe.cpp )
+# target_link_libraries(preprocerss_pipe  ${catkin_LIBRARIES}  tools_group module_group)
+# add_executable(preprocerss_node source/exec/preprocerss_node.cpp )
+# target_link_libraries(preprocerss_node  preprocerss_pipe)
 
-# front end---------------------------------------------------------------------------------------------
-add_library(front_end_pipe source/pipe/front_end_pipe.cpp )
-target_link_libraries(front_end_pipe  ${catkin_LIBRARIES}  tools_group module_group)
-add_executable(front_end_node source/exec/front_end_node.cpp )
-target_link_libraries(front_end_node  front_end_pipe)
-
-
-# back end---------------------------------------------------------------------------------------------
-add_library(back_end_pipe source/pipe/back_end_pipe.cpp)
-target_link_libraries(back_end_pipe  ${catkin_LIBRARIES}  tools_group module_group)
-add_executable(back_end_node  source/exec/back_end_node.cpp)
-target_link_libraries(back_end_node back_end_pipe )
+# # front end---------------------------------------------------------------------------------------------
+# add_library(front_end_pipe source/pipe/front_end_pipe.cpp )
+# target_link_libraries(front_end_pipe  ${catkin_LIBRARIES}  tools_group module_group)
+# add_executable(front_end_node source/exec/front_end_node.cpp )
+# target_link_libraries(front_end_node  front_end_pipe)
 
 
+# # back end---------------------------------------------------------------------------------------------
+# add_library(back_end_pipe source/pipe/back_end_pipe.cpp)
+# target_link_libraries(back_end_pipe  ${catkin_LIBRARIES}  tools_group module_group)
+# add_executable(back_end_node  source/exec/back_end_node.cpp)
+# target_link_libraries(back_end_node back_end_pipe )
 
+#test---------------------------------------------------------------------------------------------
+add_library(test_node source/exec/test_node.cpp)
+target_link_libraries(test_node  ${catkin_LIBRARIES}  tools_group module_group)
