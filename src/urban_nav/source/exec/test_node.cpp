@@ -64,6 +64,7 @@ int main(int argc, char **argv)
     while (ros::ok())
     {
         cloud_sub_ptr_->ParseData(cloud_msg_queue);
+        std::cout << "cloud_msg_queue size:" << cloud_msg_queue.size() << std::endl;
         if (cloud_msg_queue.size() != 0)
         {
             CloudMsg cloud_msg = cloud_msg_queue.front();
@@ -72,6 +73,7 @@ int main(int argc, char **argv)
             bbx_pub_ptr->Publish(ods_msg);
             cloud_pub_ptr->Publish(cloud_msg);
         }
+
         ros::spinOnce();
 
         delay.sleep();

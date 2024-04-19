@@ -92,7 +92,7 @@ source/module/object_detection/object_detection.cpp
 target_link_libraries(module_group ${catkin_LIBRARIES} ${thirdpartylib} user_msg_group thirdparty_fast_gicp thirdparty_pointpillar) 
 
 
-# # preprocess ---------------------------------------------------------------------------------------------
+# preprocess ---------------------------------------------------------------------------------------------
 add_library(preprocerss_pipe source/pipe/preprocerss_pipe.cpp )
 target_link_libraries(preprocerss_pipe  ${catkin_LIBRARIES}  tools_group module_group)
 add_executable(preprocerss_node source/exec/preprocerss_node.cpp )

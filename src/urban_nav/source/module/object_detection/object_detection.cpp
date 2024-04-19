@@ -38,6 +38,7 @@ void ObjectDetection::Detect(const CloudMsg &cloud_msg, OdsMsg &ods_msg)
 {
     nms_pred_.clear();         // clear
     ods_msg.ods_queue.clear(); // clear history
+
     const size_t num_points = cloud_msg.cloud_ptr->points.size();
     const size_t num_features = 4;
     float *d_points = new float[num_points * num_features];
@@ -51,7 +52,8 @@ void ObjectDetection::Detect(const CloudMsg &cloud_msg, OdsMsg &ods_msg)
 
     size_t points_size = cloud_msg.cloud_ptr->points.size();
 
-    float *points_data = nullptr;                                                // destination data address
+    float *points_data = nullptr; // destination data address
+
     unsigned int points_data_size = points_size * 4 * sizeof(float);             // destination data size
     checkCudaErrors(cudaMallocManaged((void **)&points_data, points_data_size)); // malloc memory for points_data
     checkCudaErrors(cudaMemcpy(points_data, d_points, points_data_size, cudaMemcpyDefault)); // copy a new one
@@ -82,4 +84,10 @@ void ObjectDetection::Detect(const CloudMsg &cloud_msg, OdsMsg &ods_msg)
         }
         ods_msg.time_stamp = cloud_msg.time_stamp;
     }
+
+    /*free memory*/
+    delete[] d_points;
+    d_points = nullptr;
+
+    cudaFree(points_data);
 }
