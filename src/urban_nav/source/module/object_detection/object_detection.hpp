@@ -2,7 +2,7 @@
  * @file    objection_detection.hpp
  * @brief   3D objection detection
  * @author  niu_wengang@163.com
- * @date    2024-04-05
+ * @date    2024-04-19
  * @version 0.1.1
  */
 
@@ -43,7 +43,7 @@ class ObjectDetection
 
   private:
     std::string model_file_path_ = "";
-    cudaStream_t stream_ = NULL;
+    cudaStream_t stream_ = nullptr;
 
     std::shared_ptr<PointPillar> pointpillar_ptr_ = nullptr;
     std::vector<Bndbox> nms_pred_;

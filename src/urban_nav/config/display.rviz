@@ -7,7 +7,8 @@ Panels:
         - /preprocess1
         - /preprocess1/synced_gnss1/Shape1
         - /preprocess1/synced_imu1/Axes properties1
-        - /preprocess1/bbx1
+        - /preprocess1/boundingbox1
+        - /preprocess1/boundingbox1/Status1
         - /front_end1
         - /back_end1
       Splitter Ratio: 0.5
@@ -150,8 +151,8 @@ Visualization Manager:
           Queue Size: 10
           Selectable: true
           Size (Pixels): 2
-          Size (m): 0.05000000074505806
-          Style: Points
+          Size (m): 0.07999999821186066
+          Style: Squares
           Topic: /synced_cloud
           Unreliable: false
           Use Fixed Frame: true
@@ -183,13 +184,13 @@ Visualization Manager:
           fixed_frame_orientation: true
         - Class: jsk_rviz_plugin/BoundingBoxArray
           Enabled: true
-          Name: bbx
+          Name: boundingbox
           Queue Size: 10
           Topic: /ods
           Unreliable: false
           Value: true
-          alpha: 0.5
-          color: 25; 255; 0
+          alpha: 0.6000000238418579
+          color: 136; 138; 133
           coloring: Flat color
           line width: 0.004999999888241291
           only edge: false
@@ -323,7 +324,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 76.78427124023438
+      Distance: 35.8746452331543
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
@@ -331,17 +332,17 @@ Visualization Manager:
         Value: false
       Field of View: 0.7853981852531433
       Focal Point:
-        X: 11.274333953857422
-        Y: -9.64100170135498
-        Z: 1.5000437498092651
+        X: 12.115649223327637
+        Y: 1.1061022281646729
+        Z: -4.872983455657959
       Focal Shape Fixed Size: false
       Focal Shape Size: 0.05000000074505806
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 1.4147964715957642
+      Pitch: 1.159796953201294
       Target Frame: <Fixed Frame>
-      Yaw: 3.0772125720977783
+      Yaw: 3.5472068786621094
     Saved: ~
 Window Geometry:
   Displays:

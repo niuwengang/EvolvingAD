@@ -25,7 +25,7 @@ ObjectDetection::ObjectDetection(const std::string &model_file_path)
     checkCudaErrors(cudaStreamCreate(&stream_));
 
     pointpillar_ptr_ = std::make_shared<PointPillar>(model_file_path_, stream_); // pointpillar ptr init
-    nms_pred_.reserve(100);
+    nms_pred_.reserve(100);                                                      // Pre-allocated MEMORY
     setlocale(LC_ALL, "");
 }
 
@@ -36,29 +36,26 @@ ObjectDetection::ObjectDetection(const std::string &model_file_path)
  */
 void ObjectDetection::Detect(const CloudMsg &cloud_msg, OdsMsg &ods_msg)
 {
-    nms_pred_.clear();         // clear
+    nms_pred_.clear();         // clear nms predict
     ods_msg.ods_queue.clear(); // clear history
 
     const size_t num_points = cloud_msg.cloud_ptr->points.size();
-    const size_t num_features = 4;
-    float *d_points = new float[num_points * num_features];
-    for (size_t i = 0; i < num_points; i++)
+    const size_t num_features = 4; // x y z r
+    float *points_int_cpu = new float[num_points * num_features];
+    for (size_t index = 0; index < num_points; index++)
     {
-        d_points[i * 4] = cloud_msg.cloud_ptr->points[i].x;
-        d_points[i * 4 + 1] = cloud_msg.cloud_ptr->points[i].y;
-        d_points[i * 4 + 2] = cloud_msg.cloud_ptr->points[i].z;
-        d_points[i * 4 + 3] = 0.0f;
+        points_int_cpu[index * 4 + 0] = cloud_msg.cloud_ptr->points[index].x;
+        points_int_cpu[index * 4 + 1] = cloud_msg.cloud_ptr->points[index].y;
+        points_int_cpu[index * 4 + 2] = cloud_msg.cloud_ptr->points[index].z;
+        points_int_cpu[index * 4 + 3] = 0.0f;
     }
 
-    size_t points_size = cloud_msg.cloud_ptr->points.size();
-
-    float *points_data = nullptr; // destination data address
-
-    unsigned int points_data_size = points_size * 4 * sizeof(float);             // destination data size
-    checkCudaErrors(cudaMallocManaged((void **)&points_data, points_data_size)); // malloc memory for points_data
-    checkCudaErrors(cudaMemcpy(points_data, d_points, points_data_size, cudaMemcpyDefault)); // copy a new one
+    float *points_in_gpu = nullptr;                                                // destination data address
+    unsigned int points_data_size = num_points * 4 * sizeof(float);                // destination data size
+    checkCudaErrors(cudaMallocManaged((void **)&points_in_gpu, points_data_size)); // malloc memory for points_data
+    checkCudaErrors(cudaMemcpy(points_in_gpu, points_int_cpu, points_data_size, cudaMemcpyDefault)); // copy a new one
     checkCudaErrors(cudaDeviceSynchronize());
-    pointpillar_ptr_->doinfer(points_data, points_size, nms_pred_); // infer and out nms_pred_
+    pointpillar_ptr_->doinfer(points_in_gpu, num_points, nms_pred_); // infer and out nms_pred_
 
     for (const auto box : nms_pred_)
     {
@@ -86,8 +83,7 @@ void ObjectDetection::Detect(const CloudMsg &cloud_msg, OdsMsg &ods_msg)
     }
 
     /*free memory*/
-    delete[] d_points;
-    d_points = nullptr;
-
-    cudaFree(points_data);
+    delete[] points_int_cpu;
+    points_int_cpu = nullptr;
+    cudaFree(points_in_gpu);
 }
