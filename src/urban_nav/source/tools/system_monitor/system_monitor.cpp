@@ -18,13 +18,21 @@ void TimeRecord::Start()
  * @param[in] none
  * @return frequency
  */
-double TimeRecord::End()
+double TimeRecord::End(const unsigned int slide_windows=10e2)
 {
     end_record_ = std::chrono::steady_clock::now();
 
-    double duration_millsecond = std::chrono::duration<double, std::milli>(end_record_ - start_record_).count(); // ms
+    double duration = std::chrono::duration<double, std::milli>(end_record_ - start_record_).count(); // ms
 
-    return 1000.0 / duration_millsecond; // hz
+    time_queue_.push_back(duration);
+    sum_time_ += duration;
+    if (time_queue_.size() > slide_windows)
+    {
+        sum_time_ -= time_queue_.front();
+        time_queue_.pop_front();
+    }
+
+    return 1000.0 * static_cast<double>(time_queue_.size()) / sum_time_; // hz
 }
 
 /**

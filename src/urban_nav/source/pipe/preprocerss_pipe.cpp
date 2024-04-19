@@ -45,7 +45,7 @@ PreProcessPipe::PreProcessPipe(ros::NodeHandle &nh)
     log_ptr_ = std::make_shared<Tools::LogRecord>(paramlist_.package_folder_path + "/log", "preprocess");
     time_ptr_ = std::make_shared<Tools::TimeRecord>();
 
-    /*[4]--algorithm module init*/
+    /*[4]--module init*/
     gnss_odom_ptr_ = std::make_shared<GnssOdom>();
     object_detection_ptr_ = std::make_shared<ObjectDetection>(paramlist_.model_file_path);
 
@@ -82,7 +82,11 @@ bool PreProcessPipe::Run()
         gnss_odom_ptr_->UpdateOdom(gnss_odom_, cur_gnss_msg_, cur_imu_msg_);
         gnss_odom_ =
             paramlist_.lidar_to_body.inverse() * paramlist_.imu_to_body * gnss_odom_; // transform to lidar frame
+
+        time_ptr_->Start();
         object_detection_ptr_->Detect(cur_cloud_msg_, ods_msg_);
+        log_ptr_->file_->info("detection hz is:{}", time_ptr_->End(10e2));
+
         PublishMsg();
     }
     return true;
@@ -209,6 +213,6 @@ void PreProcessPipe::PublishMsg()
     imu_pub_ptr_->Publish(cur_imu_msg_); // reserve
     gnss_pub_ptr_->Publish(gnss_odom_, cur_cloud_msg_.time_stamp);
     bbx_pub_ptr_->Publish(ods_msg_);
-    veh_tf_pub_ptr_->SendTransform(Eigen::Matrix4f::Identity()); // only debug
+    veh_tf_pub_ptr_->SendTransform(Eigen::Matrix4f::Identity()); //! only debug
     spdlog::info("preprocerss_pipe$ timestamp:{}", cur_cloud_msg_.time_stamp);
 }

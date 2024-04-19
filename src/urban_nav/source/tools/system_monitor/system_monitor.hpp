@@ -19,6 +19,7 @@
 
 // c++
 #include <chrono>
+#include <deque>
 #include <fstream>
 #include <iostream>
 // spdlog
@@ -34,11 +35,13 @@ class TimeRecord
     TimeRecord() = default;
     ~TimeRecord() = default;
     void Start();
-    double End();
+    double End(const unsigned int slide_windows);
 
   private:
     std::chrono::steady_clock::time_point start_record_; // record start
     std::chrono::steady_clock::time_point end_record_;   // record end
+    std::deque<double> time_queue_;
+    double sum_time_ = 0;
 };
 
 class LogRecord

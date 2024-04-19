@@ -88,7 +88,7 @@ class PreProcessPipe
         /*extrinsic*/
         Eigen::Matrix4f lidar_to_body = Eigen::Matrix4f::Identity();
         Eigen::Matrix4f imu_to_body = Eigen::Matrix4f::Identity();
-        std::string model_file_path;
+        std::string model_file_path; // infer model
 
     } paramlist_;
 };
