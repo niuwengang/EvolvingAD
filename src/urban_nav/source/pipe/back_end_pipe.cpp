@@ -30,6 +30,7 @@ BackEndPipe::BackEndPipe(ros::NodeHandle &nh)
     fusion_odom_pub_ptr_ = std::make_shared<Tools::OdomPub>(nh, "fusion_odom", "map", "veh");
     veh_tf_pub_ptr_ = std::make_shared<Tools::TfPub>("map", "ground_link"); // tf tree
 
+
     /*[3]--system monitor*/
     log_ptr_ = std::make_shared<Tools::LogRecord>(paramlist_.package_folder_path + "/log", "back_end");
     time_ptr_ = std::make_shared<Tools::TimeRecord>();

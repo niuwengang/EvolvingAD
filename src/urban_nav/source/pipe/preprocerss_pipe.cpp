@@ -19,6 +19,7 @@ PreProcessPipe::PreProcessPipe(ros::NodeHandle &nh)
     /*a--acquire yaml node*/
     paramlist_.package_folder_path = ros::package::getPath("urban_nav");
     YAML::Node config_node = YAML::LoadFile(paramlist_.package_folder_path + "/config/preprocerss.yaml");
+    paramlist_.model_file_path = paramlist_.package_folder_path + "/model//pointpillar.onnx";
     /*b--get subscriber topic name*/
     paramlist_.imu_sub_topic = config_node["topic_sub"]["imu_sub_topic"].as<std::string>();
     paramlist_.gnss_sub_topic = config_node["topic_sub"]["gnss_sub_topic"].as<std::string>();
@@ -37,6 +38,8 @@ PreProcessPipe::PreProcessPipe(ros::NodeHandle &nh)
     imu_pub_ptr_ = std::make_shared<Tools::ImuPub>(nh, "synced_imu", "map"); // reserve
     cloud_pub_ptr_ = std::make_shared<Tools::CloudPub>(nh, "synced_cloud", "map");
     gnss_pub_ptr_ = std::make_shared<Tools::OdomPub>(nh, "synced_gnss", "map", "gnss");
+    bbx_pub_ptr_ = std::make_shared<Tools::BbxPub>(nh, "ods", "map");
+    veh_tf_pub_ptr_ = std::make_shared<Tools::TfPub>("map", "ground_link"); // tf tree
 
     /*[3]--system debuger init*/
     log_ptr_ = std::make_shared<Tools::LogRecord>(paramlist_.package_folder_path + "/log", "preprocess");
@@ -44,6 +47,7 @@ PreProcessPipe::PreProcessPipe(ros::NodeHandle &nh)
 
     /*[4]--algorithm module init*/
     gnss_odom_ptr_ = std::make_shared<GnssOdom>();
+    object_detection_ptr_ = std::make_shared<ObjectDetection>(paramlist_.model_file_path);
 
     spdlog::info("preprocerss_pipe$ inited");
 }
@@ -78,7 +82,7 @@ bool PreProcessPipe::Run()
         gnss_odom_ptr_->UpdateOdom(gnss_odom_, cur_gnss_msg_, cur_imu_msg_);
         gnss_odom_ =
             paramlist_.lidar_to_body.inverse() * paramlist_.imu_to_body * gnss_odom_; // transform to lidar frame
-
+        object_detection_ptr_->Detect(cur_cloud_msg_, ods_msg_);
         PublishMsg();
     }
     return true;
@@ -204,5 +208,7 @@ void PreProcessPipe::PublishMsg()
     cloud_pub_ptr_->Publish(cur_cloud_msg_);
     imu_pub_ptr_->Publish(cur_imu_msg_); // reserve
     gnss_pub_ptr_->Publish(gnss_odom_, cur_cloud_msg_.time_stamp);
+    bbx_pub_ptr_->Publish(ods_msg_);
+    veh_tf_pub_ptr_->SendTransform(Eigen::Matrix4f::Identity()); // only debug
     spdlog::info("preprocerss_pipe$ timestamp:{}", cur_cloud_msg_.time_stamp);
 }

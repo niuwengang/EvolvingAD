@@ -18,6 +18,8 @@
 #include <stdio.h>
 // spdlog
 #include <spdlog/spdlog.h>
+// tools-publisher
+#include "tools/publisher/bbx_pub.hpp"
 // thirdpartylib--pointpillar
 #include "thirdpartylib/pointpillar/include/params.h"
 #include "thirdpartylib/pointpillar/include/pointpillar.h"

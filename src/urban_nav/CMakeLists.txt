@@ -72,7 +72,7 @@ target_link_libraries(thirdparty_fast_gicp ${thirdpartylib} )
 #thirdparty--------------------------------------------------------------------------------------------
 ##thirdparty--pointpillar
 if(USE_CUDA)
-  file(GLOB_RECURSE THIRDPARTY_POINT_PILLAR_SRC source/thirdpartylib/pointpillar/src/*.cpp source/thirdpartylib/pointpillar/src/*.cu )
+  aux_source_directory(source/thirdpartylib/pointpillar/src   THIRDPARTY_POINT_PILLAR_SRC)
   cuda_add_library(thirdparty_pointpillar   ${THIRDPARTY_POINT_PILLAR_SRC})
   target_link_libraries(thirdparty_pointpillar   libnvinfer.so libnvonnxparser.so) 
 endif()
@@ -93,10 +93,10 @@ target_link_libraries(module_group ${catkin_LIBRARIES} ${thirdpartylib} user_msg
 
 
 # # preprocess ---------------------------------------------------------------------------------------------
-# add_library(preprocerss_pipe source/pipe/preprocerss_pipe.cpp )
-# target_link_libraries(preprocerss_pipe  ${catkin_LIBRARIES}  tools_group module_group)
-# add_executable(preprocerss_node source/exec/preprocerss_node.cpp )
-# target_link_libraries(preprocerss_node  preprocerss_pipe)
+add_library(preprocerss_pipe source/pipe/preprocerss_pipe.cpp )
+target_link_libraries(preprocerss_pipe  ${catkin_LIBRARIES}  tools_group module_group)
+add_executable(preprocerss_node source/exec/preprocerss_node.cpp )
+target_link_libraries(preprocerss_node  preprocerss_pipe)
 
 # # front end---------------------------------------------------------------------------------------------
 # add_library(front_end_pipe source/pipe/front_end_pipe.cpp )
@@ -112,5 +112,5 @@ target_link_libraries(module_group ${catkin_LIBRARIES} ${thirdpartylib} user_msg
 # target_link_libraries(back_end_node back_end_pipe )
 
 #test---------------------------------------------------------------------------------------------
-add_executable(test_node source/exec/test_node.cpp)
-target_link_libraries(test_node  ${catkin_LIBRARIES}  tools_group   module_group )
+# add_executable(test_node source/exec/test_node.cpp)
+# target_link_libraries(test_node  ${catkin_LIBRARIES}  tools_group   module_group )

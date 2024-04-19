@@ -20,12 +20,14 @@
 #include "tools/publisher/gnss_pub.hpp"
 #include "tools/publisher/imu_pub.hpp"
 #include "tools/publisher/odom_pub.hpp"
+#include "tools/publisher/tf_pub.hpp"
 // tools -- system_monitor
 #include "tools/system_monitor/system_monitor.hpp"
 // yaml
 #include <yaml-cpp/yaml.h>
 // module
 #include "module/gnss_odom/gnss_odom.hpp"
+#include "module/object_detection/object_detection.hpp"
 
 class PreProcessPipe
 {
@@ -50,11 +52,14 @@ class PreProcessPipe
     std::shared_ptr<Tools::ImuPub> imu_pub_ptr_ = nullptr;
     std::shared_ptr<Tools::CloudPub> cloud_pub_ptr_ = nullptr;
     std::shared_ptr<Tools::OdomPub> gnss_pub_ptr_ = nullptr;
+    std::shared_ptr<Tools::BbxPub> bbx_pub_ptr_ = nullptr;
+    std::shared_ptr<Tools::TfPub> veh_tf_pub_ptr_ = nullptr;
 
     /*sensor queue and current*/
     std::deque<ImuMsg> imu_msg_queue_;
     std::deque<CloudMsg> cloud_msg_queue_;
     std::deque<GnssMsg> gnss_msg_queue_;
+    OdsMsg ods_msg_;
 
     ImuMsg cur_imu_msg_;
     CloudMsg cur_cloud_msg_;
@@ -67,6 +72,8 @@ class PreProcessPipe
     /*system monitor*/
     std::shared_ptr<Tools::LogRecord> log_ptr_ = nullptr;
     std::shared_ptr<Tools::TimeRecord> time_ptr_ = nullptr;
+
+    std::shared_ptr<ObjectDetection> object_detection_ptr_ = nullptr;
 
     /*paramlist*/
     struct ParamList
@@ -81,6 +88,8 @@ class PreProcessPipe
         /*extrinsic*/
         Eigen::Matrix4f lidar_to_body = Eigen::Matrix4f::Identity();
         Eigen::Matrix4f imu_to_body = Eigen::Matrix4f::Identity();
+        std::string model_file_path;
+
     } paramlist_;
 };
 

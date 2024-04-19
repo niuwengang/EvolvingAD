@@ -29,9 +29,15 @@ ObjectDetection::ObjectDetection(const std::string &model_file_path)
     setlocale(LC_ALL, "");
 }
 
+/**
+ * @brief 3D objecttion detection
+ * @param[in]
+ * @return
+ */
 void ObjectDetection::Detect(const CloudMsg &cloud_msg, OdsMsg &ods_msg)
 {
-    nms_pred_.clear();
+    nms_pred_.clear();         // clear
+    ods_msg.ods_queue.clear(); // clear history
     const size_t num_points = cloud_msg.cloud_ptr->points.size();
     const size_t num_features = 4;
     float *d_points = new float[num_points * num_features];
@@ -52,7 +58,6 @@ void ObjectDetection::Detect(const CloudMsg &cloud_msg, OdsMsg &ods_msg)
     checkCudaErrors(cudaDeviceSynchronize());
     pointpillar_ptr_->doinfer(points_data, points_size, nms_pred_); // infer and out nms_pred_
 
-    ods_msg.ods_queue.clear(); // clear history
     for (const auto box : nms_pred_)
     {
         OdMsg od_msg;
