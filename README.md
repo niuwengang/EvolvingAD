@@ -3,8 +3,14 @@
 ## 1.Introduce
 A simple demo for urban navigation on autopilot. However, it's just a personal toy program. <br>
 
-<img src="/pic/display.jpeg" alt="图片alt" title="图片title" width="300px" height="200px" objectfit="cover" align="left"><br>
-<img src="/pic/display2.png" alt="图片alt" title="图片title" width="300px" height="200px" objectfit="cover" align="right"><br>
+
+
+
+
+<div style="display: flex; justify-content: space-between;">
+    <img src="/pic/display.jpeg" alt="图片alt" title="图片title" width="300px" height="200px" objectfit="cover" >
+    <img src="/pic/display2.png" alt="图片alt" title="图片title" width="300px" height="200px" objectfit="cover" >
+</div>
 
 ## 2.Installation
 + ros component
