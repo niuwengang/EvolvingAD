@@ -4,8 +4,7 @@
 A simple demo for urban navigation on autopilot. However, it's just a personal toy program. <br>
 
 <img src="/pic/display.jpeg" alt="图片alt" title="图片title" width="300px" height="200px" objectfit="cover" align="left">
-
-<img src="/pic/display2.jpeg" alt="图片alt" title="图片title" width="300px" height="200px" objectfit="cover" align="right">
+<img src="/pic/display2.png" alt="图片alt" title="图片title" width="300px" height="200px" objectfit="cover" align="right">
 
 ## 2.Installation
 + ros component
