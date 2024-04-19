@@ -52,8 +52,8 @@ void BbxPub::Publish(const OdsMsg &ods_msg)
         od_bbox.pose.orientation.y = q.y();
         od_bbox.pose.orientation.z = q.z();
         od_bbox.pose.orientation.w = q.w();
-        od_bbox.dimensions.x = od_msg.l; //! may have issue
-        od_bbox.dimensions.y = od_msg.w;
+        od_bbox.dimensions.x = od_msg.w; //! may have issue
+        od_bbox.dimensions.y = od_msg.l;
         od_bbox.dimensions.z = od_msg.h;
         od_bbox.value = od_msg.score;
 

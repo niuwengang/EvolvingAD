@@ -66,6 +66,7 @@ int main(int argc, char **argv)
         if (cloud_msg_queue.size() != 0)
         {
             CloudMsg cloud_msg = cloud_msg_queue.front();
+            cloud_msg_queue.pop_front();
             object_detection_ptr->Detect(cloud_msg, ods_msg);
             bbx_pub_ptr->Publish(ods_msg);
         }
