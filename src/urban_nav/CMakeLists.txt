@@ -74,13 +74,17 @@ aux_source_directory(source/thirdpartylib/fast_gicp/src  THIRDPARTY_FAST_GICP_SR
 add_library(thirdparty_fast_gicp   ${THIRDPARTY_FAST_GICP_SRC})
 target_link_libraries(thirdparty_fast_gicp ${thirdpartylib} ) 
 
-#thirdparty--------------------------------------------------------------------------------------------
 ##thirdparty--pointpillar
 if(USE_CUDA)
   aux_source_directory(source/thirdpartylib/pointpillar/src   THIRDPARTY_POINT_PILLAR_SRC)
   cuda_add_library(thirdparty_pointpillar   ${THIRDPARTY_POINT_PILLAR_SRC})
   target_link_libraries(thirdparty_pointpillar   libnvinfer.so libnvonnxparser.so) 
 endif()
+
+##thirdparty--ground_seg
+# aux_source_directory(source/thirdpartylib/ground_seg/src   THIRDPARTY_GROUND_SEG_SRC)
+# add_library(thirdparty_ground_seg   ${THIRDPARTY_GROUND_SEG_SRC})
+# target_link_libraries(thirdparty_ground_seg ${thirdpartylib} ) 
 
 
 #module_group--------------------------------------------------------------------------------------------
@@ -94,7 +98,8 @@ source/module/pose_graph/pose_graph.cpp
 source/module/graph_optimizer/g2o/g2o_opter.cpp
 source/module/object_detection/object_detection.cpp
 )
-target_link_libraries(module_group ${catkin_LIBRARIES} ${thirdpartylib} user_msg_group thirdparty_fast_gicp thirdparty_pointpillar) 
+target_link_libraries(module_group ${catkin_LIBRARIES} ${thirdpartylib} 
+user_msg_group thirdparty_fast_gicp thirdparty_pointpillar ) 
 
 
 # preprocess ---------------------------------------------------------------------------------------------
@@ -103,18 +108,18 @@ target_link_libraries(preprocerss_pipe  ${catkin_LIBRARIES}  tools_group module_
 add_executable(preprocerss_node source/exec/preprocerss_node.cpp )
 target_link_libraries(preprocerss_node  preprocerss_pipe)
 
-# # front end---------------------------------------------------------------------------------------------
-# add_library(front_end_pipe source/pipe/front_end_pipe.cpp )
-# target_link_libraries(front_end_pipe  ${catkin_LIBRARIES}  tools_group module_group)
-# add_executable(front_end_node source/exec/front_end_node.cpp )
-# target_link_libraries(front_end_node  front_end_pipe)
+# front end---------------------------------------------------------------------------------------------
+add_library(front_end_pipe source/pipe/front_end_pipe.cpp )
+target_link_libraries(front_end_pipe  ${catkin_LIBRARIES}  tools_group module_group)
+add_executable(front_end_node source/exec/front_end_node.cpp )
+target_link_libraries(front_end_node  front_end_pipe)
 
 
-# # back end---------------------------------------------------------------------------------------------
-# add_library(back_end_pipe source/pipe/back_end_pipe.cpp)
-# target_link_libraries(back_end_pipe  ${catkin_LIBRARIES}  tools_group module_group)
-# add_executable(back_end_node  source/exec/back_end_node.cpp)
-# target_link_libraries(back_end_node back_end_pipe )
+# back end---------------------------------------------------------------------------------------------
+add_library(back_end_pipe source/pipe/back_end_pipe.cpp)
+target_link_libraries(back_end_pipe  ${catkin_LIBRARIES}  tools_group module_group)
+add_executable(back_end_node  source/exec/back_end_node.cpp)
+target_link_libraries(back_end_node back_end_pipe )
 
 #test---------------------------------------------------------------------------------------------
 # add_executable(test_node source/exec/test_node.cpp)

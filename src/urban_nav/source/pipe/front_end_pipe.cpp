@@ -56,7 +56,7 @@ bool FrontEndPipe::Run()
         lidar_doom_ptr_->InitPose(Eigen::Matrix4f::Identity());
         time_ptr_->Start();
         lidar_doom_ptr_->UpdateOdom(lidar_odom_, cur_cloud_msg_);
-        spdlog::info("frontend_pipe$ exec frequence:{}", time_ptr_->End());
+        spdlog::info("frontend_pipe$ exec frequence:{}", time_ptr_->End(10e2));
 
         PublishMsg();
     }

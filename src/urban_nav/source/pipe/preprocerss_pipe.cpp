@@ -39,7 +39,7 @@ PreProcessPipe::PreProcessPipe(ros::NodeHandle &nh)
     cloud_pub_ptr_ = std::make_shared<Tools::CloudPub>(nh, "synced_cloud", "map");
     gnss_pub_ptr_ = std::make_shared<Tools::OdomPub>(nh, "synced_gnss", "map", "gnss");
     bbx_pub_ptr_ = std::make_shared<Tools::BbxPub>(nh, "ods", "map");
-    veh_tf_pub_ptr_ = std::make_shared<Tools::TfPub>("map", "ground_link"); // tf tree
+    //veh_tf_pub_ptr_ = std::make_shared<Tools::TfPub>("map", "ground_link"); // tf tree
 
     /*[3]--system debuger init*/
     log_ptr_ = std::make_shared<Tools::LogRecord>(paramlist_.package_folder_path + "/log", "preprocess");
@@ -48,7 +48,7 @@ PreProcessPipe::PreProcessPipe(ros::NodeHandle &nh)
     /*[4]--module init*/
     gnss_odom_ptr_ = std::make_shared<GnssOdom>();
     object_detection_ptr_ = std::make_shared<ObjectDetection>(paramlist_.model_file_path);
-
+    ground_seg_ptr_ = std::make_shared<DIPGSEG::Dipgseg>();
     spdlog::info("preprocerss_pipe$ inited");
 }
 
@@ -85,8 +85,11 @@ bool PreProcessPipe::Run()
 
         time_ptr_->Start();
         object_detection_ptr_->Detect(cur_cloud_msg_, ods_msg_);
+        CloudMsg::CLOUD cloud_ground, cloud_non_ground;
+        ground_seg_ptr_->segment_ground(*cur_cloud_msg_.cloud_ptr, cloud_ground, cloud_non_ground);
         log_ptr_->file_->info("detection hz is:{}", time_ptr_->End(10e2));
 
+        *cur_cloud_msg_.cloud_ptr = cloud_non_ground;
         PublishMsg();
     }
     return true;
@@ -213,6 +216,6 @@ void PreProcessPipe::PublishMsg()
     imu_pub_ptr_->Publish(cur_imu_msg_); // reserve
     gnss_pub_ptr_->Publish(gnss_odom_, cur_cloud_msg_.time_stamp);
     bbx_pub_ptr_->Publish(ods_msg_);
-    veh_tf_pub_ptr_->SendTransform(Eigen::Matrix4f::Identity()); //! only debug
+    // veh_tf_pub_ptr_->SendTransform(Eigen::Matrix4f::Identity()); //! only debug
     spdlog::info("preprocerss_pipe$ timestamp:{}", cur_cloud_msg_.time_stamp);
 }

@@ -49,7 +49,6 @@ void ObjectDetection::Detect(const CloudMsg &cloud_msg, OdsMsg &ods_msg)
     const size_t num_features = 4; // x y z r
     float *points_in_cpu = new float[num_points * num_features];
 
-#pragma omp parallel for
     for (size_t index = 0; index < num_points; index++)
     {
         points_in_cpu[index * 4 + 0] = cloud_msg.cloud_ptr->points[index].x;

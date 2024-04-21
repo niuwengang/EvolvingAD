@@ -25,9 +25,13 @@
 #include "tools/system_monitor/system_monitor.hpp"
 // yaml
 #include <yaml-cpp/yaml.h>
-// module
+// algorithm module
 #include "module/gnss_odom/gnss_odom.hpp"
 #include "module/object_detection/object_detection.hpp"
+
+#include "thirdpartylib/ground_seg/include/dipgseg.h"
+// openmp
+#include <omp.h>
 
 class PreProcessPipe
 {
@@ -53,7 +57,7 @@ class PreProcessPipe
     std::shared_ptr<Tools::CloudPub> cloud_pub_ptr_ = nullptr;
     std::shared_ptr<Tools::OdomPub> gnss_pub_ptr_ = nullptr;
     std::shared_ptr<Tools::BbxPub> bbx_pub_ptr_ = nullptr;
-    std::shared_ptr<Tools::TfPub> veh_tf_pub_ptr_ = nullptr;
+    // std::shared_ptr<Tools::TfPub> veh_tf_pub_ptr_ = nullptr;
 
     /*sensor queue and current*/
     std::deque<ImuMsg> imu_msg_queue_;
@@ -73,7 +77,9 @@ class PreProcessPipe
     std::shared_ptr<Tools::LogRecord> log_ptr_ = nullptr;
     std::shared_ptr<Tools::TimeRecord> time_ptr_ = nullptr;
 
+    /*algorithm module*/
     std::shared_ptr<ObjectDetection> object_detection_ptr_ = nullptr;
+    std::shared_ptr<DIPGSEG::Dipgseg> ground_seg_ptr_ = nullptr;
 
     /*paramlist*/
     struct ParamList
