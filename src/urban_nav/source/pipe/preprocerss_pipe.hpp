@@ -54,10 +54,11 @@ class PreProcessPipe
     std::shared_ptr<Tools::GnssSub> gnss_sub_ptr_ = nullptr;
 
     std::shared_ptr<Tools::ImuPub> imu_pub_ptr_ = nullptr;
-    std::shared_ptr<Tools::CloudPub> cloud_pub_ptr_ = nullptr;
+    std::shared_ptr<Tools::CloudPub> ground_cloud_pub_ptr_ = nullptr;
+    std::shared_ptr<Tools::CloudPub> no_ground_cloud_pub_ptr_ = nullptr;
     std::shared_ptr<Tools::OdomPub> gnss_pub_ptr_ = nullptr;
     std::shared_ptr<Tools::BbxPub> bbx_pub_ptr_ = nullptr;
-    // std::shared_ptr<Tools::TfPub> veh_tf_pub_ptr_ = nullptr;
+    std::shared_ptr<Tools::TfPub> veh_tf_pub_ptr_ = nullptr;
 
     /*sensor queue and current*/
     std::deque<ImuMsg> imu_msg_queue_;
@@ -68,6 +69,9 @@ class PreProcessPipe
     ImuMsg cur_imu_msg_;
     CloudMsg cur_cloud_msg_;
     GnssMsg cur_gnss_msg_;
+
+    CloudMsg::CLOUD_PTR ground_cloud_ptr_ = nullptr;
+    CloudMsg::CLOUD_PTR no_ground_cloud_ptr_ = nullptr;
 
     /*gnss odom*/
     Eigen::Matrix4f gnss_odom_ = Eigen::Matrix4f::Identity(); // gnss odom

@@ -4,13 +4,14 @@ Panels:
     Name: Displays
     Property Tree Widget:
       Expanded:
+        - /preprocess1
+        - /preprocess1/ground_cloud1
         - /preprocess1/synced_gnss1/Shape1
         - /preprocess1/synced_imu1/Axes properties1
-        - /preprocess1/boundingbox1
         - /front_end1
         - /back_end1
       Splitter Ratio: 0.5
-    Tree Height: 973
+    Tree Height: 972
   - Class: rviz/Selection
     Name: Selection
   - Class: rviz/Tool Properties
@@ -93,41 +94,6 @@ Visualization Manager:
       Visual Enabled: true
     - Class: rviz/Group
       Displays:
-        - Angle Tolerance: 0.10000000149011612
-          Class: rviz/Odometry
-          Covariance:
-            Orientation:
-              Alpha: 0.5
-              Color: 255; 255; 127
-              Color Style: Unique
-              Frame: Local
-              Offset: 1
-              Scale: 1
-              Value: true
-            Position:
-              Alpha: 0.30000001192092896
-              Color: 204; 51; 204
-              Scale: 1
-              Value: true
-            Value: true
-          Enabled: false
-          Keep: 0
-          Name: synced_gnss
-          Position Tolerance: 0.10000000149011612
-          Queue Size: 10
-          Shape:
-            Alpha: 1
-            Axes Length: 1
-            Axes Radius: 0.10000000149011612
-            Color: 0; 0; 0
-            Head Length: 0.5
-            Head Radius: 0.10000000149011612
-            Shaft Length: 1
-            Shaft Radius: 0.10000000149011612
-            Value: Arrow
-          Topic: /synced_gnss
-          Unreliable: false
-          Value: false
         - Alpha: 1
           Autocompute Intensity Bounds: true
           Autocompute Value Bounds:
@@ -155,6 +121,69 @@ Visualization Manager:
           Unreliable: false
           Use Fixed Frame: true
           Use rainbow: true
+          Value: true
+        - Alpha: 1
+          Autocompute Intensity Bounds: true
+          Autocompute Value Bounds:
+            Max Value: 4.180176734924316
+            Min Value: -6.460442066192627
+            Value: true
+          Axis: Z
+          Channel Name: intensity
+          Class: rviz/PointCloud2
+          Color: 136; 138; 133
+          Color Transformer: FlatColor
+          Decay Time: 0
+          Enabled: true
+          Invert Rainbow: false
+          Max Color: 255; 255; 255
+          Min Color: 0; 0; 0
+          Name: ground_cloud
+          Position Transformer: XYZ
+          Queue Size: 10
+          Selectable: true
+          Size (Pixels): 2
+          Size (m): 0.07999999821186066
+          Style: Squares
+          Topic: /ground_cloud
+          Unreliable: false
+          Use Fixed Frame: true
+          Use rainbow: true
+          Value: true
+        - Angle Tolerance: 0.10000000149011612
+          Class: rviz/Odometry
+          Covariance:
+            Orientation:
+              Alpha: 0.5
+              Color: 255; 255; 127
+              Color Style: Unique
+              Frame: Local
+              Offset: 1
+              Scale: 1
+              Value: true
+            Position:
+              Alpha: 0.30000001192092896
+              Color: 204; 51; 204
+              Scale: 1
+              Value: true
+            Value: true
+          Enabled: true
+          Keep: 0
+          Name: synced_gnss
+          Position Tolerance: 0.10000000149011612
+          Queue Size: 10
+          Shape:
+            Alpha: 1
+            Axes Length: 1
+            Axes Radius: 0.10000000149011612
+            Color: 0; 0; 0
+            Head Length: 0.5
+            Head Radius: 0.10000000149011612
+            Shaft Length: 1
+            Shaft Radius: 0.10000000149011612
+            Value: Arrow
+          Topic: /synced_gnss
+          Unreliable: false
           Value: true
         - Acceleration properties:
             Acc. vector alpha: 1
@@ -187,10 +216,10 @@ Visualization Manager:
           Topic: /ods
           Unreliable: false
           Value: true
-          alpha: 0.6000000238418579
+          alpha: 0.5
           color: 136; 138; 133
-          coloring: Flat color
-          line width: 0.004999999888241291
+          coloring: Value
+          line width: 0.05000000074505806
           only edge: false
           show coords: false
       Enabled: true
@@ -322,7 +351,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 50.80881881713867
+      Distance: 53.63054656982422
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
@@ -330,17 +359,17 @@ Visualization Manager:
         Value: false
       Field of View: 0.7853981852531433
       Focal Point:
-        X: 4.437490463256836
-        Y: -0.3954368531703949
-        Z: -7.0228471755981445
+        X: 5.262686252593994
+        Y: -6.2904133796691895
+        Z: -4.065882205963135
       Focal Shape Fixed Size: false
       Focal Shape Size: 0.05000000074505806
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 1.1947964429855347
+      Pitch: 0.8547969460487366
       Target Frame: <Fixed Frame>
-      Yaw: 3.8322064876556396
+      Yaw: 3.1972146034240723
     Saved: ~
 Window Geometry:
   Displays:
@@ -348,7 +377,7 @@ Window Geometry:
   Height: 2176
   Hide Left Dock: false
   Hide Right Dock: false
-  QMainWindow State: 000000ff00000000fd0000000400000000000005ba0000077afc020000000bfb0000001200530065006c0065006300740069006f006e00000001e10000009b000000b000fffffffb0000001e0054006f006f006c002000500072006f007000650072007400690065007302000001ed000001df00000185000000b0fb000000120056006900650077007300200054006f006f02000001df000002110000018500000122fb000000200054006f006f006c002000500072006f0070006500720074006900650073003203000002880000011d000002210000017afb000000100044006900730070006c006100790073010000006e0000043b0000018200fffffffb0000001200660072006f006e0074005f00630061006d01000004b5000003330000002600fffffffb0000002000730065006c0065006300740069006f006e00200062007500660066006500720200000138000000aa0000023a00000294fb00000014005700690064006500530074006500720065006f02000000e6000000d2000003ee0000030bfb0000000c004b0069006e0065006300740200000186000001060000030c00000261fb0000000c00430061006d006500720061000000019f0000014e0000000000000000fb0000000a0049006d0061006700650000000211000001a1000000000000000000000001000003550000077afc0200000003fb0000001e0054006f006f006c002000500072006f00700065007200740069006500730100000041000000780000000000000000fb0000000a00560069006500770073010000006e0000077a0000013200fffffffb0000001200530065006c0065006300740069006f006e010000025a000000b200000000000000000000000200000490000000a9fc0100000001fb0000000a00560069006500770073030000004e00000080000002e1000001970000000300000f700000005efc0100000002fb0000000800540069006d0065010000000000000f70000006dc00fffffffb0000000800540069006d00650100000000000004500000000000000000000006490000077a00000004000000040000000800000008fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
+  QMainWindow State: 000000ff00000000fd00000004000000000000041c0000077afc020000000bfb0000001200530065006c0065006300740069006f006e00000001e10000009b000000b000fffffffb0000001e0054006f006f006c002000500072006f007000650072007400690065007302000001ed000001df00000185000000b0fb000000120056006900650077007300200054006f006f02000001df000002110000018500000122fb000000200054006f006f006c002000500072006f0070006500720074006900650073003203000002880000011d000002210000017afb000000100044006900730070006c006100790073010000006e0000043a0000018200fffffffb0000001200660072006f006e0074005f00630061006d01000004b4000003340000002600fffffffb0000002000730065006c0065006300740069006f006e00200062007500660066006500720200000138000000aa0000023a00000294fb00000014005700690064006500530074006500720065006f02000000e6000000d2000003ee0000030bfb0000000c004b0069006e0065006300740200000186000001060000030c00000261fb0000000c00430061006d006500720061000000019f0000014e0000000000000000fb0000000a0049006d0061006700650000000211000001a1000000000000000000000001000001c60000077afc0200000003fb0000001e0054006f006f006c002000500072006f00700065007200740069006500730100000041000000780000000000000000fb0000000a00560069006500770073010000006e0000077a0000013200fffffffb0000001200530065006c0065006300740069006f006e010000025a000000b200000000000000000000000200000490000000a9fc0100000001fb0000000a00560069006500770073030000004e00000080000002e1000001970000000300000f700000005efc0100000002fb0000000800540069006d0065010000000000000f70000006dc00fffffffb0000000800540069006d00650100000000000004500000000000000000000009760000077a00000004000000040000000800000008fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
   Selection:
     collapsed: false
   Time:
