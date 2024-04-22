@@ -41,7 +41,7 @@ PreProcessPipe::PreProcessPipe(ros::NodeHandle &nh)
 
     gnss_pub_ptr_ = std::make_shared<Tools::OdomPub>(nh, "synced_gnss", "map", "gnss");
     bbx_pub_ptr_ = std::make_shared<Tools::BbxPub>(nh, "ods", "map");
-    veh_tf_pub_ptr_ = std::make_shared<Tools::TfPub>("map", "ground_link"); // tf tree
+    // veh_tf_pub_ptr_ = std::make_shared<Tools::TfPub>("map", "ground_link"); // tf tree
 
     /*[3]--system debuger init*/
     log_ptr_ = std::make_shared<Tools::LogRecord>(paramlist_.package_folder_path + "/log", "preprocess");
@@ -221,6 +221,6 @@ void PreProcessPipe::PublishMsg()
     imu_pub_ptr_->Publish(cur_imu_msg_); // reserve
     gnss_pub_ptr_->Publish(gnss_odom_, cur_cloud_msg_.time_stamp);
     bbx_pub_ptr_->Publish(ods_msg_);
-    veh_tf_pub_ptr_->SendTransform(Eigen::Matrix4f::Identity()); //! only debug
+    // veh_tf_pub_ptr_->SendTransform(Eigen::Matrix4f::Identity()); //! only debug
     spdlog::info("preprocerss_pipe$ timestamp:{}", cur_cloud_msg_.time_stamp);
 }
