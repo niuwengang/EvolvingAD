@@ -36,12 +36,12 @@ PreProcessPipe::PreProcessPipe(ros::NodeHandle &nh)
     gnss_sub_ptr_ = std::make_shared<Tools::GnssSub>(nh, paramlist_.gnss_sub_topic);
 
     imu_pub_ptr_ = std::make_shared<Tools::ImuPub>(nh, "synced_imu", "map");
-    ground_cloud_pub_ptr_ = std::make_shared<Tools::CloudPub>(nh, "ground_cloud", "map");    // ground cloud
-    no_ground_cloud_pub_ptr_ = std::make_shared<Tools::CloudPub>(nh, "synced_cloud", "map"); // no ground cloud
+    ground_cloud_pub_ptr_ = std::make_shared<Tools::CloudPub>(nh, "synced_ground_cloud", "map", 1); // ground cloud
+    no_ground_cloud_pub_ptr_ =
+        std::make_shared<Tools::CloudPub>(nh, "synced_no_ground_cloud", "map", 1); // no ground cloud
 
     gnss_pub_ptr_ = std::make_shared<Tools::OdomPub>(nh, "synced_gnss", "map", "gnss");
     bbx_pub_ptr_ = std::make_shared<Tools::BbxPub>(nh, "ods", "map");
-    // veh_tf_pub_ptr_ = std::make_shared<Tools::TfPub>("map", "ground_link"); // tf tree
 
     /*[3]--system debuger init*/
     log_ptr_ = std::make_shared<Tools::LogRecord>(paramlist_.package_folder_path + "/log", "preprocess");
@@ -49,9 +49,13 @@ PreProcessPipe::PreProcessPipe(ros::NodeHandle &nh)
 
     /*[4]--module init*/
     gnss_odom_ptr_ = std::make_shared<GnssOdom>();
-    object_detection_ptr_ = std::make_shared<ObjectDetection>(paramlist_.model_file_path);
-    ground_seg_ptr_ = std::make_shared<DIPGSEG::Dipgseg>();
+    object_detection_ptr_ = std::make_shared<Module::ObjectDetection>(paramlist_.model_file_path);
+    ground_seg_ptr_ = std::make_shared<Module::DipgGroundSegment>();
     spdlog::info("preprocerss_pipe$ inited");
+
+    /*[5]--reset*/
+    ground_cloud_ptr_.reset(new CloudMsg::CLOUD());
+    no_ground_cloud_ptr_.reset(new CloudMsg::CLOUD());
 }
 
 /**
@@ -86,12 +90,11 @@ bool PreProcessPipe::Run()
             paramlist_.lidar_to_body.inverse() * paramlist_.imu_to_body * gnss_odom_; // transform to lidar frame
 
         time_ptr_->Start();
-        object_detection_ptr_->Detect(cur_cloud_msg_, ods_msg_);
 
-        ground_cloud_ptr_.reset(new CloudMsg::CLOUD());
-        no_ground_cloud_ptr_.reset(new CloudMsg::CLOUD());
-        ground_seg_ptr_->segment_ground(*cur_cloud_msg_.cloud_ptr, *ground_cloud_ptr_, *no_ground_cloud_ptr_);
-        log_ptr_->file_->info("detection hz is:{}", time_ptr_->End(10e2));
+        object_detection_ptr_->Detect(cur_cloud_msg_, ods_msg_);
+        ground_seg_ptr_->Segement(cur_cloud_msg_.cloud_ptr, ground_cloud_ptr_, no_ground_cloud_ptr_);
+
+        log_ptr_->terminal_->info("exec hz is:{}", time_ptr_->End(10e3));
 
         PublishMsg();
     }
@@ -215,12 +218,14 @@ bool PreProcessPipe::ReadMsg()
  */
 void PreProcessPipe::PublishMsg()
 {
-    *cur_cloud_msg_.cloud_ptr = *no_ground_cloud_ptr_;
-    no_ground_cloud_pub_ptr_->Publish(cur_cloud_msg_);
-    ground_cloud_pub_ptr_->Publish(ground_cloud_ptr_, 0);
-    imu_pub_ptr_->Publish(cur_imu_msg_); // reserve
-    gnss_pub_ptr_->Publish(gnss_odom_, cur_cloud_msg_.time_stamp);
+
+    double refer_time = cur_cloud_msg_.time_stamp;
+
+    no_ground_cloud_pub_ptr_->Publish(no_ground_cloud_ptr_, refer_time);
+    ground_cloud_pub_ptr_->Publish(ground_cloud_ptr_, refer_time);
+    gnss_pub_ptr_->Publish(gnss_odom_, refer_time);
     bbx_pub_ptr_->Publish(ods_msg_);
-    // veh_tf_pub_ptr_->SendTransform(Eigen::Matrix4f::Identity()); //! only debug
-    spdlog::info("preprocerss_pipe$ timestamp:{}", cur_cloud_msg_.time_stamp);
+
+    // imu_pub_ptr_->Publish(cur_imu_msg_); // reserve
+    // spdlog::info("preprocerss_pipe$ timestamp:{}", cur_cloud_msg_.time_stamp);
 }

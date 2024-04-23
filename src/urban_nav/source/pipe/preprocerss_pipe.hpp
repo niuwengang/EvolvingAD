@@ -27,9 +27,10 @@
 #include <yaml-cpp/yaml.h>
 // algorithm module
 #include "module/gnss_odom/gnss_odom.hpp"
+#include "module/ground_segement/dipg_ground_segement.hpp"
+#include "module/ground_segement/ground_segement_interface.hpp"
 #include "module/object_detection/object_detection.hpp"
 
-#include "thirdpartylib/ground_seg/include/dipgseg.h"
 // openmp
 #include <omp.h>
 
@@ -58,7 +59,6 @@ class PreProcessPipe
     std::shared_ptr<Tools::CloudPub> no_ground_cloud_pub_ptr_ = nullptr;
     std::shared_ptr<Tools::OdomPub> gnss_pub_ptr_ = nullptr;
     std::shared_ptr<Tools::BbxPub> bbx_pub_ptr_ = nullptr;
-    std::shared_ptr<Tools::TfPub> veh_tf_pub_ptr_ = nullptr;
 
     /*sensor queue and current*/
     std::deque<ImuMsg> imu_msg_queue_;
@@ -71,7 +71,7 @@ class PreProcessPipe
     GnssMsg cur_gnss_msg_;
 
     CloudMsg::CLOUD_PTR ground_cloud_ptr_ = nullptr;
-    CloudMsg::CLOUD_PTR no_ground_cloud_ptr_ = nullptr;
+    CloudMsg::CLOUD_PTR no_ground_cloud_ptr_ = nullptr; // reset when use it
 
     /*gnss odom*/
     Eigen::Matrix4f gnss_odom_ = Eigen::Matrix4f::Identity(); // gnss odom
@@ -82,8 +82,8 @@ class PreProcessPipe
     std::shared_ptr<Tools::TimeRecord> time_ptr_ = nullptr;
 
     /*algorithm module*/
-    std::shared_ptr<ObjectDetection> object_detection_ptr_ = nullptr;
-    std::shared_ptr<DIPGSEG::Dipgseg> ground_seg_ptr_ = nullptr;
+    std::shared_ptr<Module::ObjectDetection> object_detection_ptr_ = nullptr;
+    std::shared_ptr<Module::GroundSegementInterface> ground_seg_ptr_ = nullptr;
 
     /*paramlist*/
     struct ParamList

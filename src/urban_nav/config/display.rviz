@@ -5,13 +5,10 @@ Panels:
     Property Tree Widget:
       Expanded:
         - /preprocess1
-        - /preprocess1/ground_cloud1
         - /preprocess1/synced_gnss1/Shape1
         - /preprocess1/synced_imu1/Axes properties1
-        - /front_end1
-        - /back_end1
       Splitter Ratio: 0.5
-    Tree Height: 972
+    Tree Height: 675
   - Class: rviz/Selection
     Name: Selection
   - Class: rviz/Tool Properties
@@ -110,7 +107,7 @@ Visualization Manager:
           Invert Rainbow: false
           Max Color: 255; 255; 255
           Min Color: 0; 0; 0
-          Name: synced_cloud
+          Name: synced_no_ground_cloud
           Position Transformer: XYZ
           Queue Size: 10
           Selectable: true
@@ -131,14 +128,14 @@ Visualization Manager:
           Axis: Z
           Channel Name: intensity
           Class: rviz/PointCloud2
-          Color: 136; 138; 133
+          Color: 52; 101; 164
           Color Transformer: FlatColor
           Decay Time: 0
           Enabled: true
           Invert Rainbow: false
           Max Color: 255; 255; 255
           Min Color: 0; 0; 0
-          Name: ground_cloud
+          Name: synced_ground_cloud
           Position Transformer: XYZ
           Queue Size: 10
           Selectable: true
@@ -167,7 +164,7 @@ Visualization Manager:
               Scale: 1
               Value: true
             Value: true
-          Enabled: true
+          Enabled: false
           Keep: 0
           Name: synced_gnss
           Position Tolerance: 0.10000000149011612
@@ -184,7 +181,7 @@ Visualization Manager:
             Value: Arrow
           Topic: /synced_gnss
           Unreliable: false
-          Value: true
+          Value: false
         - Acceleration properties:
             Acc. vector alpha: 1
             Acc. vector color: 255; 0; 0
@@ -202,16 +199,16 @@ Visualization Manager:
             y_scale: 1
             z_scale: 1
           Class: rviz_imu_plugin/Imu
-          Enabled: true
+          Enabled: false
           Name: synced_imu
           Queue Size: 10
           Topic: /synced_imu
           Unreliable: false
-          Value: true
+          Value: false
           fixed_frame_orientation: true
         - Class: jsk_rviz_plugin/BoundingBoxArray
           Enabled: true
-          Name: boundingbox
+          Name: ods
           Queue Size: 10
           Topic: /ods
           Unreliable: false
@@ -300,28 +297,23 @@ Visualization Manager:
           Topic: /fusion_odom
           Unreliable: false
           Value: true
-      Enabled: true
+      Enabled: false
       Name: back_end
     - Alpha: 1
       Class: rviz/RobotModel
       Collision Enabled: false
-      Enabled: true
+      Enabled: false
       Links:
         All Links Enabled: true
         Expand Joint Details: false
         Expand Link Details: false
         Expand Tree: false
         Link Tree Style: Links in Alphabetic Order
-        ground_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
       Name: RobotModel
       Robot Description: robot_description
       TF Prefix: ""
       Update Interval: 0
-      Value: true
+      Value: false
       Visual Enabled: true
   Enabled: true
   Global Options:
@@ -351,7 +343,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 53.63054656982422
+      Distance: 38.30442810058594
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
@@ -359,25 +351,25 @@ Visualization Manager:
         Value: false
       Field of View: 0.7853981852531433
       Focal Point:
-        X: 5.262686252593994
-        Y: -6.2904133796691895
-        Z: -4.065882205963135
+        X: 13.207419395446777
+        Y: -16.709735870361328
+        Z: 0.5792730450630188
       Focal Shape Fixed Size: false
       Focal Shape Size: 0.05000000074505806
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.8547969460487366
+      Pitch: 1.5147960186004639
       Target Frame: <Fixed Frame>
-      Yaw: 3.1972146034240723
+      Yaw: 1.1753979921340942
     Saved: ~
 Window Geometry:
   Displays:
     collapsed: false
-  Height: 2176
+  Height: 1654
   Hide Left Dock: false
   Hide Right Dock: false
-  QMainWindow State: 000000ff00000000fd00000004000000000000041c0000077afc020000000bfb0000001200530065006c0065006300740069006f006e00000001e10000009b000000b000fffffffb0000001e0054006f006f006c002000500072006f007000650072007400690065007302000001ed000001df00000185000000b0fb000000120056006900650077007300200054006f006f02000001df000002110000018500000122fb000000200054006f006f006c002000500072006f0070006500720074006900650073003203000002880000011d000002210000017afb000000100044006900730070006c006100790073010000006e0000043a0000018200fffffffb0000001200660072006f006e0074005f00630061006d01000004b4000003340000002600fffffffb0000002000730065006c0065006300740069006f006e00200062007500660066006500720200000138000000aa0000023a00000294fb00000014005700690064006500530074006500720065006f02000000e6000000d2000003ee0000030bfb0000000c004b0069006e0065006300740200000186000001060000030c00000261fb0000000c00430061006d006500720061000000019f0000014e0000000000000000fb0000000a0049006d0061006700650000000211000001a1000000000000000000000001000001c60000077afc0200000003fb0000001e0054006f006f006c002000500072006f00700065007200740069006500730100000041000000780000000000000000fb0000000a00560069006500770073010000006e0000077a0000013200fffffffb0000001200530065006c0065006300740069006f006e010000025a000000b200000000000000000000000200000490000000a9fc0100000001fb0000000a00560069006500770073030000004e00000080000002e1000001970000000300000f700000005efc0100000002fb0000000800540069006d0065010000000000000f70000006dc00fffffffb0000000800540069006d00650100000000000004500000000000000000000009760000077a00000004000000040000000800000008fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
+  QMainWindow State: 000000ff00000000fd00000004000000000000041c00000570fc020000000bfb0000001200530065006c0065006300740069006f006e00000001e10000009b000000b000fffffffb0000001e0054006f006f006c002000500072006f007000650072007400690065007302000001ed000001df00000185000000b0fb000000120056006900650077007300200054006f006f02000001df000002110000018500000122fb000000200054006f006f006c002000500072006f0070006500720074006900650073003203000002880000011d000002210000017afb000000100044006900730070006c006100790073010000006e000003110000018200fffffffb0000001200660072006f006e0074005f00630061006d010000038b000002530000002600fffffffb0000002000730065006c0065006300740069006f006e00200062007500660066006500720200000138000000aa0000023a00000294fb00000014005700690064006500530074006500720065006f02000000e6000000d2000003ee0000030bfb0000000c004b0069006e0065006300740200000186000001060000030c00000261fb0000000c00430061006d006500720061000000019f0000014e0000000000000000fb0000000a0049006d0061006700650000000211000001a1000000000000000000000001000001c600000570fc0200000003fb0000001e0054006f006f006c002000500072006f00700065007200740069006500730100000041000000780000000000000000fb0000000a00560069006500770073010000006e000005700000013200fffffffb0000001200530065006c0065006300740069006f006e010000025a000000b200000000000000000000000200000490000000a9fc0100000001fb0000000a00560069006500770073030000004e00000080000002e1000001970000000300000c000000005efc0100000002fb0000000800540069006d0065010000000000000c00000006dc00fffffffb0000000800540069006d00650100000000000004500000000000000000000006060000057000000004000000040000000800000008fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
   Selection:
     collapsed: false
   Time:
@@ -386,8 +378,8 @@ Window Geometry:
     collapsed: false
   Views:
     collapsed: false
-  Width: 3952
-  X: 3216
-  Y: 54
+  Width: 3072
+  X: 0
+  Y: 211
   front_cam:
     collapsed: false

@@ -22,7 +22,7 @@ FrontEndPipe::FrontEndPipe(ros::NodeHandle &nh)
 
     /*[2]--subscriber and publisher*/
     lidar_odom_pub_ptr_ = std::make_shared<Tools::OdomPub>(nh, "lidar_odom", "map", "lidar");
-    cloud_sub_ptr_ = std::make_shared<Tools::CloudSub>(nh, paramlist_.cloud_sub_topic);
+    cloud_sub_ptr_ = std::make_shared<Tools::CloudSub>(nh, paramlist_.cloud_sub_topic, 100);
 
     /*[3]--system monitor*/
     log_ptr_ = std::make_shared<Tools::LogRecord>(paramlist_.package_folder_path + "/log", "front_end");
@@ -56,7 +56,7 @@ bool FrontEndPipe::Run()
         lidar_doom_ptr_->InitPose(Eigen::Matrix4f::Identity());
         time_ptr_->Start();
         lidar_doom_ptr_->UpdateOdom(lidar_odom_, cur_cloud_msg_);
-        spdlog::info("frontend_pipe$ exec frequence:{}", time_ptr_->End(10e2));
+        spdlog::info("frontend_pipe$ exec frequence:{}", time_ptr_->End(100));
 
         PublishMsg();
     }

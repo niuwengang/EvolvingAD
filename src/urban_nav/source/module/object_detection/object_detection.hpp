@@ -24,6 +24,9 @@
 #include "thirdpartylib/pointpillar/include/params.h"
 #include "thirdpartylib/pointpillar/include/pointpillar.h"
 
+namespace Module
+{
+
 #define checkCudaErrors(status)                                                                                        \
     {                                                                                                                  \
         if (status != 0)                                                                                               \
@@ -49,4 +52,5 @@ class ObjectDetection
     std::vector<Bndbox> nms_pred_;
 };
 
+} // namespace Module
 #endif // _OBJECT_DETECTION_HPP_

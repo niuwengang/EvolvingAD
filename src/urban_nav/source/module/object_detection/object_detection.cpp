@@ -1,5 +1,8 @@
 #include "object_detection.hpp"
 
+namespace Module
+{
+
 /**
  * @brief get device info
  * @param[in] model_file_path
@@ -92,4 +95,6 @@ void ObjectDetection::Detect(const CloudMsg &cloud_msg, OdsMsg &ods_msg)
     delete[] points_in_cpu;
     points_in_cpu = nullptr;
     cudaFree(points_in_gpu);
+}
+
 }

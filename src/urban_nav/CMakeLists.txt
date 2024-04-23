@@ -6,9 +6,9 @@ SET(CMAKE_BUILD_TYPE "Release")
 SET(CMAKE_CXX_FLAGS_RELEASE "$ENV{CXXFLAGS} -O3 -Wall")
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
-set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${OpenMP_EXE_LINKER_FLAGS}")
+# set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
+# set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
+# set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${OpenMP_EXE_LINKER_FLAGS}")
 
 
 add_compile_options(-W) 
@@ -97,6 +97,7 @@ source/module/lidar_odom/lidar_odom.cpp
 source/module/pose_graph/pose_graph.cpp
 source/module/graph_optimizer/g2o/g2o_opter.cpp
 source/module/object_detection/object_detection.cpp
+source/module/ground_segement/dipg_ground_segement.cpp
 )
 target_link_libraries(module_group ${catkin_LIBRARIES} ${thirdpartylib} 
 user_msg_group thirdparty_fast_gicp thirdparty_pointpillar ) 
@@ -108,11 +109,11 @@ target_link_libraries(preprocerss_pipe  ${catkin_LIBRARIES}  tools_group module_
 add_executable(preprocerss_node source/exec/preprocerss_node.cpp )
 target_link_libraries(preprocerss_node  preprocerss_pipe)
 
-# # front end---------------------------------------------------------------------------------------------
-# add_library(front_end_pipe source/pipe/front_end_pipe.cpp )
-# target_link_libraries(front_end_pipe  ${catkin_LIBRARIES}  tools_group module_group)
-# add_executable(front_end_node source/exec/front_end_node.cpp )
-# target_link_libraries(front_end_node  front_end_pipe)
+# front end---------------------------------------------------------------------------------------------
+add_library(front_end_pipe source/pipe/front_end_pipe.cpp )
+target_link_libraries(front_end_pipe  ${catkin_LIBRARIES}  tools_group module_group)
+add_executable(front_end_node source/exec/front_end_node.cpp )
+target_link_libraries(front_end_node  front_end_pipe)
 
 
 # # back end---------------------------------------------------------------------------------------------

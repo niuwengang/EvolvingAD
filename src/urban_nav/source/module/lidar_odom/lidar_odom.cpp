@@ -130,19 +130,13 @@ bool LidarOdom::UpdateLocalMap(const FrameMsg &new_keyframe_msg)
     }
 
     /*[3]--stitch localmap cloud*/
-    std::vector<CloudMsg::CLOUD> cloud_vector(local_map_keyframe_msg_queue_.size());
-#pragma omp parallel for
+    local_map_ptr_.reset(new CloudMsg::CLOUD());
     for (unsigned int i = 0; i < local_map_keyframe_msg_queue_.size(); i++)
     {
         CloudMsg::CLOUD_PTR transformed_cloud_ptr(new CloudMsg::CLOUD());
         pcl::transformPointCloud(*local_map_keyframe_msg_queue_.at(i).cloud_msg.cloud_ptr, *transformed_cloud_ptr,
                                  local_map_keyframe_msg_queue_.at(i).pose);
-        cloud_vector[i] = *transformed_cloud_ptr;
-    }
-    local_map_ptr_.reset(new CloudMsg::CLOUD());
-    for (unsigned int i = 0; i < cloud_vector.size(); i++)
-    {
-        *local_map_ptr_ += cloud_vector[i];
+        *local_map_ptr_ += *transformed_cloud_ptr;
     }
     return true;
 }

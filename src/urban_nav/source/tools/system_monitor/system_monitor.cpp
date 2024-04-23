@@ -18,7 +18,7 @@ void TimeRecord::Start()
  * @param[in] none
  * @return frequency
  */
-double TimeRecord::End(const unsigned int slide_windows=10e2)
+double TimeRecord::End(const unsigned int slide_windows)
 {
     end_record_ = std::chrono::steady_clock::now();
 
@@ -32,7 +32,7 @@ double TimeRecord::End(const unsigned int slide_windows=10e2)
         time_queue_.pop_front();
     }
 
-    return 1000.0 * static_cast<double>(time_queue_.size()) / sum_time_; // hz
+    return static_cast<double>(time_queue_.size()) * 1000.0 / sum_time_;
 }
 
 /**

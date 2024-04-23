@@ -69,10 +69,20 @@ sudo make  install
 https://github.com/SmallMunich/nutonomy_pointpillars <br>
 https://github.com/SMRT-AIST/fast_gicp <br>
 https://github.com/Little-Potato-1990/localization_in_auto_driving <br>
-## 5.Licence
+
+
+## 5.Rules
+code comments obey Doxygen rules <br>
+git commits obey Angular rules <br>
+
+
+## 6.Licence
 The source code is released under GPLv3 license. <br>
 
-## 6.Updates
+
+
+
+## 7.Updates
 
 **2024/04/10** <br>
 tag v0.1.1 <br>
