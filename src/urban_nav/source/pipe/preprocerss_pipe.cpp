@@ -38,7 +38,8 @@ PreProcessPipe::PreProcessPipe(ros::NodeHandle &nh)
     imu_pub_ptr_ = std::make_shared<Tools::ImuPub>(nh, "synced_imu", "map");
     ground_cloud_pub_ptr_ = std::make_shared<Tools::CloudPub>(nh, "synced_ground_cloud", "map", 1); // ground cloud
     no_ground_cloud_pub_ptr_ =
-        std::make_shared<Tools::CloudPub>(nh, "synced_no_ground_cloud", "map", 1); // no ground cloud
+        std::make_shared<Tools::CloudPub>(nh, "synced_no_ground_cloud", "map", 1);                    // no ground cloud
+    dynamic_cloud_pub_ptr_ = std::make_shared<Tools::CloudPub>(nh, "synced_dynamic_cloud", "map", 1); // dynamic cloud
 
     gnss_pub_ptr_ = std::make_shared<Tools::OdomPub>(nh, "synced_gnss", "map", "gnss");
     bbx_pub_ptr_ = std::make_shared<Tools::BbxPub>(nh, "ods", "map");
@@ -48,7 +49,7 @@ PreProcessPipe::PreProcessPipe(ros::NodeHandle &nh)
     time_ptr_ = std::make_shared<Tools::TimeRecord>();
 
     /*[4]--module init*/
-    gnss_odom_ptr_ = std::make_shared<GnssOdom>();
+    gnss_odom_ptr_ = std::make_shared<Module::GnssOdom>();
     object_detection_ptr_ = std::make_shared<Module::ObjectDetection>(paramlist_.model_file_path);
     ground_seg_ptr_ = std::make_shared<Module::DipgGroundSegment>();
     spdlog::info("preprocerss_pipe$ inited");
@@ -56,6 +57,7 @@ PreProcessPipe::PreProcessPipe(ros::NodeHandle &nh)
     /*[5]--reset*/
     ground_cloud_ptr_.reset(new CloudMsg::CLOUD());
     no_ground_cloud_ptr_.reset(new CloudMsg::CLOUD());
+    dynamic_cloud_ptr_.reset(new CloudMsg::CLOUD());
 }
 
 /**
@@ -93,6 +95,8 @@ bool PreProcessPipe::Run()
 
         object_detection_ptr_->Detect(cur_cloud_msg_, ods_msg_);
         ground_seg_ptr_->Segement(cur_cloud_msg_.cloud_ptr, ground_cloud_ptr_, no_ground_cloud_ptr_);
+
+        DorPost(ods_msg_, no_ground_cloud_ptr_, no_ground_cloud_ptr_, dynamic_cloud_ptr_);
 
         log_ptr_->terminal_->info("exec hz is:{}", time_ptr_->End(10e3));
 
@@ -223,9 +227,58 @@ void PreProcessPipe::PublishMsg()
 
     no_ground_cloud_pub_ptr_->Publish(no_ground_cloud_ptr_, refer_time);
     ground_cloud_pub_ptr_->Publish(ground_cloud_ptr_, refer_time);
+    dynamic_cloud_pub_ptr_->Publish(dynamic_cloud_ptr_, refer_time);
+
     gnss_pub_ptr_->Publish(gnss_odom_, refer_time);
     bbx_pub_ptr_->Publish(ods_msg_);
 
     // imu_pub_ptr_->Publish(cur_imu_msg_); // reserve
     // spdlog::info("preprocerss_pipe$ timestamp:{}", cur_cloud_msg_.time_stamp);
+}
+
+void PreProcessPipe::DorPost(const OdsMsg &ods_msg, const CloudMsg::CLOUD_PTR &cloud_ptr,
+                             CloudMsg::CLOUD_PTR &static_cloud_ptr,
+                             CloudMsg::CLOUD_PTR &dynamic_cloud_ptr) // dynamic object removal
+{
+    // static_cloud_ptr.reset(new CloudMsg::CLOUD());
+    dynamic_cloud_ptr.reset(new CloudMsg::CLOUD());
+
+    pcl::CropBox<CloudMsg::POINT> clipper;
+
+    // for (const auto od : ods_msg.ods_queue)
+    //
+    // Eigen::Vector4f minPoint(-od.l * 0.5, -od.w * 0.5, -od.h * 0.5, 1.0);
+    // Eigen::Vector4f maxPoint(od.l * 0.5, od.w * 0.5, od.h * 0.5, 1.0);
+
+    Eigen::Vector4f minPoint(-10, -2, -1, 1.0);
+    Eigen::Vector4f maxPoint(10, 2, 1, 1.0);
+
+    clipper.setMin(minPoint);
+    clipper.setMax(maxPoint);
+    Eigen::Affine3f transformation_matrix = Eigen::Affine3f::Identity();
+    transformation_matrix.translation() << 5, 0, 0; // od.y, od.x, od.z;
+    // transformation_matrix.rotate(Eigen::AngleAxisf(od.heading, Eigen::Vector3f::UnitZ()));
+    pcl::Indices indices;
+    clipper.setTransform(transformation_matrix);
+    clipper.setInputCloud(cloud_ptr);
+    clipper.filter(indices);
+
+    CloudMsg::CLOUD_PTR temp_cloud_ptr;
+    temp_cloud_ptr.reset(new CloudMsg::CLOUD());
+    for (const int index : indices)
+    {
+        temp_cloud_ptr->push_back(cloud_ptr->points[index]);
+    }
+    *dynamic_cloud_ptr += *temp_cloud_ptr;
+
+    // pcl::ExtractIndices<CloudMsg::POINT> extract;
+    // extract.setInputCloud(cloud_ptr);
+    // extract.setIndices(boost::make_shared<std::vector<int>>(indices));
+    // extract.setNegative(false);
+
+    // temp_cloud_ptr.reset(new CloudMsg::CLOUD());
+    // extract.filter(*temp_cloud_ptr);
+
+    // }
+    /*[3]--*/
 }

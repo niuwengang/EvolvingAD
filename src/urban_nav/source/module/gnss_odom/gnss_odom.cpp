@@ -1,5 +1,8 @@
 #include "gnss_odom.hpp"
 
+namespace Module
+{
+
 GnssOdom::GnssOdom()
 {
     gnss_odom_init_flag_ = false;
@@ -36,3 +39,4 @@ bool GnssOdom::UpdateOdom(Eigen::Matrix4f &gnss_odom, GnssMsg &gnss_msg, ImuMsg 
 
     return true;
 }
+} // namespace Module

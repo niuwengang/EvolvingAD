@@ -25,6 +25,9 @@
 #include "tools/system_monitor/system_monitor.hpp"
 // yaml
 #include <yaml-cpp/yaml.h>
+// pcl
+#include <pcl/filters/crop_box.h>
+#include <pcl/filters/extract_indices.h>
 // algorithm module
 #include "module/gnss_odom/gnss_odom.hpp"
 #include "module/ground_segement/dipg_ground_segement.hpp"
@@ -47,6 +50,8 @@ class PreProcessPipe
     bool CheckMsgQueue();
     bool ReadMsg();
     void PublishMsg();
+    void DorPost(const OdsMsg &ods_msg, const CloudMsg::CLOUD_PTR &cloud_ptr, CloudMsg::CLOUD_PTR &static_cloud_ptr,
+                 CloudMsg::CLOUD_PTR &dynamic_cloud_ptr); // dynamic object removal
 
   private:
     /*topic sub and pub*/
@@ -57,6 +62,7 @@ class PreProcessPipe
     std::shared_ptr<Tools::ImuPub> imu_pub_ptr_ = nullptr;
     std::shared_ptr<Tools::CloudPub> ground_cloud_pub_ptr_ = nullptr;
     std::shared_ptr<Tools::CloudPub> no_ground_cloud_pub_ptr_ = nullptr;
+    std::shared_ptr<Tools::CloudPub> dynamic_cloud_pub_ptr_ = nullptr;
     std::shared_ptr<Tools::OdomPub> gnss_pub_ptr_ = nullptr;
     std::shared_ptr<Tools::BbxPub> bbx_pub_ptr_ = nullptr;
 
@@ -70,12 +76,11 @@ class PreProcessPipe
     CloudMsg cur_cloud_msg_;
     GnssMsg cur_gnss_msg_;
 
-    CloudMsg::CLOUD_PTR ground_cloud_ptr_ = nullptr;
-    CloudMsg::CLOUD_PTR no_ground_cloud_ptr_ = nullptr; // reset when use it
-
-    /*gnss odom*/
     Eigen::Matrix4f gnss_odom_ = Eigen::Matrix4f::Identity(); // gnss odom
-    std::shared_ptr<GnssOdom> gnss_odom_ptr_ = nullptr;       // gnss odom algorithm
+
+    CloudMsg::CLOUD_PTR ground_cloud_ptr_ = nullptr;
+    CloudMsg::CLOUD_PTR no_ground_cloud_ptr_ = nullptr;
+    CloudMsg::CLOUD_PTR dynamic_cloud_ptr_ = nullptr;
 
     /*system monitor*/
     std::shared_ptr<Tools::LogRecord> log_ptr_ = nullptr;
@@ -84,7 +89,7 @@ class PreProcessPipe
     /*algorithm module*/
     std::shared_ptr<Module::ObjectDetection> object_detection_ptr_ = nullptr;
     std::shared_ptr<Module::GroundSegementInterface> ground_seg_ptr_ = nullptr;
-
+    std::shared_ptr<Module::GnssOdom> gnss_odom_ptr_ = nullptr;
     /*paramlist*/
     struct ParamList
     {

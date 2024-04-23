@@ -15,6 +15,9 @@
 #include "user_msg/gnss_msg.hpp"
 #include "user_msg/imu_msg.hpp"
 
+namespace Module
+{
+
 class GnssOdom
 {
   public:
@@ -26,4 +29,5 @@ class GnssOdom
     bool gnss_odom_init_flag_ = false; // 初始化标志位
 };
 
+} // namespace Module
 #endif //_GNSS_ODOM_HPP_
