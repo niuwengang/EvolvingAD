@@ -81,6 +81,7 @@ class PreProcessPipe
     CloudMsg::CLOUD_PTR ground_cloud_ptr_ = nullptr;
     CloudMsg::CLOUD_PTR no_ground_cloud_ptr_ = nullptr;
     CloudMsg::CLOUD_PTR dynamic_cloud_ptr_ = nullptr;
+    CloudMsg::CLOUD_PTR static_cloud_ptr_ = nullptr;
 
     /*system monitor*/
     std::shared_ptr<Tools::LogRecord> log_ptr_ = nullptr;

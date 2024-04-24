@@ -30,17 +30,17 @@ BbxPub::BbxPub(ros::NodeHandle &nh, const std::string topic_name, const std::str
  * @return
  * @note use extern timestamp
  */
-void BbxPub::Publish(const OdsMsg &ods_msg)
+void BbxPub::Publish(const OdsMsg &ods_msg, const double time_stamp)
 {
     jsk_recognition_msgs::BoundingBoxArray ods_bbox;
 
     ods_bbox.header.frame_id = "map";
-    ods_bbox.header.stamp = ros::Time(ods_msg.time_stamp);
+    ods_bbox.header.stamp = ros::Time(time_stamp);
     for (auto od_msg : ods_msg.ods_queue)
     {
         jsk_recognition_msgs::BoundingBox od_bbox;
 
-        od_bbox.header.stamp = ros::Time(ods_msg.time_stamp);
+        od_bbox.header.stamp = ros::Time(time_stamp);
 
         od_bbox.header.frame_id = "map";
         od_bbox.pose.position.x = od_msg.x;

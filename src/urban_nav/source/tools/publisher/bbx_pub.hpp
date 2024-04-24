@@ -28,7 +28,7 @@ class BbxPub
            const size_t buffer_size = 10e2);
     ~BbxPub() = default;
 
-    void Publish(const OdsMsg &ods_msg);
+    void Publish(const OdsMsg &ods_msg, const double time_stamp);
 
   private:
     ros::Publisher pub_;

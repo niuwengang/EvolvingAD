@@ -58,6 +58,7 @@ PreProcessPipe::PreProcessPipe(ros::NodeHandle &nh)
     ground_cloud_ptr_.reset(new CloudMsg::CLOUD());
     no_ground_cloud_ptr_.reset(new CloudMsg::CLOUD());
     dynamic_cloud_ptr_.reset(new CloudMsg::CLOUD());
+    static_cloud_ptr_.reset(new CloudMsg::CLOUD());
 }
 
 /**
@@ -96,7 +97,7 @@ bool PreProcessPipe::Run()
         object_detection_ptr_->Detect(cur_cloud_msg_, ods_msg_);
         ground_seg_ptr_->Segement(cur_cloud_msg_.cloud_ptr, ground_cloud_ptr_, no_ground_cloud_ptr_);
 
-        DorPost(ods_msg_, no_ground_cloud_ptr_, no_ground_cloud_ptr_, dynamic_cloud_ptr_);
+        DorPost(ods_msg_, no_ground_cloud_ptr_, static_cloud_ptr_, dynamic_cloud_ptr_);
 
         log_ptr_->terminal_->info("exec hz is:{}", time_ptr_->End(10e3));
 
@@ -225,12 +226,12 @@ void PreProcessPipe::PublishMsg()
 
     double refer_time = cur_cloud_msg_.time_stamp;
 
-    no_ground_cloud_pub_ptr_->Publish(no_ground_cloud_ptr_, refer_time);
+    no_ground_cloud_pub_ptr_->Publish(static_cloud_ptr_, refer_time);
     ground_cloud_pub_ptr_->Publish(ground_cloud_ptr_, refer_time);
     dynamic_cloud_pub_ptr_->Publish(dynamic_cloud_ptr_, refer_time);
 
     gnss_pub_ptr_->Publish(gnss_odom_, refer_time);
-    bbx_pub_ptr_->Publish(ods_msg_);
+    bbx_pub_ptr_->Publish(ods_msg_, refer_time);
 
     // imu_pub_ptr_->Publish(cur_imu_msg_); // reserve
     // spdlog::info("preprocerss_pipe$ timestamp:{}", cur_cloud_msg_.time_stamp);
@@ -240,45 +241,44 @@ void PreProcessPipe::DorPost(const OdsMsg &ods_msg, const CloudMsg::CLOUD_PTR &c
                              CloudMsg::CLOUD_PTR &static_cloud_ptr,
                              CloudMsg::CLOUD_PTR &dynamic_cloud_ptr) // dynamic object removal
 {
-    // static_cloud_ptr.reset(new CloudMsg::CLOUD());
+    static_cloud_ptr.reset(new CloudMsg::CLOUD());
     dynamic_cloud_ptr.reset(new CloudMsg::CLOUD());
 
-    pcl::CropBox<CloudMsg::POINT> clipper;
-
-    // for (const auto od : ods_msg.ods_queue)
-    //
-    // Eigen::Vector4f minPoint(-od.l * 0.5, -od.w * 0.5, -od.h * 0.5, 1.0);
-    // Eigen::Vector4f maxPoint(od.l * 0.5, od.w * 0.5, od.h * 0.5, 1.0);
-
-    Eigen::Vector4f minPoint(-10, -2, -1, 1.0);
-    Eigen::Vector4f maxPoint(10, 2, 1, 1.0);
-
-    clipper.setMin(minPoint);
-    clipper.setMax(maxPoint);
-    Eigen::Affine3f transformation_matrix = Eigen::Affine3f::Identity();
-    transformation_matrix.translation() << 5, 0, 0; // od.y, od.x, od.z;
-    // transformation_matrix.rotate(Eigen::AngleAxisf(od.heading, Eigen::Vector3f::UnitZ()));
-    pcl::Indices indices;
-    clipper.setTransform(transformation_matrix);
-    clipper.setInputCloud(cloud_ptr);
-    clipper.filter(indices);
-
-    CloudMsg::CLOUD_PTR temp_cloud_ptr;
-    temp_cloud_ptr.reset(new CloudMsg::CLOUD());
-    for (const int index : indices)
+    for (const auto od : ods_msg.ods_queue)
     {
-        temp_cloud_ptr->push_back(cloud_ptr->points[index]);
+        pcl::CropBox<CloudMsg::POINT> clipper;
+
+        Eigen::Vector4f minPoint(-od.w * 0.5, -od.l * 0.5, -od.h * 0.5, 1.0);
+        Eigen::Vector4f maxPoint(od.w * 0.5, od.l * 0.5, od.h * 0.5, 1.0);
+
+        clipper.setMin(minPoint);
+        clipper.setMax(maxPoint);
+
+        clipper.setTranslation(Eigen::Vector3f(od.x, od.y, od.z));
+        clipper.setRotation(Eigen::Vector3f(0, 0, od.heading));
+
+        CloudMsg::CLOUD_PTR outliers_cloud_ptr(new CloudMsg::CLOUD());
+        CloudMsg::CLOUD_PTR inliers_cloud_ptr(new CloudMsg::CLOUD());
+
+        clipper.setInputCloud(cloud_ptr);
+
+        clipper.setNegative(false);
+        clipper.filter(*inliers_cloud_ptr);
+        *dynamic_cloud_ptr += *inliers_cloud_ptr;
+
+        clipper.setNegative(true);
+        clipper.filter(*outliers_cloud_ptr);
+        *static_cloud_ptr += *outliers_cloud_ptr;
     }
-    *dynamic_cloud_ptr += *temp_cloud_ptr;
-
-    // pcl::ExtractIndices<CloudMsg::POINT> extract;
-    // extract.setInputCloud(cloud_ptr);
-    // extract.setIndices(boost::make_shared<std::vector<int>>(indices));
-    // extract.setNegative(false);
-
-    // temp_cloud_ptr.reset(new CloudMsg::CLOUD());
-    // extract.filter(*temp_cloud_ptr);
-
-    // }
-    /*[3]--*/
 }
+
+// pcl::ExtractIndices<pcl::PointXYZ> extract;
+// extract.setInputCloud(cloud_ptr);
+// extract.setIndices(boost::make_shared<pcl::Indices>(indices));
+// extract.setNegative(false); // inline
+
+// extract.filter(*inliers_cloud_ptr);
+
+// extract.setNegative(true);
+
+// extract.filter(*outliers_cloud_ptr);
