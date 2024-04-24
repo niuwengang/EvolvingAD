@@ -42,23 +42,24 @@ PreProcessPipe::PreProcessPipe(ros::NodeHandle &nh)
     dynamic_cloud_pub_ptr_ = std::make_shared<Tools::CloudPub>(nh, "synced_dynamic_cloud", "map", 1); // dynamic cloud
 
     gnss_pub_ptr_ = std::make_shared<Tools::OdomPub>(nh, "synced_gnss", "map", "gnss");
-    bbx_pub_ptr_ = std::make_shared<Tools::BbxPub>(nh, "ods", "map");
+    bbx_pub_ptr_ = std::make_shared<Tools::BbxPub>(nh, "synced_ods", "map");
 
     /*[3]--system debuger init*/
     log_ptr_ = std::make_shared<Tools::LogRecord>(paramlist_.package_folder_path + "/log", "preprocess");
     time_ptr_ = std::make_shared<Tools::TimeRecord>();
 
-    /*[4]--module init*/
+    /*[4]--algorithm  module init*/
     gnss_odom_ptr_ = std::make_shared<Module::GnssOdom>();
     object_detection_ptr_ = std::make_shared<Module::ObjectDetection>(paramlist_.model_file_path);
     ground_seg_ptr_ = std::make_shared<Module::DipgGroundSegment>();
-    spdlog::info("preprocerss_pipe$ inited");
 
-    /*[5]--reset*/
+    /*[5]--init and allocate memory for variable*/
     ground_cloud_ptr_.reset(new CloudMsg::CLOUD());
     no_ground_cloud_ptr_.reset(new CloudMsg::CLOUD());
     dynamic_cloud_ptr_.reset(new CloudMsg::CLOUD());
     static_cloud_ptr_.reset(new CloudMsg::CLOUD());
+
+    spdlog::info("preprocerss_pipe$ inited");
 }
 
 /**
@@ -93,12 +94,9 @@ bool PreProcessPipe::Run()
             paramlist_.lidar_to_body.inverse() * paramlist_.imu_to_body * gnss_odom_; // transform to lidar frame
 
         time_ptr_->Start();
-
         object_detection_ptr_->Detect(cur_cloud_msg_, ods_msg_);
         ground_seg_ptr_->Segement(cur_cloud_msg_.cloud_ptr, ground_cloud_ptr_, no_ground_cloud_ptr_);
-
         DorPost(ods_msg_, no_ground_cloud_ptr_, static_cloud_ptr_, dynamic_cloud_ptr_);
-
         log_ptr_->terminal_->info("exec hz is:{}", time_ptr_->End(10e3));
 
         PublishMsg();
@@ -243,6 +241,8 @@ void PreProcessPipe::DorPost(const OdsMsg &ods_msg, const CloudMsg::CLOUD_PTR &c
 {
 
     std::vector<int> multibox_index;
+    multibox_index.reserve(cloud_ptr->points.size());
+
     for (const auto &od : ods_msg.ods_queue)
     {
         pcl::CropBox<CloudMsg::POINT> clipper;

@@ -33,7 +33,6 @@
 #include "module/ground_segement/dipg_ground_segement.hpp"
 #include "module/ground_segement/ground_segement_interface.hpp"
 #include "module/object_detection/object_detection.hpp"
-
 // openmp
 #include <omp.h>
 
@@ -66,7 +65,7 @@ class PreProcessPipe
     std::shared_ptr<Tools::OdomPub> gnss_pub_ptr_ = nullptr;
     std::shared_ptr<Tools::BbxPub> bbx_pub_ptr_ = nullptr;
 
-    /*sensor queue and current*/
+    /*variable*/
     std::deque<ImuMsg> imu_msg_queue_;
     std::deque<CloudMsg> cloud_msg_queue_;
     std::deque<GnssMsg> gnss_msg_queue_;
@@ -83,7 +82,7 @@ class PreProcessPipe
     CloudMsg::CLOUD_PTR dynamic_cloud_ptr_ = nullptr;
     CloudMsg::CLOUD_PTR static_cloud_ptr_ = nullptr;
 
-    /*system monitor*/
+    /*system debuger */
     std::shared_ptr<Tools::LogRecord> log_ptr_ = nullptr;
     std::shared_ptr<Tools::TimeRecord> time_ptr_ = nullptr;
 
@@ -91,6 +90,7 @@ class PreProcessPipe
     std::shared_ptr<Module::ObjectDetection> object_detection_ptr_ = nullptr;
     std::shared_ptr<Module::GroundSegementInterface> ground_seg_ptr_ = nullptr;
     std::shared_ptr<Module::GnssOdom> gnss_odom_ptr_ = nullptr;
+
     /*paramlist*/
     struct ParamList
     {

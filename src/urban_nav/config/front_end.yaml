@@ -4,7 +4,7 @@
 
 #topic subscriber------------------------------------------------
 topic_sub: #
-  cloud_sub_topic: /synced_cloud #sensor_msgs/PointCloud2
+  cloud_sub_topic: /synced_no_ground_cloud #sensor_msgs/PointCloud2
 
 #lidar odom setting-------------------------------------------------
 lidar_odom:

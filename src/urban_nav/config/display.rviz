@@ -5,10 +5,8 @@ Panels:
     Property Tree Widget:
       Expanded:
         - /preprocess1
-        - /preprocess1/synced_dynamic_cloud1
         - /preprocess1/synced_gnss1/Shape1
         - /preprocess1/synced_imu1/Axes properties1
-        - /preprocess1/ods1
       Splitter Ratio: 0.5
     Tree Height: 971
   - Class: rviz/Selection
@@ -239,14 +237,14 @@ Visualization Manager:
         - Class: jsk_rviz_plugin/BoundingBoxArray
           Enabled: true
           Name: ods
-          Queue Size: 0
-          Topic: /ods
+          Queue Size: 10
+          Topic: /synced_ods
           Unreliable: false
           Value: true
           alpha: 0.5
           color: 0; 0; 0
           coloring: Flat color
-          line width: 0.05000000074505806
+          line width: 0.10000000149011612
           only edge: true
           show coords: false
       Enabled: true
@@ -373,7 +371,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 41.772979736328125
+      Distance: 33.52578353881836
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
@@ -381,17 +379,17 @@ Visualization Manager:
         Value: false
       Field of View: 0.7853981852531433
       Focal Point:
-        X: 1.8407342433929443
-        Y: -6.757656097412109
-        Z: -8.449747085571289
+        X: 0.9976187944412231
+        Y: -0.28316032886505127
+        Z: 0.6944162845611572
       Focal Shape Fixed Size: false
       Focal Shape Size: 0.05000000074505806
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 1.5697963237762451
+      Pitch: 1.124796748161316
       Target Frame: <Fixed Frame>
-      Yaw: 2.789030075073242
+      Yaw: 3.247206687927246
     Saved: ~
 Window Geometry:
   Displays:

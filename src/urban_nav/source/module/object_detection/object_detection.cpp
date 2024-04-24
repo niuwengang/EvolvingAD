@@ -10,10 +10,10 @@ namespace Module
  */
 ObjectDetection::ObjectDetection(const std::string &model_file_path)
 {
-    /*1--get params*/
+    /*[1]--get params*/
     model_file_path_ = model_file_path;
 
-    /*2--get device info*/
+    /*[2]--get device info*/
     int count = 0;
     cudaGetDeviceCount(&count);
     spdlog::info("GPU num:{}", count);
@@ -27,11 +27,11 @@ ObjectDetection::ObjectDetection(const std::string &model_file_path)
     }
     checkCudaErrors(cudaStreamCreate(&stream_));
 
-    /*3--load infer model*/
+    /*[3]--load infer model*/
     pointpillar_ptr_ = std::make_shared<PointPillar>(model_file_path_, stream_); // pointpillar ptr init
 
-    /*4--some setting*/
-    nms_pred_.reserve(100); // Pre-allocated MEMORY
+    /*[4]--some setting*/
+    nms_pred_.reserve(100); // allocate memory
     setlocale(LC_ALL, "");  // env
 }
 
@@ -43,11 +43,11 @@ ObjectDetection::ObjectDetection(const std::string &model_file_path)
  */
 void ObjectDetection::Detect(const CloudMsg &cloud_msg, OdsMsg &ods_msg)
 {
-    /*1--reset variable*/
+    /*[1]--reset variable*/
     nms_pred_.clear();         // clear nms predict
     ods_msg.ods_queue.clear(); // clear history
 
-    /*2--pointpillar detection*/
+    /*[2]--pointpillar detection*/
     const size_t num_points = cloud_msg.cloud_ptr->points.size();
     const size_t num_features = 4; // x y z r
     float *points_in_cpu = new float[num_points * num_features];
@@ -67,7 +67,7 @@ void ObjectDetection::Detect(const CloudMsg &cloud_msg, OdsMsg &ods_msg)
     checkCudaErrors(cudaDeviceSynchronize());
     pointpillar_ptr_->doinfer(points_in_gpu, num_points, nms_pred_); // infer and out nms_pred_
 
-    /*2--get result */
+    /*[3]--get result */
     ods_msg.time_stamp = cloud_msg.time_stamp;
     for (const auto box : nms_pred_)
     {
@@ -91,7 +91,7 @@ void ObjectDetection::Detect(const CloudMsg &cloud_msg, OdsMsg &ods_msg)
         }
     }
 
-    /*3--free memory*/
+    /*[4]--free memory*/
     delete[] points_in_cpu;
     points_in_cpu = nullptr;
     cudaFree(points_in_gpu);
