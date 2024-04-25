@@ -61,9 +61,8 @@ make
 sudo make  install
 ```
 + tensorRT
-```
-
-```
++ CudNN
++ Cuda
 
 
 ## 3.Pipeline
