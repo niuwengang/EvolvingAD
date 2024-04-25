@@ -116,11 +116,11 @@ add_executable(front_end_node source/exec/front_end_node.cpp )
 target_link_libraries(front_end_node  front_end_pipe)
 
 
-# # back end---------------------------------------------------------------------------------------------
-# add_library(back_end_pipe source/pipe/back_end_pipe.cpp)
-# target_link_libraries(back_end_pipe  ${catkin_LIBRARIES}  tools_group module_group)
-# add_executable(back_end_node  source/exec/back_end_node.cpp)
-# target_link_libraries(back_end_node back_end_pipe )
+# back end---------------------------------------------------------------------------------------------
+add_library(back_end_pipe source/pipe/back_end_pipe.cpp)
+target_link_libraries(back_end_pipe  ${catkin_LIBRARIES}  tools_group module_group)
+add_executable(back_end_node  source/exec/back_end_node.cpp)
+target_link_libraries(back_end_node back_end_pipe )
 
 #test---------------------------------------------------------------------------------------------
 # add_executable(test_node source/exec/test_node.cpp)

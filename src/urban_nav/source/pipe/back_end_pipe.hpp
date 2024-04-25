@@ -56,11 +56,11 @@ class BackEndPipe
 
     /*variable*/
     std::deque<CloudMsg> cloud_msg_queue_;
-    std::deque<PoseMsg> gnss_msg_queue_;
+    std::deque<PoseMsg> gnss_odom_msg_queue_;
     std::deque<PoseMsg> lidar_odom_msg_queue_;
 
     CloudMsg cur_cloud_msg_;
-    PoseMsg cur_gnss_msg_;
+    PoseMsg cur_gnss_odom_msg_;
     PoseMsg cur_lidar_odom_msg_;
     PoseMsg fusion_odom_msg_;
 

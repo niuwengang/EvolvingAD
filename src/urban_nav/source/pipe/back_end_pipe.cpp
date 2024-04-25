@@ -34,7 +34,7 @@ BackEndPipe::BackEndPipe(ros::NodeHandle &nh)
     log_ptr_ = std::make_shared<Tools::LogRecord>(paramlist_.package_folder_path + "/log", "back_end");
     time_ptr_ = std::make_shared<Tools::TimeRecord>();
 
-    /*[4]--pose graph*/
+    /*[4]--algorithm  module init*/
     pose_graph_ptr_ = std::make_shared<PoseGraph>(); // todo add yaml node
 }
 
@@ -61,13 +61,13 @@ bool BackEndPipe::Run()
         static bool lidar2gnss_transform_init_flag = false;
         if (lidar2gnss_transform_init_flag == false)
         {
-            lidar2gnss_transform_ = cur_gnss_msg_.pose * cur_lidar_odom_msg_.pose.inverse();
+            lidar2gnss_transform_ = cur_gnss_odom_msg_.pose * cur_lidar_odom_msg_.pose.inverse();
             lidar2gnss_transform_init_flag = true;
         }
         cur_lidar_odom_msg_.pose =
             lidar2gnss_transform_ * cur_lidar_odom_msg_.pose; // lidar coordinate align to gnss coordinate
 
-        pose_graph_ptr_->UpdatePose(cur_gnss_msg_, cur_lidar_odom_msg_, fusion_odom_msg_);
+        pose_graph_ptr_->UpdatePose(cur_gnss_odom_msg_, cur_lidar_odom_msg_, fusion_odom_msg_);
 
         // spdlog::info("backend_node$ core exec hz:{}", cur_cloud_msg_.time_stamp);
 
@@ -85,7 +85,7 @@ bool BackEndPipe::Run()
 bool BackEndPipe::ReadMsgBuffer()
 {
     cloud_sub_ptr_->ParseData(cloud_msg_queue_);
-    gnss_sub_ptr_->ParseData(gnss_msg_queue_);
+    gnss_sub_ptr_->ParseData(gnss_odom_msg_queue_);
     lidar_odom_sub_ptr_->ParseData(lidar_odom_msg_queue_);
 
     return true;
@@ -102,7 +102,7 @@ bool BackEndPipe::CheckMsgQueue()
     {
         return false;
     }
-    if (gnss_msg_queue_.size() == 0)
+    if (gnss_odom_msg_queue_.size() == 0)
     {
         return false;
     }
@@ -122,20 +122,20 @@ bool BackEndPipe::CheckMsgQueue()
 bool BackEndPipe::ReadMsg()
 {
     cur_cloud_msg_ = cloud_msg_queue_.front();
-    cur_gnss_msg_ = gnss_msg_queue_.front();
+    cur_gnss_odom_msg_ = gnss_odom_msg_queue_.front();
     cur_lidar_odom_msg_ = lidar_odom_msg_queue_.front();
 
     const double refer_time =
-        std::max(std::max(cur_cloud_msg_.time_stamp, cur_gnss_msg_.time_stamp), cur_lidar_odom_msg_.time_stamp);
+        std::max(std::max(cur_cloud_msg_.time_stamp, cur_gnss_odom_msg_.time_stamp), cur_lidar_odom_msg_.time_stamp);
 
     const double cloud_refer_timediff = fabs(refer_time - cur_cloud_msg_.time_stamp);
-    const double gnss_refer_timediff = fabs(refer_time - cur_gnss_msg_.time_stamp);
+    const double gnss_refer_timediff = fabs(refer_time - cur_gnss_odom_msg_.time_stamp);
     const double lidar_odom_refer_timediff = fabs(refer_time - cur_lidar_odom_msg_.time_stamp);
 
     if (cloud_refer_timediff < 0.05 and gnss_refer_timediff < 0.05 and lidar_odom_refer_timediff < 0.05)
     {
         cloud_msg_queue_.pop_front();
-        gnss_msg_queue_.pop_front();
+        gnss_odom_msg_queue_.pop_front();
         lidar_odom_msg_queue_.pop_front();
         return true;
     }
@@ -147,7 +147,7 @@ bool BackEndPipe::ReadMsg()
         }
         if (gnss_refer_timediff > 0.05)
         {
-            gnss_msg_queue_.pop_front();
+            gnss_odom_msg_queue_.pop_front();
         }
         if (lidar_odom_refer_timediff > 0.05)
         {
