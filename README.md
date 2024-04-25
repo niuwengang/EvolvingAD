@@ -1,11 +1,7 @@
-# SimpleUrbanNOA
+# EvolvingAD
 
 ## 1.Introduce
-A simple demo for urban navigation on autopilot. However, it's just a personal toy program. <br>
-
-
-
-
+A simple demo for  navigation on autopilot. However, it's just a personal toy program. <br>
 
 <div style="display: flex; justify-content: space-between;">
     <img src="/pic/display.jpeg" alt="图片alt" title="图片title" width="300px" height="200px" objectfit="cover" >
@@ -66,6 +62,7 @@ sudo make  install
 
 
 ## 4.Acknowledgements
+https://github.com/OpenDriveLab/UniAD  <br>
 https://github.com/SmallMunich/nutonomy_pointpillars <br>
 https://github.com/SMRT-AIST/fast_gicp <br>
 https://github.com/Little-Potato-1990/localization_in_auto_driving <br>
