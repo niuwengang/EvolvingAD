@@ -97,7 +97,7 @@ bool PreProcessPipe::Run()
         object_detection_ptr_->Detect(cur_cloud_msg_, ods_msg_);
         ground_seg_ptr_->Segement(cur_cloud_msg_.cloud_ptr, ground_cloud_ptr_, no_ground_cloud_ptr_);
         DorPost(ods_msg_, no_ground_cloud_ptr_, static_cloud_ptr_, dynamic_cloud_ptr_);
-        log_ptr_->terminal_->info("exec hz is:{}", time_ptr_->End(10e3));
+        log_ptr_->terminal_->info("preprocerss_pipe$ core exec hz:", time_ptr_->End(10e3));
 
         PublishMsg();
     }

@@ -28,7 +28,7 @@ FrontEndPipe::FrontEndPipe(ros::NodeHandle &nh)
     log_ptr_ = std::make_shared<Tools::LogRecord>(paramlist_.package_folder_path + "/log", "front_end");
     time_ptr_ = std::make_shared<Tools::TimeRecord>();
 
-    /*[4]--lidar odom*/
+    /*[4]--algorithm  module init*/
     lidar_doom_ptr_ = std::make_shared<LidarOdom>(config_node["lidar_odom"]);
 
     spdlog::info("frontend_pipe$ inited");
@@ -56,7 +56,7 @@ bool FrontEndPipe::Run()
         lidar_doom_ptr_->InitPose(Eigen::Matrix4f::Identity());
         time_ptr_->Start();
         lidar_doom_ptr_->UpdateOdom(lidar_odom_, cur_cloud_msg_);
-        spdlog::info("frontend_pipe$ exec frequence:{}", time_ptr_->End(100));
+        spdlog::info("frontend_pipe$ core exec hz:", time_ptr_->End(1000));
 
         PublishMsg();
     }

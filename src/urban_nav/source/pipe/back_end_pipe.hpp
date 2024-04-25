@@ -54,7 +54,7 @@ class BackEndPipe
     std::shared_ptr<Tools::OdomPub> fusion_odom_pub_ptr_ = nullptr;
     std::shared_ptr<Tools::TfPub> veh_tf_pub_ptr_ = nullptr;
 
-    /*sensor message*/
+    /*variable*/
     std::deque<CloudMsg> cloud_msg_queue_;
     std::deque<PoseMsg> gnss_msg_queue_;
     std::deque<PoseMsg> lidar_odom_msg_queue_;
@@ -64,15 +64,14 @@ class BackEndPipe
     PoseMsg cur_lidar_odom_msg_;
     PoseMsg fusion_odom_msg_;
 
+    Eigen::Matrix4f lidar2gnss_transform_ = Eigen::Matrix4f::Identity();
+
     /*system monitor*/
     std::shared_ptr<Tools::LogRecord> log_ptr_ = nullptr;
     std::shared_ptr<Tools::TimeRecord> time_ptr_ = nullptr;
 
+    /*algorithm module*/
     std::shared_ptr<PoseGraph> pose_graph_ptr_ = nullptr; // odom发布
-
-  
-
-    Eigen::Matrix4f lidar2gnss_transform_ = Eigen::Matrix4f::Identity();
 
     struct ParamLists
     {

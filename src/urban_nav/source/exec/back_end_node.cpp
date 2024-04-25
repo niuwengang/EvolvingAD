@@ -1,6 +1,6 @@
 /**
  * @file    back_end_node.cpp
- * @brief   back end opt
+ * @brief   back end optimize node
  * @author  niu_wengang@163.com
  * @date    2024-04-10
  * @version v0.1.1

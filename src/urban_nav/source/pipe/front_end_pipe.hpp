@@ -24,7 +24,7 @@
 #include "tools/system_monitor/system_monitor.hpp"
 // yaml
 #include <yaml-cpp/yaml.h>
-// lidar odom
+// algorithm module
 #include "module/lidar_odom/lidar_odom.cpp"
 
 class FrontEndPipe
@@ -46,7 +46,7 @@ class FrontEndPipe
     std::shared_ptr<Tools::CloudSub> cloud_sub_ptr_ = nullptr;
     std::shared_ptr<Tools::OdomPub> lidar_odom_pub_ptr_ = nullptr;
 
-    /*sensor message queue and current*/
+    /*variable*/
     std::deque<CloudMsg> cloud_msg_queue_;
     CloudMsg cur_cloud_msg_;
 
@@ -54,7 +54,7 @@ class FrontEndPipe
     std::shared_ptr<Tools::LogRecord> log_ptr_ = nullptr;
     std::shared_ptr<Tools::TimeRecord> time_ptr_ = nullptr;
 
-    /*lidar odom calculate*/
+    /*algorithm module*/
     std::shared_ptr<LidarOdom> lidar_doom_ptr_ = nullptr;
     Eigen::Matrix4f lidar_odom_ = Eigen::Matrix4f::Identity();
 

@@ -40,6 +40,15 @@ class PoseGraph
     std::shared_ptr<GraphOptimizerInterface> graph_optimizer_ptr_ = nullptr;
 
     std::deque<Eigen::Matrix4f> opted_pose_queue_; // 优化后的队列
+
+    struct ParamLists
+    {
+      public:
+        /*noise matrix*/
+
+        /*opt cnt*/
+
+    } paramlist_;
 };
 
 #endif //_POSE_GRAPH_HPP_
