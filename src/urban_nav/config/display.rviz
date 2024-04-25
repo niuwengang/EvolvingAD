@@ -6,11 +6,8 @@ Panels:
       Expanded:
         - /preprocess1/synced_gnss1/Shape1
         - /preprocess1/synced_imu1/Axes properties1
-        - /front_end1
-        - /back_end1
-        - /RobotModel2
       Splitter Ratio: 0.5
-    Tree Height: 580
+    Tree Height: 429
   - Class: rviz/Selection
     Name: Selection
   - Class: rviz/Tool Properties
@@ -249,7 +246,7 @@ Visualization Manager:
           line width: 0.10000000149011612
           only edge: true
           show coords: false
-      Enabled: true
+      Enabled: false
       Name: preprocess
     - Class: rviz/Group
       Displays:
@@ -288,7 +285,7 @@ Visualization Manager:
           Topic: /lidar_odom
           Unreliable: false
           Value: true
-      Enabled: true
+      Enabled: false
       Name: front_end
     - Class: rviz/Group
       Displays:
@@ -311,7 +308,7 @@ Visualization Manager:
             Value: true
           Enabled: true
           Keep: 0
-          Name: lidar_odom
+          Name: fusion_odom
           Position Tolerance: 0.10000000149011612
           Queue Size: 10
           Shape:
@@ -327,23 +324,98 @@ Visualization Manager:
           Topic: /fusion_odom
           Unreliable: false
           Value: true
-      Enabled: false
+        - Angle Tolerance: 0.10000000149011612
+          Class: rviz/Odometry
+          Covariance:
+            Orientation:
+              Alpha: 0.5
+              Color: 255; 255; 127
+              Color Style: Unique
+              Frame: Local
+              Offset: 1
+              Scale: 1
+              Value: true
+            Position:
+              Alpha: 0.30000001192092896
+              Color: 204; 51; 204
+              Scale: 1
+              Value: true
+            Value: true
+          Enabled: true
+          Keep: 0
+          Name: gnss_odom
+          Position Tolerance: 0.10000000149011612
+          Queue Size: 10
+          Shape:
+            Alpha: 1
+            Axes Length: 1
+            Axes Radius: 0.10000000149011612
+            Color: 255; 25; 0
+            Head Length: 0.30000001192092896
+            Head Radius: 0.10000000149011612
+            Shaft Length: 1
+            Shaft Radius: 0.05000000074505806
+            Value: Arrow
+          Topic: /synced_gnss_odom
+          Unreliable: false
+          Value: true
+        - Angle Tolerance: 0.10000000149011612
+          Class: rviz/Odometry
+          Covariance:
+            Orientation:
+              Alpha: 0.5
+              Color: 255; 255; 127
+              Color Style: Unique
+              Frame: Local
+              Offset: 1
+              Scale: 1
+              Value: true
+            Position:
+              Alpha: 0.30000001192092896
+              Color: 204; 51; 204
+              Scale: 1
+              Value: true
+            Value: true
+          Enabled: true
+          Keep: 0
+          Name: lidar_odom_aligned
+          Position Tolerance: 0.10000000149011612
+          Queue Size: 10
+          Shape:
+            Alpha: 1
+            Axes Length: 1
+            Axes Radius: 0.10000000149011612
+            Color: 255; 25; 0
+            Head Length: 0.30000001192092896
+            Head Radius: 0.10000000149011612
+            Shaft Length: 1
+            Shaft Radius: 0.05000000074505806
+            Value: Axes
+          Topic: /lidar_odom_aligned
+          Unreliable: false
+          Value: true
+      Enabled: true
       Name: back_end
     - Alpha: 1
       Class: rviz/RobotModel
       Collision Enabled: false
-      Enabled: false
+      Enabled: true
       Links:
         All Links Enabled: true
         Expand Joint Details: false
         Expand Link Details: false
         Expand Tree: false
         Link Tree Style: Links in Alphabetic Order
+        ground_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
       Name: RobotModel
       Robot Description: robot_description
       TF Prefix: ""
       Update Interval: 0
-      Value: false
+      Value: true
       Visual Enabled: true
   Enabled: true
   Global Options:
@@ -373,7 +445,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 89.55802917480469
+      Distance: 444.4241027832031
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
@@ -381,25 +453,25 @@ Visualization Manager:
         Value: false
       Field of View: 0.7853981852531433
       Focal Point:
-        X: 12.844661712646484
-        Y: -1.2255808115005493
-        Z: 3.927147150039673
+        X: 163.4466094970703
+        Y: 143.36996459960938
+        Z: -71.24298095703125
       Focal Shape Fixed Size: false
       Focal Shape Size: 0.05000000074505806
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 1.1347969770431519
+      Pitch: 1.1797964572906494
       Target Frame: <Fixed Frame>
-      Yaw: 2.9890265464782715
+      Yaw: 1.4772123098373413
     Saved: ~
 Window Geometry:
   Displays:
     collapsed: false
-  Height: 1489
+  Height: 1222
   Hide Left Dock: false
   Hide Right Dock: false
-  QMainWindow State: 000000ff00000000fd00000004000000000000041c000004cbfc020000000bfb0000001200530065006c0065006300740069006f006e00000001e10000009b000000b000fffffffb0000001e0054006f006f006c002000500072006f007000650072007400690065007302000001ed000001df00000185000000b0fb000000120056006900650077007300200054006f006f02000001df000002110000018500000122fb000000200054006f006f006c002000500072006f0070006500720074006900650073003203000002880000011d000002210000017afb000000100044006900730070006c006100790073010000006e000002b20000018200fffffffb0000001200660072006f006e0074005f00630061006d010000032c0000020d0000002600fffffffb0000002000730065006c0065006300740069006f006e00200062007500660066006500720200000138000000aa0000023a00000294fb00000014005700690064006500530074006500720065006f02000000e6000000d2000003ee0000030bfb0000000c004b0069006e0065006300740200000186000001060000030c00000261fb0000000c00430061006d006500720061000000019f0000014e0000000000000000fb0000000a0049006d0061006700650000000211000001a1000000000000000000000001000001c6000004cbfc0200000003fb0000001e0054006f006f006c002000500072006f00700065007200740069006500730100000041000000780000000000000000fb0000000a00560069006500770073010000006e000004cb0000013200fffffffb0000001200530065006c0065006300740069006f006e010000025a000000b200000000000000000000000200000490000000a9fc0100000001fb0000000a00560069006500770073030000004e00000080000002e1000001970000000300000abb0000005efc0100000002fb0000000800540069006d0065010000000000000abb000006dc00fffffffb0000000800540069006d00650100000000000004500000000000000000000004c1000004cb00000004000000040000000800000008fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
+  QMainWindow State: 000000ff00000000fd00000004000000000000041c000003c0fc020000000bfb0000001200530065006c0065006300740069006f006e00000001e10000009b000000b000fffffffb0000001e0054006f006f006c002000500072006f007000650072007400690065007302000001ed000001df00000185000000b0fb000000120056006900650077007300200054006f006f02000001df000002110000018500000122fb000000200054006f006f006c002000500072006f0070006500720074006900650073003203000002880000011d000002210000017afb000000100044006900730070006c006100790073010000006e0000021b0000018200fffffffb0000001200660072006f006e0074005f00630061006d0100000295000001990000002600fffffffb0000002000730065006c0065006300740069006f006e00200062007500660066006500720200000138000000aa0000023a00000294fb00000014005700690064006500530074006500720065006f02000000e6000000d2000003ee0000030bfb0000000c004b0069006e0065006300740200000186000001060000030c00000261fb0000000c00430061006d006500720061000000019f0000014e0000000000000000fb0000000a0049006d0061006700650000000211000001a1000000000000000000000001000001c6000003c0fc0200000003fb0000001e0054006f006f006c002000500072006f00700065007200740069006500730100000041000000780000000000000000fb0000000a00560069006500770073010000006e000003c00000013200fffffffb0000001200530065006c0065006300740069006f006e010000025a000000b200000000000000000000000200000490000000a9fc0100000001fb0000000a00560069006500770073030000004e00000080000002e10000019700000003000009000000005efc0100000002fb0000000800540069006d0065010000000000000900000006dc00fffffffb0000000800540069006d0065010000000000000450000000000000000000000306000003c000000004000000040000000800000008fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
   Selection:
     collapsed: false
   Time:
@@ -408,8 +480,8 @@ Window Geometry:
     collapsed: false
   Views:
     collapsed: false
-  Width: 2747
-  X: 513
-  Y: 577
+  Width: 2304
+  X: 146
+  Y: 729
   front_cam:
     collapsed: false

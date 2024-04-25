@@ -41,7 +41,7 @@ PreProcessPipe::PreProcessPipe(ros::NodeHandle &nh)
         std::make_shared<Tools::CloudPub>(nh, "synced_no_ground_cloud", "map", 1);                    // no ground cloud
     dynamic_cloud_pub_ptr_ = std::make_shared<Tools::CloudPub>(nh, "synced_dynamic_cloud", "map", 1); // dynamic cloud
 
-    gnss_pub_ptr_ = std::make_shared<Tools::OdomPub>(nh, "synced_gnss", "map", "gnss");
+    gnss_pub_ptr_ = std::make_shared<Tools::OdomPub>(nh, "synced_gnss_odom", "map", "gnss");
     bbx_pub_ptr_ = std::make_shared<Tools::BbxPub>(nh, "synced_ods", "map");
 
     /*[3]--system debuger init*/

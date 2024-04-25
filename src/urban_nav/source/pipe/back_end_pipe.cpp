@@ -24,11 +24,12 @@ BackEndPipe::BackEndPipe(ros::NodeHandle &nh)
 
     /*[2]--topic subscriber and publisher*/
     lidar_odom_sub_ptr_ = std::make_shared<Tools::OdomSub>(nh, paramlist_.lidar_odom_sub_topic);
-    gnss_sub_ptr_ = std::make_shared<Tools::OdomSub>(nh, paramlist_.gnss_sub_topic);
+    gnss_odom_sub_ptr_ = std::make_shared<Tools::OdomSub>(nh, paramlist_.gnss_sub_topic);
     cloud_sub_ptr_ = std::make_shared<Tools::CloudSub>(nh, paramlist_.cloud_sub_topic);
 
     fusion_odom_pub_ptr_ = std::make_shared<Tools::OdomPub>(nh, "fusion_odom", "map", "veh");
     veh_tf_pub_ptr_ = std::make_shared<Tools::TfPub>("map", "ground_link"); // tf tree
+    lidar_odom_pub_ptr_ = std::make_shared<Tools::OdomPub>(nh, "lidar_odom_aligned", "map", "lidar");
 
     /*[3]--system monitor*/
     log_ptr_ = std::make_shared<Tools::LogRecord>(paramlist_.package_folder_path + "/log", "back_end");
@@ -69,7 +70,9 @@ bool BackEndPipe::Run()
 
         pose_graph_ptr_->UpdatePose(cur_gnss_odom_msg_, cur_lidar_odom_msg_, fusion_odom_msg_);
 
-        // spdlog::info("backend_node$ core exec hz:{}", cur_cloud_msg_.time_stamp);
+        std::cout << "融合定位结果：" << fusion_odom_msg_.pose << std::endl;
+
+        spdlog::info("backend_node$ core exec hz:{}");
 
         PublishMsg();
     }
@@ -85,7 +88,7 @@ bool BackEndPipe::Run()
 bool BackEndPipe::ReadMsgBuffer()
 {
     cloud_sub_ptr_->ParseData(cloud_msg_queue_);
-    gnss_sub_ptr_->ParseData(gnss_odom_msg_queue_);
+    gnss_odom_sub_ptr_->ParseData(gnss_odom_msg_queue_);
     lidar_odom_sub_ptr_->ParseData(lidar_odom_msg_queue_);
 
     return true;
@@ -164,11 +167,11 @@ bool BackEndPipe::ReadMsg()
  */
 void BackEndPipe::PublishMsg()
 {
-
+    lidar_odom_pub_ptr_->Publish(cur_lidar_odom_msg_.pose, fusion_odom_msg_.time_stamp);
     fusion_odom_pub_ptr_->Publish(fusion_odom_msg_.pose, fusion_odom_msg_.time_stamp);
     veh_tf_pub_ptr_->SendTransform(fusion_odom_msg_.pose);
 
-    // /*pub*/
+    // /*pub local map*/
     // CloudMsg::CLOUD_PTR transformed_cloud_ptr(new CloudMsg::CLOUD());
     // Eigen::Matrix4f transforme_matrix = fusion_odom_msg_.pose;
     // transforme_matrix(2, 3) += 1.0; // only view1

@@ -4,6 +4,14 @@
 
 #topic subscriber------------------------------------------------
 topic_sub: #
-  cloud_sub_topic: /synced_cloud #sensor_msgs/PointCloud2
-  gnss_sub_topic: /synced_gnss
+  cloud_sub_topic: /synced_no_ground_cloud #sensor_msgs/PointCloud2
+  gnss_sub_topic: /synced_gnss_odom
   lidar_odom_sub_topic: /lidar_odom
+
+#pose graph setting-------------------------------------------------
+pose_graph:
+  keyframe_distance: 2.0
+  lidar_odom_noise: [0.5, 0.5, 0.5, 0.001, 0.001, 0.001] #xyzrpy
+  gnss_odom_noise: [2.0, 2.0, 2.0] #xyz
+  imu_odom_noise: [0.5, 0.5, 0.5, 0.001, 0.001, 0.001] #xyzrpy
+  opt_cnt: 100

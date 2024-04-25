@@ -32,7 +32,7 @@ G2oOpter::G2oOpter(const std::string &solver_type)
 bool G2oOpter::Opimtize()
 {
 
-    if (g2o_opter_ptr_->edges().size() < 1)
+    if (g2o_opter_ptr_->edges().size() == 0)
     {
         return false;
     }

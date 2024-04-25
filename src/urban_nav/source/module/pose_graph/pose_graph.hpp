@@ -24,28 +24,27 @@ class PoseGraph
 {
   public:
     PoseGraph();
-    bool UpdatePose(const PoseMsg &gnss_msg, const PoseMsg &lidar_odom_msg, PoseMsg &fusion_odom_msg);
+    bool UpdatePose(const PoseMsg &gnss_odom_msg, const PoseMsg &lidar_odom_msg, PoseMsg &fusion_odom_msg);
 
   private:
-    bool CheckNewKeyFrame();
+    bool CheckNewKeyFrame(PoseMsg &fusion_odom_msg);
     bool AddVertexandEdge(const PoseMsg &gnss_odom_msg);
 
   private:
-    PoseMsg fusion_odom_msg_; // fusion odom
-    Eigen::Matrix4f lidar2gnss_transform_ = Eigen::Matrix4f::Identity();
-
-    std::deque<FrameMsg> keyframe_msg_queue_;
+    /*variable*/
     FrameMsg cur_keyframe_msg_;
-
+    std::deque<FrameMsg> keyframe_msg_queue_;
     std::shared_ptr<GraphOptimizerInterface> graph_optimizer_ptr_ = nullptr;
+    std::deque<Eigen::Matrix4f> opted_pose_queue_; //  queue opted
 
-    std::deque<Eigen::Matrix4f> opted_pose_queue_; // 优化后的队列
-
+    unsigned int opt_cnt = 0;
     struct ParamLists
     {
       public:
         /*noise matrix*/
-
+        Eigen::Vector3d gnss_odom_noise;
+        Eigen::VectorXd lidar_odom_noise;
+        Eigen::VectorXd imu_odom_noise;
         /*opt cnt*/
 
     } paramlist_;

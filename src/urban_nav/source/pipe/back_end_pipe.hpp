@@ -47,10 +47,11 @@ class BackEndPipe
   private:
     /*topic subscriber and publisher*/
     std::shared_ptr<Tools::CloudSub> cloud_sub_ptr_ = nullptr;
-    std::shared_ptr<Tools::OdomSub> gnss_sub_ptr_ = nullptr;
+    std::shared_ptr<Tools::OdomSub> gnss_odom_sub_ptr_ = nullptr;
     std::shared_ptr<Tools::OdomSub> lidar_odom_sub_ptr_ = nullptr;
 
     std::shared_ptr<Tools::CloudPub> cloud_pub_ptr_ = nullptr;
+    std::shared_ptr<Tools::OdomPub> lidar_odom_pub_ptr_ = nullptr;
     std::shared_ptr<Tools::OdomPub> fusion_odom_pub_ptr_ = nullptr;
     std::shared_ptr<Tools::TfPub> veh_tf_pub_ptr_ = nullptr;
 
