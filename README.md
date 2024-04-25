@@ -98,7 +98,7 @@ All assets and code are under  under GPLv3 license. <br>
 
 
 
-## 7.Updates
+## 8.Updates
 **2024/04/25** <br>
 tag v0.1.2 <br>
 1. Added 3D object decetion (use pointpillars). <br>
