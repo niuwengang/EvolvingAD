@@ -83,6 +83,13 @@ The source code is released under GPLv3 license. <br>
 
 
 ## 7.Updates
+**2024/04/25** <br>
+tag v0.1.2 <br>
+1. Added 3D object decetion <br>
+2. Added dynamic object filter <br>
+3. Added ground segement. <br>
+4. Added 3d bouding box display
+
 
 **2024/04/10** <br>
 tag v0.1.1 <br>
