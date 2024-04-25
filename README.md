@@ -85,19 +85,27 @@ The source code is released under GPLv3 license. <br>
 ## 7.Updates
 **2024/04/25** <br>
 tag v0.1.2 <br>
-1. Added 3D object decetion <br>
+1. Added 3D object decetion (use pointpillars). <br>
 2. Added dynamic object filter <br>
 3. Added ground segement. <br>
-4. Added 3d bouding box display
+4. Added 3d bouding box display. <br>
 
 
 **2024/04/10** <br>
 tag v0.1.1 <br>
-1. Add backend for optimizer (gnss's XYZ used as prior constraints, lidar odom used as interframe constraints). <br>
-2. Display car modle xiaomi su7. <br>
+1. Add backend for optimization (gnss's XYZ used as prior constraints, lidar odom used as interframe constraints). <br>
+2. Added car model xiaomi su7. <br>
 
 **2024/04/04** <br>
 tag v0.1.0 <br>
 1. Added a simple lidar odometry. <br>
-2. Display odom and cloud. <br>
-<br>
+2. Added visualization for odom and pointcloud. <br>
+
+
+
+## 8.PreRelease
+1. To add loop closure.<br>
+2. To add traj save and compare to gt automatically. <br>
+3. To add pointcloud saving and stitching. <br>
+4. To add imu-preintegration. <br>
+5. To add carla scence. <br>
