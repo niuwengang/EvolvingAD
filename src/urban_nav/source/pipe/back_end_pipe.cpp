@@ -70,8 +70,6 @@ bool BackEndPipe::Run()
 
         pose_graph_ptr_->UpdatePose(cur_gnss_odom_msg_, cur_lidar_odom_msg_, fusion_odom_msg_);
 
-        std::cout << "融合定位结果：" << fusion_odom_msg_.pose << std::endl;
-
         spdlog::info("backend_node$ core exec hz:{}");
 
         PublishMsg();

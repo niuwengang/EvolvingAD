@@ -35,7 +35,7 @@ bool PoseGraph::UpdatePose(const PoseMsg &gnss_odom_msg, const PoseMsg &lidar_od
     {
         opt_cnt++;
         AddVertexandEdge(gnss_odom_msg);
-        if (opt_cnt == 500)
+        if (opt_cnt == 100)
         {
             opt_cnt = 0;
             if (graph_optimizer_ptr_->Opimtize() == true)
