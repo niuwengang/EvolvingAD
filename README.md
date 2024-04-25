@@ -1,4 +1,10 @@
-# EvolvingAD
+<div align="center">   
+
+# Evolving  Autonomous Driving
+</div>
+
+
+
 
 ## 1.Introduce
 A simple demo for  navigation on autopilot. However, it's just a personal toy program. <br>
@@ -7,6 +13,8 @@ A simple demo for  navigation on autopilot. However, it's just a personal toy pr
     <img src="/pic/display.jpeg" alt="图片alt" title="图片title" width="300px" height="200px" objectfit="cover" >
     <img src="/pic/display2.png" alt="图片alt" title="图片title" width="300px" height="200px" objectfit="cover" >
 </div>
+
+
 
 ## 2.Installation
 + ros component
@@ -74,8 +82,20 @@ git commits obey Angular rules <br>
 
 
 ## 6.Licence
-The source code is released under GPLv3 license. <br>
+All assets and code are under  under GPLv3 license. <br>
 
+
+
+
+
+
+
+## 7.Todo
+- [ ] To add loop closure.<br>
+- [ ] To add traj save and compare to gt automatically. <br>
+- [ ] To add pointcloud saving and stitching. <br>
+- [ ] To add imu-preintegration. <br>
+- [ ] To add carla scence. <br>
 
 
 
@@ -97,12 +117,3 @@ tag v0.1.1 <br>
 tag v0.1.0 <br>
 1. Added a simple lidar odometry. <br>
 2. Added visualization for odom and pointcloud. <br>
-
-
-
-## 8.PreRelease
-1. To add loop closure.<br>
-2. To add traj save and compare to gt automatically. <br>
-3. To add pointcloud saving and stitching. <br>
-4. To add imu-preintegration. <br>
-5. To add carla scence. <br>
