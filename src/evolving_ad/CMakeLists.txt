@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.9.0)
-project(urban_nav)
+project(evolving_ad)
 
 #compile option
 SET(CMAKE_BUILD_TYPE "Release")

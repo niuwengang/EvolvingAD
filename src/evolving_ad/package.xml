@@ -1,11 +1,11 @@
 <?xml version="1.0"?>
 <package format="2">
-  <name>urban_nav</name>
+  <name>evolving_ad</name>
   <version>0.0.0</version>
-  <description>The urban_nav package</description>
+  <description>The evolving_ad package</description>
 
 
-  <maintainer email="g@todo.todo">g</maintainer>
+  <maintainer email="niuwengang@163.com">g</maintainer>
 
 
 
