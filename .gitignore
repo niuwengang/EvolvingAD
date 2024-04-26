@@ -1,3 +1,4 @@
 .vscode
 build
 devel
+src/evolving_ad/result/*
