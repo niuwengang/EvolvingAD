@@ -65,7 +65,6 @@ class BackEndPipe
     CloudMsg cur_cloud_msg_;
     PoseMsg cur_gnss_odom_msg_;
     PoseMsg cur_lidar_odom_msg_;
-    PoseMsg fusion_odom_msg_;
 
     Eigen::Matrix4f lidar2gnss_transform_ = Eigen::Matrix4f::Identity();
 
@@ -76,7 +75,7 @@ class BackEndPipe
     /*algorithm module*/
     std::shared_ptr<PoseGraph> pose_graph_ptr_ = nullptr; // odom发布
 
-    std::deque<Eigen::Matrix4f> opted_pose_queue_;
+    std::deque<PoseMsg> opted_pose_msg_queue_;
 
     struct ParamLists
     {

@@ -9,15 +9,15 @@ PathPub::PathPub(ros::NodeHandle &nh, const std::string topic_name, const std::s
     pub_ = nh.advertise<nav_msgs::Path>(topic_name, buffer_size);
 }
 
-void PathPub::Publish(const std::deque<Eigen::Matrix4f> &pose_queue, const double time_stamp)
+void PathPub::Publish(const std::deque<PoseMsg> &pose_msg_queue, const double time_stamp)
 {
     nav_msgs::Path path;
     path.header.stamp = ros::Time::now();
     path.header.frame_id = frame_id_;
 
-    for (size_t i = 0; i < pose_queue.size(); ++i)
+    for (size_t i = 0; i < pose_msg_queue.size(); ++i)
     {
-        Eigen::Matrix4f pose = pose_queue.at(i);
+        Eigen::Matrix4f pose = pose_msg_queue.at(i).pose;
 
         geometry_msgs::PoseStamped pose_stamped;
         // ros::Time ros_time((float)time_stamp);

@@ -11,6 +11,8 @@
 #include <geometry_msgs/PoseStamped.h>
 #include <nav_msgs/Path.h>
 #include <ros/ros.h>
+//
+#include "user_msg/pose_msg.hpp"
 
 namespace Tools
 {
@@ -22,7 +24,7 @@ class PathPub
             const size_t buffer_size = 10e2);
     PathPub() = default;
 
-    void Publish(const std::deque<Eigen::Matrix4f> &pose_queue, const double time_stamp = 0);
+    void Publish(const std::deque<PoseMsg> &pose_msg_queue, const double time_stamp = 0);
 
   private:
     ros::Publisher pub_;

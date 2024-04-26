@@ -37,7 +37,7 @@ BackEndPipe::BackEndPipe(ros::NodeHandle &nh)
     time_ptr_ = std::make_shared<Tools::TimeRecord>();
 
     /*[4]--algorithm  module init*/
-    pose_graph_ptr_ = std::make_shared<PoseGraph>(config["pose_graph"]); // todo add yaml node
+    pose_graph_ptr_ = std::make_shared<PoseGraph>(config["pose_graph"]);
 }
 
 /**
@@ -69,7 +69,7 @@ bool BackEndPipe::Run()
         cur_lidar_odom_msg_.pose =
             lidar2gnss_transform_ * cur_lidar_odom_msg_.pose; // lidar coordinate align to gnss coordinate
 
-        pose_graph_ptr_->UpdatePose(cur_gnss_odom_msg_, cur_lidar_odom_msg_, fusion_odom_msg_);
+        pose_graph_ptr_->UpdatePose(cur_cloud_msg_, cur_gnss_odom_msg_, cur_lidar_odom_msg_);
 
         spdlog::info("backend_node$ core exec hz:{}");
 
@@ -166,11 +166,13 @@ bool BackEndPipe::ReadMsg()
  */
 void BackEndPipe::PublishMsg()
 {
-    lidar_odom_pub_ptr_->Publish(fusion_odom_msg_.pose, fusion_odom_msg_.time_stamp);
-    pose_graph_ptr_->GetOptedPoseQueue(opted_pose_queue_);
-    path_pub_ptr->Publish(opted_pose_queue_);
-    veh_tf_pub_ptr_->SendTransform(fusion_odom_msg_.pose);
-    
+    // before opt
+    lidar_odom_pub_ptr_->Publish(cur_lidar_odom_msg_.pose, cur_lidar_odom_msg_.time_stamp);
+    veh_tf_pub_ptr_->SendTransform(cur_lidar_odom_msg_.pose);
+    // after opt
+    pose_graph_ptr_->GetOptedPoseQueue(opted_pose_msg_queue_);
+    path_pub_ptr->Publish(opted_pose_msg_queue_);
+
     // fusion_odom_pub_ptr_->Publish(fusion_odom_msg_.pose, fusion_odom_msg_.time_stamp);
 
     // /*pub local map*/

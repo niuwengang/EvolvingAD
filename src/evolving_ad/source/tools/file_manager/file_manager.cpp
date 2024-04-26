@@ -23,19 +23,17 @@ bool FileManager::CreateFolder(const std::string folder_path)
 
     if (std::filesystem::exists(folder_path_copy))
     {
+        std::filesystem::remove_all(folder_path_copy);
+    }
+
+    std::filesystem::create_directory(folder_path_copy);
+    if (std::filesystem::exists(folder_path_copy))
+    {
         return true;
     }
     else
     {
-        std::filesystem::create_directory(folder_path_copy);
-        if (std::filesystem::exists(folder_path_copy))
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
+        return false;
     }
 }
 

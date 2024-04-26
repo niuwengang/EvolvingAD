@@ -27,7 +27,7 @@ class GraphOptimizerInterface
                                     const Eigen::Isometry3d &relative_pose, const std::vector<double> &noise_vec) = 0;
 
     /*acquire data*/
-    virtual void GetOptPoseQueue(std::deque<Eigen::Matrix4f> &opted_pose_queue) = 0;
+    virtual void GetOptPoseQueue(std::deque<PoseMsg> &opted_pose_msg_queue) = 0;
     virtual unsigned int GetOptNodeNum() = 0;
 
   protected:

@@ -23,16 +23,18 @@
 #include "module/graph_optimizer/graph_optimizer_interface.hpp"
 // ros
 #include <ros/package.h>
+// pcl
+#include <pcl/io/pcd_io.h>
 
 class PoseGraph
 {
   public:
     PoseGraph(const YAML::Node &config_node);
-    bool UpdatePose(const PoseMsg &gnss_odom_msg, const PoseMsg &lidar_odom_msg, PoseMsg &fusion_odom_msg);
-    void GetOptedPoseQueue(std::deque<Eigen::Matrix4f> &opted_pose_queue);
+    bool UpdatePose(const CloudMsg &cloud_msg, const PoseMsg &gnss_odom_msg, const PoseMsg &lidar_odom_msg);
+    void GetOptedPoseQueue(std::deque<PoseMsg> &opted_pose_msg_queue);
 
   private:
-    bool CheckNewKeyFrame(PoseMsg &fusion_odom_msg);
+    bool CheckNewKeyFrame(const PoseMsg &lidar_odom_msg, const CloudMsg &cloud_msg);
     bool AddVertexandEdge(const PoseMsg &gnss_odom_msg);
 
   private:
@@ -40,7 +42,7 @@ class PoseGraph
     FrameMsg cur_keyframe_msg_;
     std::deque<FrameMsg> keyframe_msg_queue_;
     std::shared_ptr<GraphOptimizerInterface> graph_optimizer_ptr_ = nullptr;
-    std::deque<Eigen::Matrix4f> opted_pose_queue_; //  queue opted
+    std::deque<PoseMsg> opted_pose_msg_queue_; //  queue opted
 
     unsigned int new_gnss_cnt_ = 0;
     unsigned int new_loop_cnt_ = 0;
@@ -61,6 +63,7 @@ class PoseGraph
         double keyframe_distance = 2.0;
 
         std::string result_save_folfer = "";
+        std::string result_save_subfolfer_keyframe = "";
     } paramlist_;
 };
 

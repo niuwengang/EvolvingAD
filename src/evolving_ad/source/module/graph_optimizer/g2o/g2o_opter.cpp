@@ -131,16 +131,19 @@ void G2oOpter::AddInteriorSe3Edge(const unsigned int vertex_index_0, const unsig
  * @param[in]
  * @return
  */
-void G2oOpter::GetOptPoseQueue(std::deque<Eigen::Matrix4f> &opted_pose_queue)
+void G2oOpter::GetOptPoseQueue(std::deque<PoseMsg> &opted_pose_msg_queue)
 {
     /*1--clear*/
-    opted_pose_queue.clear();
+    opted_pose_msg_queue.clear();
     int vertex_num = g2o_opter_ptr_->vertices().size();
     for (int index = 0; index < vertex_num; index++)
     {
         g2o::VertexSE3 *v = dynamic_cast<g2o::VertexSE3 *>(g2o_opter_ptr_->vertex(index));
         Eigen::Isometry3d pose = v->estimate();
-        opted_pose_queue.push_back(pose.matrix().cast<float>());
+        PoseMsg pose_msg;
+        pose_msg.index = index;
+        pose_msg.pose = pose.matrix().cast<float>();
+        opted_pose_msg_queue.push_back(pose_msg);
     }
     return;
 }

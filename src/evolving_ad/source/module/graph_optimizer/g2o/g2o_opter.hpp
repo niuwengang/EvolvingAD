@@ -56,7 +56,7 @@ class G2oOpter : public GraphOptimizerInterface
                             const Eigen::Isometry3d &relative_pose, const std::vector<double> &noise_vec) override;
 
     /*get result*/
-    void GetOptPoseQueue(std::deque<Eigen::Matrix4f> &opted_pose_queue) override;
+    void GetOptPoseQueue(std::deque<PoseMsg> &opted_pose_msg_queue) override;
     unsigned int GetOptNodeNum() override;
 
   private:

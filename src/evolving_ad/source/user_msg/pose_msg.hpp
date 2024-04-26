@@ -16,6 +16,7 @@ class PoseMsg
   public:
     Eigen::Matrix4f pose = Eigen::Matrix4f::Identity();
     double time_stamp = 0.0;
+    unsigned int index = 0;
 };
 
 #endif
