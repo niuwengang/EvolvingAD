@@ -32,7 +32,7 @@ G2oOpter::G2oOpter(const std::string &solver_type)
 bool G2oOpter::Opimtize()
 {
 
-    if (g2o_opter_ptr_->edges().size() == 0)
+    if (g2o_opter_ptr_->edges().size() < 1)
     {
         return false;
     }
@@ -40,7 +40,7 @@ bool G2oOpter::Opimtize()
     g2o_opter_ptr_->initializeOptimization();
     g2o_opter_ptr_->computeInitialGuess();
     g2o_opter_ptr_->computeActiveErrors();
-    g2o_opter_ptr_->setVerbose(false);
+    g2o_opter_ptr_->setVerbose(true);
 
     double chi2 = g2o_opter_ptr_->chi2();
     int iterations = g2o_opter_ptr_->optimize(max_iterations_num_);
@@ -49,7 +49,8 @@ bool G2oOpter::Opimtize()
     spdlog::info("g2o_opter$ edge num:{}", g2o_opter_ptr_->edges().size());
     spdlog::info("g2o_opter$ chi before opt:{}:", chi2);
     spdlog::info("g2o_opter$ chi after  opt:{}:", g2o_opter_ptr_->chi2());
-    spdlog::info("g2o_opter$ opt cnts{}:", iterations);
+    spdlog::info("g2o_opter$ opt cnts: {}", iterations);
+    spdlog::info("---------------------------------------");
 
     return true;
 }

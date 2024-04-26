@@ -51,7 +51,7 @@ int main(int argc, char **argv)
 
     ros::Rate delay(100);
 
-    const std::string model_file_path = ros::package::getPath("urban_nav") + "/model//pointpillar.onnx";
+    const std::string model_file_path = ros::package::getPath("evolving_ad") + "/model//pointpillar.onnx";
     spdlog::info("model_file_path:{}", model_file_path);
 
     std::shared_ptr<Tools::CloudSub> cloud_sub_ptr_ = std::make_shared<Tools::CloudSub>(nh, "/kitti/velo/pointcloud");

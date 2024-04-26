@@ -17,7 +17,7 @@ PreProcessPipe::PreProcessPipe(ros::NodeHandle &nh)
 {
     /*[1]--load params*/
     /*a--acquire yaml node*/
-    paramlist_.package_folder_path = ros::package::getPath("urban_nav");
+    paramlist_.package_folder_path = ros::package::getPath("evolving_ad");
     YAML::Node config_node = YAML::LoadFile(paramlist_.package_folder_path + "/config/preprocerss.yaml");
     paramlist_.model_file_path = paramlist_.package_folder_path + "/model//pointpillar.onnx";
     /*b--get subscriber topic name*/

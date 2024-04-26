@@ -21,6 +21,8 @@
 // module
 #include "module/graph_optimizer/g2o/g2o_opter.hpp"
 #include "module/graph_optimizer/graph_optimizer_interface.hpp"
+// ros
+#include <ros/package.h>
 
 class PoseGraph
 {
@@ -56,6 +58,8 @@ class PoseGraph
         unsigned int new_keyframe_cnt_max = 0;
 
         double keyframe_distance = 2.0;
+
+        std::string result_save_folfer = "";
     } paramlist_;
 };
 

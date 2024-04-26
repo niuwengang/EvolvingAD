@@ -26,7 +26,15 @@ PoseGraph::PoseGraph(const YAML::Node &config_node)
 
     paramlist_.keyframe_distance = config_node["keyframe_distance"].as<double>();
 
-    /*[2]-graph optimizer setting*/
+    paramlist_.result_save_folfer = config_node["result_save_folfer"].as<std::string>();
+
+    /*[2]--create folder*/
+    if (paramlist_.result_save_folfer == "")
+    {
+        paramlist_.result_save_folfer = ros::package::getPath("evolving_ad") + "/result";
+    }
+
+    /*[3]-graph optimizer setting*/
     graph_optimizer_ptr_ = std::make_shared<G2oOpter>("lm_var");
 }
 
@@ -47,17 +55,16 @@ bool PoseGraph::UpdatePose(const PoseMsg &gnss_odom_msg, const PoseMsg &lidar_od
     {
 
         AddVertexandEdge(gnss_odom_msg);
-
-        if (new_keyframe_cnt_ >= paramlist_.new_keyframe_cnt_max)
+        if (graph_optimizer_ptr_->Opimtize() == true)
         {
-            new_keyframe_cnt_ = 0;
-
-            if (graph_optimizer_ptr_->Opimtize() == true)
-            {
-                graph_optimizer_ptr_->GetOptPoseQueue(opted_pose_queue_);
-                fusion_odom_msg.pose = opted_pose_queue_.back(); // just temp
-            }
+            graph_optimizer_ptr_->GetOptPoseQueue(opted_pose_queue_);
+            fusion_odom_msg.pose = opted_pose_queue_.back(); // just temp
         }
+        // if (new_keyframe_cnt_ >= paramlist_.new_keyframe_cnt_max)
+        // {
+        //     new_keyframe_cnt_ = 0;
+
+        // }
     }
     return true;
 }
@@ -81,7 +88,7 @@ bool PoseGraph::CheckNewKeyFrame(PoseMsg &fusion_odom_msg)
     }
     if (fabs(fusion_odom_msg.pose(0, 3) - last_keyframe_pose(0, 3)) +
             fabs(fusion_odom_msg.pose(1, 3) - last_keyframe_pose(1, 3)) +
-            fabs(fusion_odom_msg.pose(2, 3) - last_keyframe_pose(2, 3)) >
+            fabs(fusion_odom_msg.pose(2, 3) - last_keyframe_pose(2, 3)) >=
         paramlist_.keyframe_distance)
     {
         last_keyframe_pose = fusion_odom_msg.pose;
@@ -125,8 +132,6 @@ bool PoseGraph::AddVertexandEdge(const PoseMsg &gnss_odom_msg)
     {
         Eigen::Matrix4f relative_pose = last_keyframe_pose.inverse() * cur_keyframe_msg_.pose;
         isometry.matrix() = relative_pose.cast<double>();
-        Eigen::VectorXd vec_noise(6); // noise
-
         graph_optimizer_ptr_->AddInteriorSe3Edge(node_num - 2, node_num - 1, isometry, paramlist_.lidar_odom_noise);
     }
     last_keyframe_pose = cur_keyframe_msg_.pose;

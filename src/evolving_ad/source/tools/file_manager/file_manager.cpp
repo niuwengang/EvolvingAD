@@ -1,7 +1,22 @@
+/**
+ * @file    file_manager.hpp
+ * @brief   create folder stc
+ * @author  niu_wengang@163.com
+ * @date    2024-04-26
+ * @version 0.1.3
+ */
+
 #include "file_manager.hpp"
 
 namespace Tools
 {
+
+/**
+ * @brief create a folder
+ * @param[in] folder_path
+ * @return bool
+ * @note
+ */
 bool FileManager::CreateFolder(const std::string folder_path)
 {
     std::filesystem::path folder_path_copy = folder_path;
@@ -24,9 +39,15 @@ bool FileManager::CreateFolder(const std::string folder_path)
     }
 }
 
+/**
+ * @brief create file
+ * @param[in] ofs
+ * @param[in] file_path
+ * @return bool
+ */
 bool FileManager::CreateTxtFile(std::ofstream &ofs, const std::string file_path)
 {
-    // 检查文件是否存在
+    // check if file exist
     if (std::filesystem::exists(file_path))
     {
         std::filesystem::remove(file_path);

@@ -15,7 +15,7 @@
 FrontEndPipe::FrontEndPipe(ros::NodeHandle &nh)
 {
     /*[1]--params load*/
-    paramlist_.package_folder_path = ros::package::getPath("urban_nav");
+    paramlist_.package_folder_path = ros::package::getPath("evolving_ad");
     YAML::Node config_node = YAML::LoadFile(paramlist_.package_folder_path + "/config/front_end.yaml");
 
     paramlist_.cloud_sub_topic = config_node["topic_sub"]["cloud_sub_topic"].as<std::string>();

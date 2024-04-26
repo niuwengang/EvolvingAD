@@ -26,7 +26,7 @@ sudo apt-get install ros-noetic-jsk-rviz-plugins
 ```shell
 sudo apt-get install libeigen3-dev
 sudo apt-get install libsuitesparse-dev 
-cp src/urban_nav/setup_file/g2o.zip ${YOUR_SOFTWARE_FOLDER}
+cp src/evolving_ad/setup_file/g2o.zip ${YOUR_SOFTWARE_FOLDER}
 cd ${YOUR_SOFTWARE_FOLDER}
 mkdir g2o
 unzip g2o.zip -d g2o

@@ -1,6 +1,3 @@
-#ifndef _BBX_PUB_HPP_
-#define _BBX_PUB_HPP_
-
 /**
  * @file    bbx_pub.hpp
  * @brief   publish imu
@@ -8,6 +5,9 @@
  * @date    2024-04-12
  * @version 0.1.1
  */
+
+#ifndef _BBX_PUB_HPP_
+#define _BBX_PUB_HPP_
 
 // ros
 #include <jsk_recognition_msgs/BoundingBox.h>

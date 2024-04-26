@@ -100,7 +100,7 @@ bool LidarOdom::UpdateOdom(Eigen::Matrix4f &lidar_odom, const CloudMsg &cloud_ms
     /*c--keyframe extract--*/
     if (fabs(last_key_frame_pose(0, 3) - current_frame.pose(0, 3)) +
             fabs(last_key_frame_pose(1, 3) - current_frame.pose(1, 3)) +
-            fabs(last_key_frame_pose(2, 3) - current_frame.pose(2, 3)) >
+            fabs(last_key_frame_pose(2, 3) - current_frame.pose(2, 3)) >=
         paramlist_.keyframe_distance)
     {
         UpdateLocalMap(current_frame);

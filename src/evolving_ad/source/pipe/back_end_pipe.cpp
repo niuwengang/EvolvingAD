@@ -15,7 +15,7 @@
 BackEndPipe::BackEndPipe(ros::NodeHandle &nh)
 {
     /*[1]--load param*/
-    paramlist_.package_folder_path = ros::package::getPath("urban_nav");
+    paramlist_.package_folder_path = ros::package::getPath("evolving_ad");
     YAML::Node config = YAML::LoadFile(paramlist_.package_folder_path + "/config/back_end.yaml");
 
     paramlist_.cloud_sub_topic = config["topic_sub"]["cloud_sub_topic"].as<std::string>();
