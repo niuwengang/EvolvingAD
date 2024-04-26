@@ -7,6 +7,7 @@ Panels:
         - /preprocess1/synced_gnss1/Shape1
         - /preprocess1/synced_imu1/Axes properties1
         - /back_end1
+        - /back_end1/opted_path1
       Splitter Ratio: 0.5
     Tree Height: 971
   - Class: rviz/Selection
@@ -307,7 +308,7 @@ Visualization Manager:
               Scale: 1
               Value: true
             Value: true
-          Enabled: true
+          Enabled: false
           Keep: 0
           Name: gnss_odom
           Position Tolerance: 0.10000000149011612
@@ -324,7 +325,7 @@ Visualization Manager:
             Value: Arrow
           Topic: /synced_gnss_odom
           Unreliable: false
-          Value: true
+          Value: false
         - Angle Tolerance: 0.10000000149011612
           Class: rviz/Odometry
           Covariance:
@@ -342,7 +343,7 @@ Visualization Manager:
               Scale: 1
               Value: true
             Value: true
-          Enabled: true
+          Enabled: false
           Keep: 0
           Name: lidar_odom_aligned
           Position Tolerance: 0.10000000149011612
@@ -359,7 +360,7 @@ Visualization Manager:
             Value: Axes
           Topic: /lidar_odom_aligned
           Unreliable: false
-          Value: true
+          Value: false
         - Alpha: 1
           Buffer Length: 1
           Class: rviz/Path
@@ -369,7 +370,7 @@ Visualization Manager:
           Head Length: 0.20000000298023224
           Length: 0.30000001192092896
           Line Style: Billboards
-          Line Width: 0.029999999329447746
+          Line Width: 0.10000000149011612
           Name: opted_path
           Offset:
             X: 0
@@ -430,7 +431,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 260.8778991699219
+      Distance: 374.0484619140625
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
@@ -438,17 +439,17 @@ Visualization Manager:
         Value: false
       Field of View: 0.7853981852531433
       Focal Point:
-        X: -48.235252380371094
-        Y: 272.3337097167969
-        Z: -116.92664337158203
+        X: 68.58186340332031
+        Y: 109.23936462402344
+        Z: -64.54239654541016
       Focal Shape Fixed Size: false
       Focal Shape Size: 0.05000000074505806
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.8803980946540833
+      Pitch: 1.5697963237762451
       Target Frame: <Fixed Frame>
-      Yaw: 6.163583755493164
+      Yaw: 1.6103976964950562
     Saved: ~
 Window Geometry:
   Displays:

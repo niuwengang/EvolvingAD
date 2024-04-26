@@ -61,4 +61,40 @@ LogRecord::LogRecord(const std::string log_folder_path, const std::string log_na
     terminal_->set_level(spdlog::level::trace);
     terminal_->flush_on(spdlog::level::trace);
 }
+
+WatchDog::WatchDog(ros::NodeHandle &nh, const double time_period, const double time_max_delay)
+{
+    time_accumulate_ = 0.0;
+
+    time_period_ = time_period;
+    time_max_delay_ = time_max_delay;
+
+    timer_ = nh.createTimer(ros::Duration(time_period), &WatchDog::TimerCallback, this, false);
+}
+
+void WatchDog::TimerCallback(const ros::TimerEvent &event)
+{
+    time_accumulate_ += time_period_;
+
+    if (time_accumulate_ >= time_max_delay_)
+    {
+        time_accumulate_ = time_max_delay_; // reset
+        time_out_flag_ = true;
+    }
+    else
+    {
+        time_out_flag_ = false;
+    }
+}
+
+bool WatchDog::GetTimeOutStatus()
+{
+    return time_out_flag_;
+}
+
+void WatchDog::FeedDog()
+{
+    time_accumulate_ = 0.0;
+}
+
 } // namespace Tools

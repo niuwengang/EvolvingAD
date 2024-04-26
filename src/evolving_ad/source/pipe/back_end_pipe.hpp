@@ -70,6 +70,7 @@ class BackEndPipe
     /*system monitor*/
     std::shared_ptr<Tools::LogRecord> log_ptr_ = nullptr;
     std::shared_ptr<Tools::TimeRecord> time_ptr_ = nullptr;
+    std::shared_ptr<Tools::WatchDog> watchdog_ptr_ = nullptr;
 
     /*algorithm module*/
     std::shared_ptr<PoseGraph> pose_graph_ptr_ = nullptr; // odom pub

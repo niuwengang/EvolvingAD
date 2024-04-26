@@ -17,6 +17,9 @@
 #ifndef _SYSTEM_MONITOR_HPP_
 #define _SYSTEM_MONITOR_HPP_
 
+// ros
+#include <ros/ros.h>
+
 // c++
 #include <chrono>
 #include <deque>
@@ -53,6 +56,26 @@ class LogRecord
 
     std::shared_ptr<spdlog::logger> file_ = nullptr;
     std::shared_ptr<spdlog::logger> terminal_ = nullptr;
+};
+
+class WatchDog
+{
+  public:
+    WatchDog() = delete;
+    WatchDog(ros::NodeHandle &nh, const double time_period = 1.0, const double time_max_delay = 10.0);
+    ~WatchDog() = default;
+    void FeedDog();
+    bool GetTimeOutStatus();
+
+  private:
+    void TimerCallback(const ros::TimerEvent &event);
+    ros::Timer timer_;
+
+    double time_accumulate_ = 0;
+    double time_period_ = 0;
+    double time_max_delay_ = 0;
+
+    bool time_out_flag_ = false;
 };
 
 } // namespace Tools

@@ -27,7 +27,6 @@ BackEndPipe::BackEndPipe(ros::NodeHandle &nh)
     gnss_odom_sub_ptr_ = std::make_shared<Tools::OdomSub>(nh, paramlist_.gnss_sub_topic);
     cloud_sub_ptr_ = std::make_shared<Tools::CloudSub>(nh, paramlist_.cloud_sub_topic);
 
-    fusion_odom_pub_ptr_ = std::make_shared<Tools::OdomPub>(nh, "fusion_odom", "map", "veh");
     veh_tf_pub_ptr_ = std::make_shared<Tools::TfPub>("map", "ground_link"); // tf tree
     lidar_odom_pub_ptr_ = std::make_shared<Tools::OdomPub>(nh, "lidar_odom_aligned", "map", "lidar");
     path_pub_ptr = std::make_shared<Tools::PathPub>(nh, "opt_path", "map");
@@ -35,6 +34,7 @@ BackEndPipe::BackEndPipe(ros::NodeHandle &nh)
     /*[3]--system monitor*/
     log_ptr_ = std::make_shared<Tools::LogRecord>(paramlist_.package_folder_path + "/log", "back_end");
     time_ptr_ = std::make_shared<Tools::TimeRecord>();
+    watchdog_ptr_ = std::make_shared<Tools::WatchDog>(nh, 1.0, 15.0);
 
     /*[4]--algorithm  module init*/
     pose_graph_ptr_ = std::make_shared<PoseGraph>(config["pose_graph"]);
@@ -47,6 +47,12 @@ BackEndPipe::BackEndPipe(ros::NodeHandle &nh)
  */
 bool BackEndPipe::Run()
 {
+    if (watchdog_ptr_->GetTimeOutStatus() == true)
+    {
+        spdlog::info("backend_node$ time delay ....");
+        exit(EXIT_SUCCESS);
+    }
+
     if (!ReadMsgBuffer())
     {
         return false;
@@ -72,6 +78,8 @@ bool BackEndPipe::Run()
         pose_graph_ptr_->UpdatePose(cur_cloud_msg_, cur_lidar_odom_msg_, cur_gnss_odom_msg_);
 
         PublishMsg();
+
+        watchdog_ptr_->FeedDog();
     }
 
     return true;
