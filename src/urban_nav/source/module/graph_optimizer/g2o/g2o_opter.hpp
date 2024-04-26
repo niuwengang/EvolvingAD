@@ -47,13 +47,13 @@ class G2oOpter : public GraphOptimizerInterface
 
     /*add edge*/
     void AddPriorXYZEdge(const unsigned int vertex_index, const Eigen::Vector3d &xyz,
-                         const Eigen::Vector3d noise_vec) override;
+                         const std::vector<double> &noise_vec) override;
 
     void AddPriorQuatEdge(const unsigned int vertex_index, const Eigen::Quaterniond &quat,
-                          const Eigen::VectorXd noise_vec) override;
+                          const std::vector<double> &noise_vec) override;
 
     void AddInteriorSe3Edge(const unsigned int vertex_index_0, const unsigned int vertex_index_1,
-                            const Eigen::Isometry3d &relative_pose, const Eigen::VectorXd noise_vec) override;
+                            const Eigen::Isometry3d &relative_pose, const std::vector<double> &noise_vec) override;
 
     /*get result*/
     void GetOptPoseQueue(std::deque<Eigen::Matrix4f> &opted_pose_queue) override;

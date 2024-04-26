@@ -79,12 +79,12 @@ void G2oOpter::AddSe3Vertex(const Eigen::Isometry3d &pose, const bool is_fixed)
  * @return
  */
 void G2oOpter::AddPriorXYZEdge(const unsigned int vertex_index, const Eigen::Vector3d &xyz,
-                               const Eigen::Vector3d noise_vec)
+                               const std::vector<double> &noise_vec)
 {
     Eigen::Matrix<double, 3, 3> information_matrix = Eigen::Matrix<double, 3, 3>::Identity();
     for (int i = 0; i < 3; i++)
     {
-        information_matrix(i, i) /= noise_vec(i);
+        information_matrix(i, i) /= noise_vec[i];
     }
 
     g2o::VertexSE3 *vertex = dynamic_cast<g2o::VertexSE3 *>(g2o_opter_ptr_->vertex(vertex_index));
@@ -96,7 +96,7 @@ void G2oOpter::AddPriorXYZEdge(const unsigned int vertex_index, const Eigen::Vec
 }
 
 void G2oOpter::AddPriorQuatEdge(const unsigned int vertex_index, const Eigen::Quaterniond &quat,
-                                const Eigen::VectorXd noise_vec)
+                                const std::vector<double> &noise_vec)
 {
 }
 
@@ -106,12 +106,12 @@ void G2oOpter::AddPriorQuatEdge(const unsigned int vertex_index, const Eigen::Qu
  * @return
  */
 void G2oOpter::AddInteriorSe3Edge(const unsigned int vertex_index_0, const unsigned int vertex_index_1,
-                                  const Eigen::Isometry3d &relative_pose, const Eigen::VectorXd noise_vec)
+                                  const Eigen::Isometry3d &relative_pose, const std::vector<double> &noise_vec)
 {
     Eigen::Matrix<double, 6, 6> information_matrix = Eigen::Matrix<double, 6, 6>::Identity();
     for (int i = 0; i < 6; i++)
     {
-        information_matrix(i, i) /= noise_vec(i);
+        information_matrix(i, i) /= noise_vec[i];
     }
 
     g2o::VertexSE3 *v0 = dynamic_cast<g2o::VertexSE3 *>(g2o_opter_ptr_->vertex(vertex_index_0));

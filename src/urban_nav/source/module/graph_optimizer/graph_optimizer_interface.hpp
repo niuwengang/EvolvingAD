@@ -18,13 +18,13 @@ class GraphOptimizerInterface
 
     /*add prior xyz edge*/
     virtual void AddPriorXYZEdge(const unsigned int vertex_index, const Eigen::Vector3d &xyz,
-                                 const Eigen::Vector3d noise_vec) = 0;
+                                 const std::vector<double> &noise_vec) = 0;
 
     virtual void AddPriorQuatEdge(const unsigned int vertex_index, const Eigen::Quaterniond &quat,
-                                  const Eigen::VectorXd noise_vec) = 0;
+                                  const std::vector<double> &noise_vec) = 0;
 
     virtual void AddInteriorSe3Edge(const unsigned int vertex_index_0, const unsigned int vertex_index_1,
-                                    const Eigen::Isometry3d &relative_pose, const Eigen::VectorXd noise_vec) = 0;
+                                    const Eigen::Isometry3d &relative_pose, const std::vector<double> &noise_vec) = 0;
 
     /*acquire data*/
     virtual void GetOptPoseQueue(std::deque<Eigen::Matrix4f> &opted_pose_queue) = 0;

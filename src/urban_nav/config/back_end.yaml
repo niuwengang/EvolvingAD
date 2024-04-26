@@ -11,7 +11,11 @@ topic_sub: #
 #pose graph setting-------------------------------------------------
 pose_graph:
   keyframe_distance: 2.0
+
   lidar_odom_noise: [0.5, 0.5, 0.5, 0.001, 0.001, 0.001] #xyzrpy
   gnss_odom_noise: [2.0, 2.0, 2.0] #xyz
   imu_odom_noise: [0.5, 0.5, 0.5, 0.001, 0.001, 0.001] #xyzrpy
-  opt_cnt: 100
+
+  new_gnss_cnt_max: 0
+  new_loop_cnt_max: 0
+  new_key_frame_cnt_max: 10

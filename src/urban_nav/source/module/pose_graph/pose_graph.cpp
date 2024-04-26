@@ -13,8 +13,20 @@
  * @param[in]
  * @return
  */
-PoseGraph::PoseGraph()
+PoseGraph::PoseGraph(const YAML::Node &config_node)
 {
+    /*[1]--load params*/
+    paramlist_.new_gnss_cnt_max = config_node["new_gnss_cnt_max"].as<int>();
+    paramlist_.new_loop_cnt_max = config_node["new_loop_cnt_max"].as<int>();
+    paramlist_.new_keyframe_cnt_max = config_node["new_key_frame_cnt_max"].as<int>();
+
+    paramlist_.gnss_odom_noise = config_node["gnss_odom_noise"].as<std::vector<double>>();
+    paramlist_.lidar_odom_noise = config_node["lidar_odom_noise"].as<std::vector<double>>();
+    paramlist_.imu_odom_noise = config_node["imu_odom_noise"].as<std::vector<double>>();
+
+    paramlist_.keyframe_distance = config_node["keyframe_distance"].as<double>();
+
+    /*[2]-graph optimizer setting*/
     graph_optimizer_ptr_ = std::make_shared<G2oOpter>("lm_var");
 }
 
@@ -33,11 +45,13 @@ bool PoseGraph::UpdatePose(const PoseMsg &gnss_odom_msg, const PoseMsg &lidar_od
 
     if (CheckNewKeyFrame(fusion_odom_msg) == true)
     {
-        opt_cnt++;
+
         AddVertexandEdge(gnss_odom_msg);
-        if (opt_cnt == 100)
+
+        if (new_keyframe_cnt_ >= paramlist_.new_keyframe_cnt_max)
         {
-            opt_cnt = 0;
+            new_keyframe_cnt_ = 0;
+
             if (graph_optimizer_ptr_->Opimtize() == true)
             {
                 graph_optimizer_ptr_->GetOptPoseQueue(opted_pose_queue_);
@@ -68,7 +82,7 @@ bool PoseGraph::CheckNewKeyFrame(PoseMsg &fusion_odom_msg)
     if (fabs(fusion_odom_msg.pose(0, 3) - last_keyframe_pose(0, 3)) +
             fabs(fusion_odom_msg.pose(1, 3) - last_keyframe_pose(1, 3)) +
             fabs(fusion_odom_msg.pose(2, 3) - last_keyframe_pose(2, 3)) >
-        2.0) // todo add params
+        paramlist_.keyframe_distance)
     {
         last_keyframe_pose = fusion_odom_msg.pose;
         has_new_keyframe_flag = true; // set flag
@@ -103,6 +117,7 @@ bool PoseGraph::AddVertexandEdge(const PoseMsg &gnss_odom_msg)
     {
         graph_optimizer_ptr_->AddSe3Vertex(isometry, false);
     }
+    new_keyframe_cnt_++;
 
     /*[2]--add interior constraints*/
     int node_num = graph_optimizer_ptr_->GetOptNodeNum();
@@ -110,16 +125,17 @@ bool PoseGraph::AddVertexandEdge(const PoseMsg &gnss_odom_msg)
     {
         Eigen::Matrix4f relative_pose = last_keyframe_pose.inverse() * cur_keyframe_msg_.pose;
         isometry.matrix() = relative_pose.cast<double>();
-        Eigen::VectorXd vec_noise(6);                    // noise
-        vec_noise << 0.5, 0.5, 0.5, 0.001, 0.001, 0.001; // lidar odom noise
-        graph_optimizer_ptr_->AddInteriorSe3Edge(node_num - 2, node_num - 1, isometry, vec_noise);
+        Eigen::VectorXd vec_noise(6); // noise
+
+        graph_optimizer_ptr_->AddInteriorSe3Edge(node_num - 2, node_num - 1, isometry, paramlist_.lidar_odom_noise);
     }
     last_keyframe_pose = cur_keyframe_msg_.pose;
 
     /*[3]--add priorXYZ constraints*/
     Eigen::Vector3d xyz(static_cast<double>(gnss_odom_msg.pose(0, 3)), static_cast<double>(gnss_odom_msg.pose(1, 3)),
                         static_cast<double>(gnss_odom_msg.pose(2, 3)));
-    graph_optimizer_ptr_->AddPriorXYZEdge(node_num - 1, xyz, Eigen::Vector3d(2.0, 2.0, 2.0));
+    graph_optimizer_ptr_->AddPriorXYZEdge(node_num - 1, xyz, paramlist_.gnss_odom_noise);
+    // new_gnss_cnt_++;
 
     return true;
 }

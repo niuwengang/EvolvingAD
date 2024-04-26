@@ -36,7 +36,7 @@ BackEndPipe::BackEndPipe(ros::NodeHandle &nh)
     time_ptr_ = std::make_shared<Tools::TimeRecord>();
 
     /*[4]--algorithm  module init*/
-    pose_graph_ptr_ = std::make_shared<PoseGraph>(); // todo add yaml node
+    pose_graph_ptr_ = std::make_shared<PoseGraph>(config["pose_graph"]); // todo add yaml node
 }
 
 /**

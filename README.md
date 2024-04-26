@@ -60,10 +60,11 @@ cmake ..
 make 
 sudo make  install
 ```
-+ tensorRT
++ TensorRT
 + CudNN
 + Cuda
-
++ gtsam
++ ceres
 
 ## 3.Pipeline
 
@@ -116,3 +117,5 @@ tag v0.1.1 <br>
 tag v0.1.0 <br>
 1. Added a simple lidar odometry. <br>
 2. Added visualization for odom and pointcloud. <br>
+
+
