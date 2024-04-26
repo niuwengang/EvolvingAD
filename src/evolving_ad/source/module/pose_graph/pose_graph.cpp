@@ -27,16 +27,22 @@ PoseGraph::PoseGraph(const YAML::Node &config_node)
 
     paramlist_.keyframe_distance = config_node["keyframe_distance"].as<double>();
 
-    paramlist_.result_save_folfer = config_node["result_save_folfer"].as<std::string>();
+    paramlist_.result_folfer = config_node["result_folfer"].as<std::string>();
 
     /*[2]--create folder*/
-    if (paramlist_.result_save_folfer == "")
+    if (paramlist_.result_folfer == "")
     {
-        paramlist_.result_save_folfer = ros::package::getPath("evolving_ad") + "/result";
+        paramlist_.result_folfer = ros::package::getPath("evolving_ad") + "/result";
     }
-    paramlist_.result_save_subfolfer_keyframe = paramlist_.result_save_folfer + "/keyframe";
-    Tools::FileManager::CreateFolder(paramlist_.result_save_folfer);
-    Tools::FileManager::CreateFolder(paramlist_.result_save_subfolfer_keyframe);
+    paramlist_.result_subfolfer_keyframe = paramlist_.result_folfer + "/keyframe";
+    paramlist_.result_subfolfer_trajectory = paramlist_.result_folfer + "/trajectory";
+
+    Tools::FileManager::CreateFolder(paramlist_.result_folfer);
+    Tools::FileManager::CreateFolder(paramlist_.result_subfolfer_keyframe);
+    Tools::FileManager::CreateFolder(paramlist_.result_subfolfer_trajectory);
+
+    Tools::FileManager::CreateTxtFile(gnss_odom_ofs_, paramlist_.result_subfolfer_trajectory + "/gnss_traj.txt");
+    Tools::FileManager::CreateTxtFile(lidar_odom_ofs_, paramlist_.result_subfolfer_trajectory + "/lidar_traj.txt");
 
     /*[3]-graph optimizer setting*/
     graph_optimizer_ptr_ = std::make_shared<G2oOpter>("lm_var");
@@ -49,13 +55,20 @@ PoseGraph::PoseGraph(const YAML::Node &config_node)
  * @param[in] fusion_odom_msg
  * @return
  */
-bool PoseGraph::UpdatePose(const CloudMsg &cloud_msg, const PoseMsg &gnss_odom_msg, const PoseMsg &lidar_odom_msg)
+bool PoseGraph::UpdatePose(const CloudMsg &cloud_msg, const PoseMsg &lidar_odom_msg, const PoseMsg &gnss_odom_msg)
 {
 
-    if (CheckNewKeyFrame(lidar_odom_msg, cloud_msg) == true)
+    /*[1]--reset */
+    has_new_keyframe_flag_ = false;
+    has_new_optimize_flag_ = false;
+
+    if (CheckNewKeyFrame(cloud_msg, lidar_odom_msg, gnss_odom_msg) == true)
     {
 
         AddVertexandEdge(gnss_odom_msg);
+
+        SaveTrajectory(lidar_odom_msg.pose, lidar_odom_ofs_);
+        SaveTrajectory(gnss_odom_msg.pose, gnss_odom_ofs_);
 
         if (new_keyframe_cnt_ >= paramlist_.new_keyframe_cnt_max)
         {
@@ -63,7 +76,6 @@ bool PoseGraph::UpdatePose(const CloudMsg &cloud_msg, const PoseMsg &gnss_odom_m
             if (graph_optimizer_ptr_->Opimtize() == true)
             {
                 graph_optimizer_ptr_->GetOptPoseQueue(opted_pose_msg_queue_);
-                // fusion_odom_msg.pose = opted_pose_queue_.back(); // just temp
             }
         }
         return true;
@@ -75,32 +87,27 @@ bool PoseGraph::UpdatePose(const CloudMsg &cloud_msg, const PoseMsg &gnss_odom_m
  * @param[in]
  * @return
  */
-bool PoseGraph::CheckNewKeyFrame(const PoseMsg &lidar_odom_msg, const CloudMsg &cloud_msg)
+bool PoseGraph::CheckNewKeyFrame(const CloudMsg &cloud_msg, const PoseMsg &lidar_odom_msg, const PoseMsg &gnss_odom_msg)
 {
 
     static Eigen::Matrix4f last_keyframe_pose = lidar_odom_msg.pose;
 
-    bool has_new_keyframe_flag = false;
     /*[1]--check if keyframe*/
-    if (keyframe_msg_queue_.size() == 0)
+    if ((fabs(lidar_odom_msg.pose(0, 3) - last_keyframe_pose(0, 3)) +
+             fabs(lidar_odom_msg.pose(1, 3) - last_keyframe_pose(1, 3)) +
+             fabs(lidar_odom_msg.pose(2, 3) - last_keyframe_pose(2, 3)) >=
+         paramlist_.keyframe_distance) or
+        keyframe_msg_queue_.empty())
     {
-        has_new_keyframe_flag = true; // set flag
+        has_new_keyframe_flag_ = true; // set flag
         last_keyframe_pose = lidar_odom_msg.pose;
-    }
-    if (fabs(lidar_odom_msg.pose(0, 3) - last_keyframe_pose(0, 3)) +
-            fabs(lidar_odom_msg.pose(1, 3) - last_keyframe_pose(1, 3)) +
-            fabs(lidar_odom_msg.pose(2, 3) - last_keyframe_pose(2, 3)) >=
-        paramlist_.keyframe_distance)
-    {
-        last_keyframe_pose = lidar_odom_msg.pose;
-        has_new_keyframe_flag = true; // set flag
     }
 
     /*[2]--if has new keyframe */
-    if (has_new_keyframe_flag == true)
+    if (has_new_keyframe_flag_ == true)
     {
-        std::string pcd_file_path = paramlist_.result_save_subfolfer_keyframe + "/keyframe_" +
-                                    std::to_string(keyframe_msg_queue_.size()) + ".pcd";
+        std::string pcd_file_path =
+            paramlist_.result_subfolfer_keyframe + "/keyframe_" + std::to_string(keyframe_msg_queue_.size()) + ".pcd";
         pcl::io::savePCDFileBinary(pcd_file_path, *cloud_msg.cloud_ptr);
 
         FrameMsg keyframe_msg;
@@ -108,10 +115,15 @@ bool PoseGraph::CheckNewKeyFrame(const PoseMsg &lidar_odom_msg, const CloudMsg &
         keyframe_msg.pose = lidar_odom_msg.pose;
         keyframe_msg.index = static_cast<unsigned int>(keyframe_msg_queue_.size()); // index=size-1
         keyframe_msg_queue_.push_back(keyframe_msg);
+
         cur_keyframe_msg_ = keyframe_msg; // only shallow copy
+
+        cur_keygnss_msg_.index = keyframe_msg.index;
+        cur_keygnss_msg_.time_stamp = gnss_odom_msg.time_stamp;
+        cur_keygnss_msg_.pose = gnss_odom_msg.pose;
     }
 
-    return has_new_keyframe_flag;
+    return has_new_keyframe_flag_;
 }
 
 bool PoseGraph::AddVertexandEdge(const PoseMsg &gnss_odom_msg)
@@ -145,7 +157,6 @@ bool PoseGraph::AddVertexandEdge(const PoseMsg &gnss_odom_msg)
     Eigen::Vector3d xyz(static_cast<double>(gnss_odom_msg.pose(0, 3)), static_cast<double>(gnss_odom_msg.pose(1, 3)),
                         static_cast<double>(gnss_odom_msg.pose(2, 3)));
     graph_optimizer_ptr_->AddPriorXYZEdge(node_num - 1, xyz, paramlist_.gnss_odom_noise);
-    // new_gnss_cnt_++;
 
     return true;
 }
@@ -153,4 +164,29 @@ bool PoseGraph::AddVertexandEdge(const PoseMsg &gnss_odom_msg)
 void PoseGraph::GetOptedPoseQueue(std::deque<PoseMsg> &opted_pose_msg_queue)
 {
     opted_pose_msg_queue = this->opted_pose_msg_queue_;
+}
+
+/**
+ * @brief trajsave
+ * @param[in]
+ * @return
+ */
+void PoseGraph::SaveTrajectory(const Eigen::Matrix4f &target_odom, std::ofstream &ofs)
+{
+
+    for (int i = 0; i < 3; ++i)
+    {
+        for (int j = 0; j < 4; ++j)
+        {
+            ofs << target_odom(i, j);
+            if (i == 2 && j == 3)
+            {
+                ofs << std::endl;
+            }
+            else
+            {
+                ofs << " ";
+            }
+        }
+    }
 }

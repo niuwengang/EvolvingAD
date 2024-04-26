@@ -20,4 +20,4 @@ pose_graph:
   new_loop_cnt_max: 0
   new_key_frame_cnt_max: 10
 
-  result_save_folfer: ""
+  result_folfer: ""

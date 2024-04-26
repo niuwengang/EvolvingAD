@@ -30,23 +30,34 @@ class PoseGraph
 {
   public:
     PoseGraph(const YAML::Node &config_node);
-    bool UpdatePose(const CloudMsg &cloud_msg, const PoseMsg &gnss_odom_msg, const PoseMsg &lidar_odom_msg);
+    bool UpdatePose(const CloudMsg &cloud_msg, const PoseMsg &lidar_odom_msg, const PoseMsg &gnss_odom_msg);
     void GetOptedPoseQueue(std::deque<PoseMsg> &opted_pose_msg_queue);
 
   private:
-    bool CheckNewKeyFrame(const PoseMsg &lidar_odom_msg, const CloudMsg &cloud_msg);
+    bool CheckNewKeyFrame(const CloudMsg &cloud_msg, const PoseMsg &lidar_odom_msg, const PoseMsg &gnss_odom_msg);
     bool AddVertexandEdge(const PoseMsg &gnss_odom_msg);
+    void SaveTrajectory(const Eigen::Matrix4f &target_odom, std::ofstream &ofs);
 
   private:
     /*variable*/
     FrameMsg cur_keyframe_msg_;
+    FrameMsg cur_keygnss_msg_;
     std::deque<FrameMsg> keyframe_msg_queue_;
-    std::shared_ptr<GraphOptimizerInterface> graph_optimizer_ptr_ = nullptr;
-    std::deque<PoseMsg> opted_pose_msg_queue_; //  queue opted
+    std::deque<PoseMsg> opted_pose_msg_queue_;
+
+    bool has_new_keyframe_flag_ = false;
+    bool has_new_optimize_flag_ = false;
 
     unsigned int new_gnss_cnt_ = 0;
     unsigned int new_loop_cnt_ = 0;
     unsigned int new_keyframe_cnt_ = 0;
+
+    std::ofstream gnss_odom_ofs_;
+    std::ofstream lidar_odom_ofs_;
+    std::ofstream opt_odom_ofs_;
+
+    /*algorithm module*/
+    std::shared_ptr<GraphOptimizerInterface> graph_optimizer_ptr_ = nullptr;
 
     struct ParamLists
     {
@@ -62,8 +73,9 @@ class PoseGraph
 
         double keyframe_distance = 2.0;
 
-        std::string result_save_folfer = "";
-        std::string result_save_subfolfer_keyframe = "";
+        std::string result_folfer = "";
+        std::string result_subfolfer_keyframe = "";
+        std::string result_subfolfer_trajectory = "";
     } paramlist_;
 };
 

@@ -69,7 +69,7 @@ bool BackEndPipe::Run()
         cur_lidar_odom_msg_.pose =
             lidar2gnss_transform_ * cur_lidar_odom_msg_.pose; // lidar coordinate align to gnss coordinate
 
-        pose_graph_ptr_->UpdatePose(cur_cloud_msg_, cur_gnss_odom_msg_, cur_lidar_odom_msg_);
+        pose_graph_ptr_->UpdatePose(cur_cloud_msg_, cur_lidar_odom_msg_, cur_gnss_odom_msg_);
 
         spdlog::info("backend_node$ core exec hz:{}");
 
@@ -183,37 +183,3 @@ void BackEndPipe::PublishMsg()
     // cloud_pub_ptr_->Publish(transformed_cloud_ptr, fusion_odom_msg_.time_stamp);
 }
 
-// /**
-//  * @brief 轨迹保存
-//  * @param[in]
-//  * @return
-//  */
-// void BackEndPipe::SaveTrajectory(const Eigen::Matrix4f &target_odom, const std::string file_name)
-// {
-//     static std::ofstream target_odom_stream;
-//     static bool is_file_created = false;
-//     /*1--创建文件*/
-//     if (!is_file_created)
-//     {
-//         std::string file_path = paramlist_.package_folder_path + "/result/" + file_name + ".txt";
-//         Tools::FileManager::CreateTxtFile(target_odom_stream, traj_file_path)
-
-//             is_file_created = true;
-//     }
-//     /*2--写入轨迹*/
-//     for (int i = 0; i < 3; ++i)
-//     {
-//         for (int j = 0; j < 4; ++j)
-//         {
-//             target_odom_stream << target_odom(i, j);
-//             if (i == 2 && j == 3)
-//             {
-//                 target_odom_stream << std::endl;
-//             }
-//             else
-//             {
-//                 target_odom_stream << " ";
-//             }
-//         }
-//     }
-// }
