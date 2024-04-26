@@ -18,6 +18,6 @@ pose_graph:
 
   new_gnss_cnt_max: 0
   new_loop_cnt_max: 0
-  new_key_frame_cnt_max: 2
+  new_key_frame_cnt_max: 10
 
   result_save_folfer: ""

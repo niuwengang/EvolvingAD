@@ -30,6 +30,7 @@ BackEndPipe::BackEndPipe(ros::NodeHandle &nh)
     fusion_odom_pub_ptr_ = std::make_shared<Tools::OdomPub>(nh, "fusion_odom", "map", "veh");
     veh_tf_pub_ptr_ = std::make_shared<Tools::TfPub>("map", "ground_link"); // tf tree
     lidar_odom_pub_ptr_ = std::make_shared<Tools::OdomPub>(nh, "lidar_odom_aligned", "map", "lidar");
+    path_pub_ptr = std::make_shared<Tools::PathPub>(nh, "opt_path", "map");
 
     /*[3]--system monitor*/
     log_ptr_ = std::make_shared<Tools::LogRecord>(paramlist_.package_folder_path + "/log", "back_end");
@@ -165,9 +166,12 @@ bool BackEndPipe::ReadMsg()
  */
 void BackEndPipe::PublishMsg()
 {
-    lidar_odom_pub_ptr_->Publish(cur_lidar_odom_msg_.pose, fusion_odom_msg_.time_stamp);
-    fusion_odom_pub_ptr_->Publish(fusion_odom_msg_.pose, fusion_odom_msg_.time_stamp);
+    lidar_odom_pub_ptr_->Publish(fusion_odom_msg_.pose, fusion_odom_msg_.time_stamp);
+    pose_graph_ptr_->GetOptedPoseQueue(opted_pose_queue_);
+    path_pub_ptr->Publish(opted_pose_queue_);
     veh_tf_pub_ptr_->SendTransform(fusion_odom_msg_.pose);
+    
+    // fusion_odom_pub_ptr_->Publish(fusion_odom_msg_.pose, fusion_odom_msg_.time_stamp);
 
     // /*pub local map*/
     // CloudMsg::CLOUD_PTR transformed_cloud_ptr(new CloudMsg::CLOUD());

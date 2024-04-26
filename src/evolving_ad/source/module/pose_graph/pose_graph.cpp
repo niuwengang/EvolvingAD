@@ -55,18 +55,18 @@ bool PoseGraph::UpdatePose(const PoseMsg &gnss_odom_msg, const PoseMsg &lidar_od
     {
 
         AddVertexandEdge(gnss_odom_msg);
-        if (graph_optimizer_ptr_->Opimtize() == true)
-        {
-            graph_optimizer_ptr_->GetOptPoseQueue(opted_pose_queue_);
-            fusion_odom_msg.pose = opted_pose_queue_.back(); // just temp
-        }
-        // if (new_keyframe_cnt_ >= paramlist_.new_keyframe_cnt_max)
-        // {
-        //     new_keyframe_cnt_ = 0;
 
-        // }
+        if (new_keyframe_cnt_ >= paramlist_.new_keyframe_cnt_max)
+        {
+            new_keyframe_cnt_ = 0;
+            if (graph_optimizer_ptr_->Opimtize() == true)
+            {
+                graph_optimizer_ptr_->GetOptPoseQueue(opted_pose_queue_);
+                // fusion_odom_msg.pose = opted_pose_queue_.back(); // just temp
+            }
+        }
+        return true;
     }
-    return true;
 }
 
 /**
@@ -143,4 +143,9 @@ bool PoseGraph::AddVertexandEdge(const PoseMsg &gnss_odom_msg)
     // new_gnss_cnt_++;
 
     return true;
+}
+
+void PoseGraph::GetOptedPoseQueue(std::deque<Eigen::Matrix4f> &opted_pose_queue)
+{
+    opted_pose_queue = this->opted_pose_queue_;
 }

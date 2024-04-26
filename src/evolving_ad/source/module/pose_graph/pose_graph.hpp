@@ -29,6 +29,7 @@ class PoseGraph
   public:
     PoseGraph(const YAML::Node &config_node);
     bool UpdatePose(const PoseMsg &gnss_odom_msg, const PoseMsg &lidar_odom_msg, PoseMsg &fusion_odom_msg);
+    void GetOptedPoseQueue(std::deque<Eigen::Matrix4f> &opted_pose_queue);
 
   private:
     bool CheckNewKeyFrame(PoseMsg &fusion_odom_msg);

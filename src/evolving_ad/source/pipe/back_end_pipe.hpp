@@ -16,6 +16,7 @@
 // tools--pub
 #include "tools/publisher/cloud_pub.hpp"
 #include "tools/publisher/odom_pub.hpp"
+#include "tools/publisher/path_pub.hpp"
 #include "tools/publisher/tf_pub.hpp"
 // tools--sub
 #include "tools/subscriber/cloud_sub.hpp"
@@ -54,6 +55,7 @@ class BackEndPipe
     std::shared_ptr<Tools::OdomPub> lidar_odom_pub_ptr_ = nullptr;
     std::shared_ptr<Tools::OdomPub> fusion_odom_pub_ptr_ = nullptr;
     std::shared_ptr<Tools::TfPub> veh_tf_pub_ptr_ = nullptr;
+    std::shared_ptr<Tools::PathPub> path_pub_ptr = nullptr;
 
     /*variable*/
     std::deque<CloudMsg> cloud_msg_queue_;
@@ -73,6 +75,8 @@ class BackEndPipe
 
     /*algorithm module*/
     std::shared_ptr<PoseGraph> pose_graph_ptr_ = nullptr; // odom发布
+
+    std::deque<Eigen::Matrix4f> opted_pose_queue_;
 
     struct ParamLists
     {
