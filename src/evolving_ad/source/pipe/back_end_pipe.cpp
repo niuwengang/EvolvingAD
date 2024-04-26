@@ -71,8 +71,6 @@ bool BackEndPipe::Run()
 
         pose_graph_ptr_->UpdatePose(cur_cloud_msg_, cur_lidar_odom_msg_, cur_gnss_odom_msg_);
 
-        spdlog::info("backend_node$ core exec hz:{}");
-
         PublishMsg();
     }
 
@@ -173,13 +171,5 @@ void BackEndPipe::PublishMsg()
     pose_graph_ptr_->GetOptedPoseQueue(opted_pose_msg_queue_);
     path_pub_ptr->Publish(opted_pose_msg_queue_);
 
-    // fusion_odom_pub_ptr_->Publish(fusion_odom_msg_.pose, fusion_odom_msg_.time_stamp);
-
-    // /*pub local map*/
-    // CloudMsg::CLOUD_PTR transformed_cloud_ptr(new CloudMsg::CLOUD());
-    // Eigen::Matrix4f transforme_matrix = fusion_odom_msg_.pose;
-    // transforme_matrix(2, 3) += 1.0; // only view1
-    // pcl::transformPointCloud(*cur_cloud_msg_.cloud_ptr, *transformed_cloud_ptr, transforme_matrix);
-    // cloud_pub_ptr_->Publish(transformed_cloud_ptr, fusion_odom_msg_.time_stamp);
+    spdlog::info("backend_node$ core exec hz:{}", cur_lidar_odom_msg_.time_stamp);
 }
-

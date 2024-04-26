@@ -53,7 +53,6 @@ class BackEndPipe
 
     std::shared_ptr<Tools::CloudPub> cloud_pub_ptr_ = nullptr;
     std::shared_ptr<Tools::OdomPub> lidar_odom_pub_ptr_ = nullptr;
-    std::shared_ptr<Tools::OdomPub> fusion_odom_pub_ptr_ = nullptr;
     std::shared_ptr<Tools::TfPub> veh_tf_pub_ptr_ = nullptr;
     std::shared_ptr<Tools::PathPub> path_pub_ptr = nullptr;
 
@@ -73,7 +72,7 @@ class BackEndPipe
     std::shared_ptr<Tools::TimeRecord> time_ptr_ = nullptr;
 
     /*algorithm module*/
-    std::shared_ptr<PoseGraph> pose_graph_ptr_ = nullptr; // odom发布
+    std::shared_ptr<PoseGraph> pose_graph_ptr_ = nullptr; // odom pub
 
     std::deque<PoseMsg> opted_pose_msg_queue_;
 
