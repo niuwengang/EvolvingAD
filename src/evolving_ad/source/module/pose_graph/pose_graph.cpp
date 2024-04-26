@@ -43,7 +43,7 @@ PoseGraph::PoseGraph(const YAML::Node &config_node)
 
     Tools::FileManager::CreateTxtFile(gnss_odom_ofs_, paramlist_.result_subfolfer_trajectory + "/gnss_traj.txt");
     Tools::FileManager::CreateTxtFile(lidar_odom_ofs_, paramlist_.result_subfolfer_trajectory + "/lidar_traj.txt");
-
+    Tools::FileManager::CreateTxtFile(opt_odom_ofs_, paramlist_.result_subfolfer_trajectory + "/opt_traj.txt");
     /*[3]-graph optimizer setting*/
     graph_optimizer_ptr_ = std::make_shared<G2oOpter>("lm_var");
 }
@@ -80,6 +80,19 @@ bool PoseGraph::UpdatePose(const CloudMsg &cloud_msg, const PoseMsg &lidar_odom_
         }
         return true;
     }
+}
+
+void PoseGraph::FinalOptimize()
+{
+    if (graph_optimizer_ptr_->Opimtize() == true)
+    {
+        graph_optimizer_ptr_->GetOptPoseQueue(opted_pose_msg_queue_);
+
+        for (const auto &pose_msg : opted_pose_msg_queue_)
+        {
+            SaveTrajectory(pose_msg.pose, opt_odom_ofs_);
+        }
+    } // todo bool
 }
 
 /**
@@ -163,6 +176,7 @@ bool PoseGraph::AddVertexandEdge(const PoseMsg &gnss_odom_msg)
 
 void PoseGraph::GetOptedPoseQueue(std::deque<PoseMsg> &opted_pose_msg_queue)
 {
+    opted_pose_msg_queue.clear();
     opted_pose_msg_queue = this->opted_pose_msg_queue_;
 }
 

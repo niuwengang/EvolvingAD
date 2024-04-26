@@ -34,7 +34,7 @@ BackEndPipe::BackEndPipe(ros::NodeHandle &nh)
     /*[3]--system monitor*/
     log_ptr_ = std::make_shared<Tools::LogRecord>(paramlist_.package_folder_path + "/log", "back_end");
     time_ptr_ = std::make_shared<Tools::TimeRecord>();
-    watchdog_ptr_ = std::make_shared<Tools::WatchDog>(nh, 1.0, 15.0);
+    watchdog_ptr_ = std::make_shared<Tools::WatchDog>(nh, 1.0, 30.0);
 
     /*[4]--algorithm  module init*/
     pose_graph_ptr_ = std::make_shared<PoseGraph>(config["pose_graph"]);
@@ -49,7 +49,8 @@ bool BackEndPipe::Run()
 {
     if (watchdog_ptr_->GetTimeOutStatus() == true)
     {
-        spdlog::info("backend_node$ time delay ....");
+        spdlog::warn("backend_node$ time delay ....");
+        pose_graph_ptr_->FinalOptimize();
         exit(EXIT_SUCCESS);
     }
 

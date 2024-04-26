@@ -31,6 +31,7 @@ class PoseGraph
   public:
     PoseGraph(const YAML::Node &config_node);
     bool UpdatePose(const CloudMsg &cloud_msg, const PoseMsg &lidar_odom_msg, const PoseMsg &gnss_odom_msg);
+    void FinalOptimize();
     void GetOptedPoseQueue(std::deque<PoseMsg> &opted_pose_msg_queue);
 
   private:
