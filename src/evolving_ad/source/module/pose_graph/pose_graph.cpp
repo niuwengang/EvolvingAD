@@ -78,8 +78,8 @@ bool PoseGraph::UpdatePose(const CloudMsg &cloud_msg, const PoseMsg &lidar_odom_
                 graph_optimizer_ptr_->GetOptPoseQueue(opted_pose_msg_queue_);
             }
         }
-        return true;
     }
+    return true;
 }
 
 void PoseGraph::FinalOptimize()
@@ -92,7 +92,11 @@ void PoseGraph::FinalOptimize()
         {
             SaveTrajectory(pose_msg.pose, opt_odom_ofs_);
         }
-    } // todo bool
+
+        CloudMsg::CLOUD_PTR all_map_ptr(new CloudMsg::CLOUD());
+
+        SaveAllMap(opted_pose_msg_queue_, all_map_ptr);
+    }
 }
 
 /**
@@ -203,4 +207,25 @@ void PoseGraph::SaveTrajectory(const Eigen::Matrix4f &target_odom, std::ofstream
             }
         }
     }
+}
+
+void PoseGraph::SaveAllMap(const std::deque<PoseMsg> &pose_msg_queue, CloudMsg::CLOUD_PTR &all_map_ptr)
+{
+    all_map_ptr.reset(new CloudMsg::CLOUD());
+
+    for (size_t i = 0; i < pose_msg_queue.size(); ++i)
+    {
+        const PoseMsg pose_msg = pose_msg_queue[i];
+
+        std::string file_path =
+            paramlist_.result_subfolfer_keyframe + "/keyframe_" + std::to_string(pose_msg.index) + ".pcd";
+        CloudMsg::CLOUD_PTR single_scan_ptr(new CloudMsg::CLOUD());
+        pcl::io::loadPCDFile(file_path, *single_scan_ptr);
+
+        pcl::transformPointCloud(*single_scan_ptr, *single_scan_ptr, pose_msg.pose);
+        *all_map_ptr += *single_scan_ptr;
+    }
+    std::shared_ptr<Module::CloudFilterInterface> cloud_filter_ptr = std::make_shared<Module::VoxelFilter>(0.5);
+    cloud_filter_ptr->Filter(all_map_ptr, all_map_ptr);
+    pcl::io::savePCDFileBinary(paramlist_.result_folfer + "/all_map.pcd", *all_map_ptr);
 }

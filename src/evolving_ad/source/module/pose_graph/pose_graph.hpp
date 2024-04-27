@@ -10,6 +10,7 @@
 #define _POSE_GRAPH_HPP_
 
 // user msg lib
+#include "user_msg/cloud_msg.hpp"
 #include "user_msg/frame_msg.hpp"
 #include "user_msg/pose_msg.hpp"
 // eigen lib
@@ -19,11 +20,14 @@
 // yaml
 #include <yaml-cpp/yaml.h>
 // module
+#include "module/cloud_filter/cloud_filter_interface.hpp"
+#include "module/cloud_filter/voxel_filter.hpp"
 #include "module/graph_optimizer/g2o/g2o_opter.hpp"
 #include "module/graph_optimizer/graph_optimizer_interface.hpp"
 // ros
 #include <ros/package.h>
 // pcl
+#include <pcl/common/transforms.h>
 #include <pcl/io/pcd_io.h>
 
 class PoseGraph
@@ -38,6 +42,7 @@ class PoseGraph
     bool CheckNewKeyFrame(const CloudMsg &cloud_msg, const PoseMsg &lidar_odom_msg, const PoseMsg &gnss_odom_msg);
     bool AddVertexandEdge(const PoseMsg &gnss_odom_msg);
     void SaveTrajectory(const Eigen::Matrix4f &target_odom, std::ofstream &ofs);
+    void SaveAllMap(const std::deque<PoseMsg> &pose_msg_queue, CloudMsg::CLOUD_PTR &all_map_ptr);
 
   private:
     /*variable*/
