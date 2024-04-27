@@ -67,8 +67,19 @@ bool PoseGraph::UpdatePose(const CloudMsg &cloud_msg, const PoseMsg &lidar_odom_
 
         AddVertexandEdge(gnss_odom_msg);
 
-        // SaveTrajectory(lidar_odom_msg.pose, lidar_odom_ofs_);
-        // SaveTrajectory(gnss_odom_msg.pose, gnss_odom_ofs_);
+        static double time_stamp_last = 0.0;
+
+        static bool start_record_flag = false;
+        if (start_record_flag == false)
+        {
+            SaveTrajectory(lidar_odom_msg, lidar_odom_ofs_, 0.0);
+            start_record_flag = true;
+        }
+        else
+        {
+            SaveTrajectory(lidar_odom_msg, lidar_odom_ofs_, lidar_odom_msg.time_stamp - time_stamp_last);
+        }
+        time_stamp_last = lidar_odom_msg.time_stamp;
 
         if (new_keyframe_cnt_ >= paramlist_.new_keyframe_cnt_max)
         {
@@ -90,17 +101,21 @@ void PoseGraph::FinalOptimize()
 
         for (int index = 0; index < opted_pose_msg_queue_.size(); index++)
         {
+
+            double time_stamp_increment = 0.0;
+
             if (index == 0)
             {
-                opted_pose_msg_queue_[index].time_stamp = 0;
+
+                time_stamp_increment = 0;
             }
             else
             {
-                opted_pose_msg_queue_[index].time_stamp =
+                time_stamp_increment =
                     keyframe_msg_queue_.at(index).time_stamp - keyframe_msg_queue_.at(index - 1).time_stamp;
             }
 
-            SaveTrajectory(opted_pose_msg_queue_[index], opt_odom_ofs_);
+            SaveTrajectory(opted_pose_msg_queue_[index], opt_odom_ofs_, time_stamp_increment);
         }
 
         CloudMsg::CLOUD_PTR all_map_ptr(new CloudMsg::CLOUD());
@@ -199,10 +214,10 @@ void PoseGraph::GetOptedPoseQueue(std::deque<PoseMsg> &opted_pose_msg_queue)
  * @param[in]
  * @return
  */
-void PoseGraph::SaveTrajectory(const PoseMsg &pose_msg, std::ofstream &ofs)
+void PoseGraph::SaveTrajectory(const PoseMsg &pose_msg, std::ofstream &ofs, const double time_stamp_increment)
 {
     std::vector<double> tum_output(8);
-    tum_output[0] = pose_msg.time_stamp;
+    tum_output[0] = time_stamp_increment;
 
     tum_output[1] = pose_msg.pose(0, 3); // x
     tum_output[2] = pose_msg.pose(1, 3); // y

@@ -41,7 +41,7 @@ class PoseGraph
   private:
     bool CheckNewKeyFrame(const CloudMsg &cloud_msg, const PoseMsg &lidar_odom_msg, const PoseMsg &gnss_odom_msg);
     bool AddVertexandEdge(const PoseMsg &gnss_odom_msg);
-    void SaveTrajectory(const PoseMsg &pose_msg, std::ofstream &ofs);
+    void SaveTrajectory(const PoseMsg &pose_msg, std::ofstream &ofs, const double time_stamp_increment);
     void SaveAllMap(const std::deque<PoseMsg> &pose_msg_queue, CloudMsg::CLOUD_PTR &all_map_ptr);
 
   private:
