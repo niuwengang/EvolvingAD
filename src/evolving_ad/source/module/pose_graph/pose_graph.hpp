@@ -37,6 +37,7 @@ class PoseGraph
     bool UpdatePose(const CloudMsg &cloud_msg, const PoseMsg &lidar_odom_msg, const PoseMsg &gnss_odom_msg);
     void FinalOptimize();
     void GetOptedPoseQueue(std::deque<PoseMsg> &opted_pose_msg_queue);
+    void GetGnss2Lidar(const Eigen::Matrix4f &transform);
 
   private:
     bool CheckNewKeyFrame(const CloudMsg &cloud_msg, const PoseMsg &lidar_odom_msg, const PoseMsg &gnss_odom_msg);
@@ -65,6 +66,7 @@ class PoseGraph
     /*algorithm module*/
     std::shared_ptr<GraphOptimizerInterface> graph_optimizer_ptr_ = nullptr;
 
+    Eigen::Matrix4f gnss_to_lidar_;
     struct ParamLists
     {
       public:
@@ -82,6 +84,10 @@ class PoseGraph
         std::string result_folfer = "";
         std::string result_subfolfer_keyframe = "";
         std::string result_subfolfer_trajectory = "";
+
+        Eigen::Matrix4f lidar_to_body = Eigen::Matrix4f::Identity();
+        Eigen::Matrix4f imu_to_body = Eigen::Matrix4f::Identity();
+        Eigen::Matrix4f cam_to_lidar = Eigen::Matrix4f::Identity();
 
     } paramlist_;
 };

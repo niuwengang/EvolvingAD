@@ -67,14 +67,15 @@ bool BackEndPipe::Run()
             continue;
         }
 
-        static bool lidar2gnss_transform_init_flag = false;
-        if (lidar2gnss_transform_init_flag == false)
+        static bool gnss_to_lidar_flag = false;
+        if (gnss_to_lidar_flag == false)
         {
-            lidar2gnss_transform_ = cur_gnss_odom_msg_.pose * cur_lidar_odom_msg_.pose.inverse();
-            lidar2gnss_transform_init_flag = true;
+            gnss_to_lidar_ = cur_gnss_odom_msg_.pose * cur_lidar_odom_msg_.pose.inverse();
+            gnss_to_lidar_flag = true;
+            pose_graph_ptr_->GetGnss2Lidar(gnss_to_lidar_);
         }
         cur_lidar_odom_msg_.pose =
-            lidar2gnss_transform_ * cur_lidar_odom_msg_.pose; // lidar coordinate align to gnss coordinate
+            gnss_to_lidar_ * cur_lidar_odom_msg_.pose; // lidar coordinate align to gnss coordinate
 
         pose_graph_ptr_->UpdatePose(cur_cloud_msg_, cur_lidar_odom_msg_, cur_gnss_odom_msg_);
 

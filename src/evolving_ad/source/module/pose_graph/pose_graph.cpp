@@ -29,6 +29,13 @@ PoseGraph::PoseGraph(const YAML::Node &config_node)
 
     paramlist_.result_folfer = config_node["result_folfer"].as<std::string>();
 
+    paramlist_.lidar_to_body = Eigen::Map<Eigen::Matrix<float, 4, 4, Eigen::RowMajor>>(
+        config_node["extrinsic"]["lidar_to_body"].as<std::vector<float>>().data());
+    paramlist_.imu_to_body = Eigen::Map<Eigen::Matrix<float, 4, 4, Eigen::RowMajor>>(
+        config_node["extrinsic"]["imu_to_body"].as<std::vector<float>>().data());
+    paramlist_.cam_to_lidar = Eigen::Map<Eigen::Matrix<float, 4, 4, Eigen::RowMajor>>(
+        config_node["extrinsic"]["cam_to_lidar"].as<std::vector<float>>().data());
+
     /*[2]--create folder*/
     if (paramlist_.result_folfer == "")
     {
@@ -218,10 +225,11 @@ void PoseGraph::SaveTrajectory(const PoseMsg &pose_msg, std::ofstream &ofs, cons
 {
     std::vector<double> tum_output(8);
     tum_output[0] = time_stamp_increment;
+    Eigen::Matrix4f R = paramlist_.cam_to_lidar * gnss_to_lidar_.inverse() * pose_msg.pose;
 
-    tum_output[1] = pose_msg.pose(0, 3); // x
-    tum_output[2] = pose_msg.pose(1, 3); // y
-    tum_output[3] = pose_msg.pose(2, 3); // z
+    tum_output[1] = R(0, 3); // x
+    tum_output[2] = R(1, 3); // y
+    tum_output[3] = R(2, 3); // z
 
     Eigen::Quaternionf q(pose_msg.pose.block<3, 3>(0, 0));
     tum_output[4] = q.x(); // qx
@@ -262,4 +270,9 @@ void PoseGraph::SaveAllMap(const std::deque<PoseMsg> &pose_msg_queue, CloudMsg::
     std::shared_ptr<Module::CloudFilterInterface> cloud_filter_ptr = std::make_shared<Module::VoxelFilter>(0.5);
     cloud_filter_ptr->Filter(all_map_ptr, all_map_ptr);
     pcl::io::savePCDFileBinary(paramlist_.result_folfer + "/all_map.pcd", *all_map_ptr);
+}
+
+void PoseGraph::GetGnss2Lidar(const Eigen::Matrix4f &transform)
+{
+    this->gnss_to_lidar_ = transform;
 }

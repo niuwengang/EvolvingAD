@@ -39,6 +39,7 @@ class BackEndPipe
     BackEndPipe(ros::NodeHandle &nh);
     bool Run();
     bool ReadMsgBuffer();
+   
 
   private:
     bool CheckMsgQueue();
@@ -65,7 +66,7 @@ class BackEndPipe
     PoseMsg cur_gnss_odom_msg_;
     PoseMsg cur_lidar_odom_msg_;
 
-    Eigen::Matrix4f lidar2gnss_transform_ = Eigen::Matrix4f::Identity();
+    Eigen::Matrix4f gnss_to_lidar_ = Eigen::Matrix4f::Identity();
 
     /*system monitor*/
     std::shared_ptr<Tools::LogRecord> log_ptr_ = nullptr;

@@ -9,6 +9,7 @@ topic_sub: #
   gnss_sub_topic: /kitti/oxts/gps/fix #sensor_msgs/NavSatFix
 
 #seonsors extrinsic-------------------------------------------------
+#T_lidar2body
 extrinsic:
   lidar_to_body:
     [
