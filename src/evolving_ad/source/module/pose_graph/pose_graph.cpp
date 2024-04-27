@@ -67,8 +67,8 @@ bool PoseGraph::UpdatePose(const CloudMsg &cloud_msg, const PoseMsg &lidar_odom_
 
         AddVertexandEdge(gnss_odom_msg);
 
-        SaveTrajectory(lidar_odom_msg.pose, lidar_odom_ofs_);
-        SaveTrajectory(gnss_odom_msg.pose, gnss_odom_ofs_);
+        // SaveTrajectory(lidar_odom_msg.pose, lidar_odom_ofs_);
+        // SaveTrajectory(gnss_odom_msg.pose, gnss_odom_ofs_);
 
         if (new_keyframe_cnt_ >= paramlist_.new_keyframe_cnt_max)
         {
@@ -88,9 +88,19 @@ void PoseGraph::FinalOptimize()
     {
         graph_optimizer_ptr_->GetOptPoseQueue(opted_pose_msg_queue_);
 
-        for (const auto &pose_msg : opted_pose_msg_queue_)
+        for (int index = 0; index < opted_pose_msg_queue_.size(); index++)
         {
-            SaveTrajectory(pose_msg.pose, opt_odom_ofs_);
+            if (index == 0)
+            {
+                opted_pose_msg_queue_[index].time_stamp = 0;
+            }
+            else
+            {
+                opted_pose_msg_queue_[index].time_stamp =
+                    keyframe_msg_queue_.at(index).time_stamp - keyframe_msg_queue_.at(index - 1).time_stamp;
+            }
+
+            SaveTrajectory(opted_pose_msg_queue_[index], opt_odom_ofs_);
         }
 
         CloudMsg::CLOUD_PTR all_map_ptr(new CloudMsg::CLOUD());
@@ -128,7 +138,7 @@ bool PoseGraph::CheckNewKeyFrame(const CloudMsg &cloud_msg, const PoseMsg &lidar
         pcl::io::savePCDFileBinary(pcd_file_path, *cloud_msg.cloud_ptr);
 
         FrameMsg keyframe_msg;
-        keyframe_msg.time_stamp = lidar_odom_msg.time_stamp;
+        keyframe_msg.time_stamp = lidar_odom_msg.time_stamp; // timestamp
         keyframe_msg.pose = lidar_odom_msg.pose;
         keyframe_msg.index = static_cast<unsigned int>(keyframe_msg_queue_.size()); // index=size-1
         keyframe_msg_queue_.push_back(keyframe_msg);
@@ -189,24 +199,33 @@ void PoseGraph::GetOptedPoseQueue(std::deque<PoseMsg> &opted_pose_msg_queue)
  * @param[in]
  * @return
  */
-void PoseGraph::SaveTrajectory(const Eigen::Matrix4f &target_odom, std::ofstream &ofs)
+void PoseGraph::SaveTrajectory(const PoseMsg &pose_msg, std::ofstream &ofs)
 {
+    std::vector<double> tum_output(8);
+    tum_output[0] = pose_msg.time_stamp;
 
-    for (int i = 0; i < 3; ++i)
+    tum_output[1] = pose_msg.pose(0, 3); // x
+    tum_output[2] = pose_msg.pose(1, 3); // y
+    tum_output[3] = pose_msg.pose(2, 3); // z
+
+    Eigen::Quaternionf q(pose_msg.pose.block<3, 3>(0, 0));
+    tum_output[4] = q.x(); // qx
+    tum_output[5] = q.y(); // qy
+    tum_output[6] = q.z(); // qz
+    tum_output[7] = q.w(); // qw
+
+    for (int i = 0; i < 8; i++)
     {
-        for (int j = 0; j < 4; ++j)
+        ofs << tum_output[i];
+
+        if (i == 7)
         {
-            ofs << target_odom(i, j);
-            if (i == 2 && j == 3)
-            {
-                ofs << std::endl;
-            }
-            else
-            {
-                ofs << " ";
-            }
+            ofs << std::endl;
+            return;
         }
+        ofs << " ";
     }
+    ofs << std::endl;
 }
 
 void PoseGraph::SaveAllMap(const std::deque<PoseMsg> &pose_msg_queue, CloudMsg::CLOUD_PTR &all_map_ptr)
