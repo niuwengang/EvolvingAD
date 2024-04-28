@@ -1,0 +1,20 @@
+# @brief   frontend YAML
+# @date    2024-04-09 update
+# @version 0.1.1
+
+#topic subscriber------------------------------------------------
+topic_sub: #
+  cloud_sub_topic: /rslidar_points
+  imu_sub_topic: /imu_raw
+  gnss_sub_topic: /ublox_gps_node/fix
+  gt_sub_topic: /novatel_data/inspvax
+
+topic_pub:
+  cloud_pub_topic: /cloud
+# #lidar odom setting-------------------------------------------------
+# lidar_odom:
+#   keyframe_distance: 2.0
+#   keyframe_num: 5
+#   single_scan_leaf_size: 1.0 #filter size
+#   local_map_leaf_size: 1.0
+#   registration_resolution: 1.0
