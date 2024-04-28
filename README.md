@@ -100,6 +100,19 @@ All assets and code are under  under GPLv3 license. <br>
 
 
 ## 8.Updates
+
+tag v0.1.4 (pre-release)<br>
+1. Use ublox gnss.<br>
+2. Add gt traj.<br>
+
+
+**2024/04/28** <br>
+tag v0.1.3 <br>
+1. Add traj saving.<br>
+2. Added watchdog to detect system status.<br>
+3. Added map saving and stitching.<br>
+
+
 **2024/04/25** <br>
 tag v0.1.2 <br>
 1. Added 3D object decetion (use pointpillars). <br>
