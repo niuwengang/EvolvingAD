@@ -36,11 +36,6 @@ void CloudSub::MsgCallback(const sensor_msgs::PointCloud2::ConstPtr &cloud_msg_p
     cloud_msg.time_stamp = cloud_msg_ptr->header.stamp.toSec();
     pcl::fromROSMsg(*cloud_msg_ptr, *(cloud_msg.cloud_ptr));
 
-    std::vector<int> indices_src;
-    CloudMsg::CLOUD_PTR rm_nan_cloud_ptr(new CloudMsg::CLOUD());
-    pcl::removeNaNFromPointCloud(*cloud_msg.cloud_ptr, *rm_nan_cloud_ptr, indices_src);
-    *cloud_msg.cloud_ptr = *rm_nan_cloud_ptr;
-
     /*[2]--add message to queue*/
     cloud_msg_queue_.push_back(cloud_msg);
 

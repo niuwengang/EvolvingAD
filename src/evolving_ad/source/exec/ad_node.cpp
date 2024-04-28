@@ -20,14 +20,14 @@ class Scheduler
   public:
     void LocThread()
     {
-        ros::Rate rate(100);
+        ros::Rate rate_sub(100);
         std::shared_ptr<evolving_ad_ns::FrontEndPipe> front_end_ptr =
             std::make_shared<evolving_ad_ns::FrontEndPipe>(nh_, package_folder_path_);
 
         while (ros::ok())
         {
             front_end_ptr->Run();
-            rate.sleep();
+            rate_sub.sleep();
         }
     }
 
@@ -48,7 +48,7 @@ int main(int argc, char **argv)
 {
     ros::init(argc, argv, "loc_node");
     ros::NodeHandle nh("~");
-    ros::Rate rate(100); // urbanloc: imu 100hz
+    ros::Rate rate_main(100); // urbanloc: imu 100hz
 
     std::shared_ptr<Scheduler> scheduler_ptr = std::make_shared<Scheduler>(nh);
 
@@ -56,7 +56,7 @@ int main(int argc, char **argv)
     {
 
         ros::spinOnce();
-        rate.sleep();
+        rate_main.sleep();
     }
     return 0;
 }

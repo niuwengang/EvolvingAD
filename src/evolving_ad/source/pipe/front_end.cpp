@@ -19,6 +19,7 @@ FrontEndPipe::FrontEndPipe(ros::NodeHandle &nh, const std::string package_folder
 
     paramlist_.cloud_sub_topic = config_node["topic_sub"]["cloud_sub_topic"].as<std::string>();
     paramlist_.cloud_pub_topic = config_node["topic_pub"]["cloud_pub_topic"].as<std::string>();
+    paramlist_.odom_pub_topic = config_node["topic_pub"]["odom_pub_topic"].as<std::string>();
 
     paramlist_.model_file_path = paramlist_.package_folder_path + "/model//pointpillar.onnx";
     /*[2]--topic sub and pub*/
@@ -26,15 +27,16 @@ FrontEndPipe::FrontEndPipe(ros::NodeHandle &nh, const std::string package_folder
     cloud_pub_ptr_ = std::make_shared<CloudPub>(nh, paramlist_.cloud_pub_topic, "map");
     veh_tf_pub_ptr_ = std::make_shared<TfPub>("map", "ground_link");
     bbx_pub_ptr_ = std::make_shared<BbxPub>(nh, "object_result", "map");
+    odom_pub_ptr_ = std::make_shared<OdomPub>(nh, "my_odom", "map", "lidar");
 
     /*algorithm module*/
     object_detect_ptr_ = std::make_shared<ObjectDetect>(paramlist_.model_file_path);
+    lidar_odom_ptr_ = std::make_shared<LidarOdom>(config_node["lidar_odom"]);
 }
 
 bool FrontEndPipe::Run()
 {
-    Eigen::Matrix4f pose = Eigen::Matrix4f::Identity();
-    veh_tf_pub_ptr_->SendTransform(pose);
+
     cloud_sub_ptr_->ParseMsg(cloud_msg_queue_);
 
     if (!cloud_msg_queue_.empty())
@@ -45,8 +47,16 @@ bool FrontEndPipe::Run()
         ObjectsMsg objects_msg;
         object_detect_ptr_->Detect(cloud_msg, objects_msg);
 
+        lidar_odom_ptr_->InitPose(Eigen::Matrix4f::Identity());
+
+        Eigen::Matrix4f pose = Eigen::Matrix4f::Identity();
+        NormalFrame normal_frame(cloud_msg);
+        lidar_odom_ptr_->ComputePose(normal_frame, pose);
+
         bbx_pub_ptr_->Publish(objects_msg);
         cloud_pub_ptr_->Publish(cloud_msg);
+        veh_tf_pub_ptr_->SendTransform(pose);
+        odom_pub_ptr_->Publish(pose, cloud_msg.time_stamp);
     }
 
     return true;

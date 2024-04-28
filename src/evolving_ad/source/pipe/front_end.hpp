@@ -18,11 +18,14 @@
 // topic pub
 #include "topic_pub/bbx_pub.hpp"
 #include "topic_pub/cloud_pub.hpp"
+#include "topic_pub/odom_pub.hpp"
 #include "topic_pub/tf_pub.hpp"
 // msg
 #include "msg/object_msg.hpp"
 // module
 #include "module/object_detect/object_detect.hpp"
+#include "module/odom/lidar_odom.hpp"
+#include "module/odom/odom_interface.hpp"
 
 namespace evolving_ad_ns
 {
@@ -41,12 +44,14 @@ class FrontEndPipe
     std::shared_ptr<CloudPub> cloud_pub_ptr_ = nullptr;
     std::shared_ptr<TfPub> veh_tf_pub_ptr_ = nullptr;
     std::shared_ptr<BbxPub> bbx_pub_ptr_ = nullptr;
+    std::shared_ptr<OdomPub> odom_pub_ptr_ = nullptr;
 
     /*variable*/
     std::deque<CloudMsg> cloud_msg_queue_;
 
     /*algorithm module*/
     std::shared_ptr<ObjectDetect> object_detect_ptr_ = nullptr;
+    std::shared_ptr<OdomInterface> lidar_odom_ptr_ = nullptr;
 
     struct ParamList
     {
@@ -55,6 +60,7 @@ class FrontEndPipe
         std::string model_file_path;
         std::string cloud_sub_topic;
         std::string cloud_pub_topic;
+        std::string odom_pub_topic;
 
     } paramlist_;
 };
