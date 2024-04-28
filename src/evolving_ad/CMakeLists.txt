@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.9.0)
 project(evolving_ad)
 
+
+
 #compile option
 SET(CMAKE_BUILD_TYPE "Release")
 SET(CMAKE_CXX_FLAGS_RELEASE "$ENV{CXXFLAGS} -O3 -Wall")
@@ -8,14 +10,48 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 add_compile_options(-W) 
 
-include_directories(source)
-set(thirdpartylib "")
-include(cmake/thirdpartylib.cmake)
+
+#cuda
+option(USE_CUDA "Enable the use of CUDA" ON)  #if use cuda 
+if(USE_CUDA)
+  enable_language(CUDA)
+  set(CUDA_TOOLKIT_ROOT_DIR /usr/local/cuda)
+  set(CUDA_INCLUDE_DIRS ${CUDA_TOOLKIT_ROOT_DIR}/${CUDA_INSTALL_TARGET_DIR}/include)
+  set( SMS 30 32 35 37 50 52 53 60 61 62 70 72 75 87)
+  foreach(sm ${SMS})
+	set(GENCODE ${GENCODE} -gencode arch=compute_${sm},code=sm_${sm})
+  endforeach()
+  set(HIGHEST_SM 87)
+  set(GENCODE ${GENCODE} -gencode arch=compute_${HIGHEST_SM},code=compute_${HIGHEST_SM})
+  set(CUDA_NVCC_FLAGS ${CUDA_NVCC_FLAGS}
+    -ccbin ${CMAKE_CXX_COMPILER}
+    -Xcompiler -DWIN_INTERFACE_CUSTOM
+    -Xcompiler -I/usr/aarch64-linux-gnu/include/
+    -Xlinker -lsocket
+    -Xlinker -rpath=/usr/lib/aarch64-linux-gnu/
+    -Xlinker -rpath=/usr/aarch64-linux-gnu/lib/
+    -Xlinker -L/usr/lib/aarch64-linux-gnu/
+    -Xlinker -L/usr/aarch64-linux-gnu/lib/)
+  find_package(CUDA REQUIRED)
+  include_directories(${CUDA_INCLUDE_DIRS}  ${TENSORRT_INCLUDE_DIRS} )
+endif()
+
 
 #ros
 find_package(catkin REQUIRED COMPONENTS roscpp std_msgs roslib tf)
 include_directories(${catkin_INCLUDE_DIRS})
 catkin_package()
+
+include_directories(source)
+set(thirdpartylib "")
+include(cmake/thirdpartylib.cmake)
+
+#thirdparty--pointpillar
+if(USE_CUDA)
+  aux_source_directory(thirdpartylib/pointpillar/src   THIRDPARTY_POINT_PILLAR_SRC)
+  cuda_add_library(thirdparty_pointpillar   ${THIRDPARTY_POINT_PILLAR_SRC})
+  target_link_libraries(thirdparty_pointpillar   libnvinfer.so libnvonnxparser.so) 
+endif()
 
 #msg
 aux_source_directory(source/msg   MSG_SRC)
@@ -32,8 +68,10 @@ aux_source_directory(source/topic_pub   TOPIC_PUB)
 add_library(topic_pub  ${TOPIC_PUB})
 target_link_libraries(topic_pub  ${catkin_LIBRARIES} ${thirdpartylib})
 
+#pipe
 add_library(front_end source/pipe/front_end.cpp)
 target_link_libraries(front_end ${catkin_LIBRARIES} topic_sub  topic_pub msg )
 
+#exec
 add_executable(ad_node  source/exec/ad_node.cpp)
 target_link_libraries(ad_node front_end )

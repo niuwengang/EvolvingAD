@@ -29,7 +29,6 @@ CloudSub::CloudSub(ros::NodeHandle &nh, const std::string topic_name, const size
  */
 void CloudSub::MsgCallback(const sensor_msgs::PointCloud2::ConstPtr &cloud_msg_ptr)
 {
-    std::cout << "get lidar msg" << std::endl;
     mutex_.lock();
 
     /*[1]--load cloud message*/

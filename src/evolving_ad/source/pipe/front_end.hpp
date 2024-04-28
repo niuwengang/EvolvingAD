@@ -15,6 +15,7 @@
 #include "topic_sub/cloud_sub.hpp"
 // topic pub
 #include "topic_pub/cloud_pub.hpp"
+#include "topic_pub/tf_pub.hpp"
 
 namespace evolving_ad_ns
 {
@@ -31,6 +32,7 @@ class FrontEndPipe
     /*pub and sub*/
     std::shared_ptr<CloudSub> cloud_sub_ptr_ = nullptr;
     std::shared_ptr<CloudPub> cloud_pub_ptr_ = nullptr;
+    std::shared_ptr<TfPub> veh_tf_pub_ptr_ = nullptr;
 
     /*variable*/
     std::deque<CloudMsg> cloud_msg_queue_;

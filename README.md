@@ -65,6 +65,8 @@ sudo make  install
 + Cuda
 + gtsam
 + ceres
++ novatel_span_driver <br>
+https://github.com/ros-drivers/novatel_span_driver <br>
 
 ## 3.Pipeline
 

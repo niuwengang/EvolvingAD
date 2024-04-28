@@ -22,17 +22,16 @@ FrontEndPipe::FrontEndPipe(ros::NodeHandle &nh, const std::string package_folder
     paramlist_.cloud_sub_topic = config_node["topic_sub"]["cloud_sub_topic"].as<std::string>();
     paramlist_.cloud_pub_topic = config_node["topic_pub"]["cloud_pub_topic"].as<std::string>();
 
-    std::cout << "cloud_sub_topic path:" << paramlist_.cloud_sub_topic << std::endl;
+    /*[2]--topic sub and pub*/
     cloud_sub_ptr_ = std::make_shared<CloudSub>(nh, paramlist_.cloud_sub_topic);
     cloud_pub_ptr_ = std::make_shared<CloudPub>(nh, paramlist_.cloud_pub_topic, "map");
-    // gnss sub
-
-    /*[2]--topic pu*/
-    // lidar pub
+    veh_tf_pub_ptr_ = std::make_shared<TfPub>("map", "ground_link");
 }
 
 bool FrontEndPipe::Run()
 {
+    Eigen::Matrix4f pose = Eigen::Matrix4f::Identity();
+    veh_tf_pub_ptr_->SendTransform(pose);
     cloud_sub_ptr_->ParseMsg(cloud_msg_queue_);
 
     if (!cloud_msg_queue_.empty())
