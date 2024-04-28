@@ -43,15 +43,10 @@ include_directories(${catkin_INCLUDE_DIRS})
 catkin_package()
 
 include_directories(source)
+include_directories(./)
 set(thirdpartylib "")
 include(cmake/thirdpartylib.cmake)
 
-#thirdparty--pointpillar
-if(USE_CUDA)
-  aux_source_directory(thirdpartylib/pointpillar/src   THIRDPARTY_POINT_PILLAR_SRC)
-  cuda_add_library(thirdparty_pointpillar   ${THIRDPARTY_POINT_PILLAR_SRC})
-  target_link_libraries(thirdparty_pointpillar   libnvinfer.so libnvonnxparser.so) 
-endif()
 
 #msg
 aux_source_directory(source/msg   MSG_SRC)
@@ -68,9 +63,23 @@ aux_source_directory(source/topic_pub   TOPIC_PUB)
 add_library(topic_pub  ${TOPIC_PUB})
 target_link_libraries(topic_pub  ${catkin_LIBRARIES} ${thirdpartylib})
 
+
+#thirdparty--pointpillar
+if(USE_CUDA)
+  aux_source_directory(thirdpartylib/pointpillar/src   THIRDPARTY_POINT_PILLAR_SRC)
+  cuda_add_library(thirdparty_pointpillar   ${THIRDPARTY_POINT_PILLAR_SRC})
+  target_link_libraries(thirdparty_pointpillar   libnvinfer.so libnvonnxparser.so) 
+endif()
+
+#module
+file(GLOB_RECURSE MODULE_SRC "source/module/*.cpp")
+add_library(module ${MODULE_SRC})
+target_link_libraries(module ${catkin_LIBRARIES} ${thirdpartylib}  msg thirdparty_pointpillar ) 
+
+
 #pipe
 add_library(front_end source/pipe/front_end.cpp)
-target_link_libraries(front_end ${catkin_LIBRARIES} topic_sub  topic_pub msg )
+target_link_libraries(front_end ${catkin_LIBRARIES} topic_sub  topic_pub module msg )
 
 #exec
 add_executable(ad_node  source/exec/ad_node.cpp)

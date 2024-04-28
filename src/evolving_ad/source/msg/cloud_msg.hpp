@@ -12,7 +12,8 @@
 // pcl
 #include <pcl/point_cloud.h>
 #include <pcl/point_types.h>
-
+namespace evolving_ad_ns
+{
 class CloudMsg
 {
 
@@ -20,12 +21,13 @@ class CloudMsg
     CloudMsg();
     ~CloudMsg() = default;
 
-    using POINT = pcl::PointXYZI;
+    using POINT = pcl::PointXYZ;
     using CLOUD = pcl::PointCloud<POINT>;
     using CLOUD_PTR = CLOUD::Ptr;
 
     double time_stamp = 0.0;
     CLOUD_PTR cloud_ptr;
 };
+} // namespace evolving_ad_ns
 
 #endif //_CLOUD_MSG_HPP_

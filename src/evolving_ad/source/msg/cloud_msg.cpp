@@ -7,7 +7,8 @@
  */
 
 #include "cloud_msg.hpp"
-
+namespace evolving_ad_ns
+{
 /**
  * @brief
  * @param[in] none
@@ -16,4 +17,6 @@
 CloudMsg::CloudMsg()
 {
     cloud_ptr.reset(new CLOUD());
+    cloud_ptr->reserve(576000); // from https://www.robosense.cn/rslidar/RS-Helios
 }
+} // namespace evolving_ad_ns

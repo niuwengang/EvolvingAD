@@ -7,8 +7,6 @@
  */
 
 #include "front_end.hpp"
-// yaml
-#include <yaml-cpp/yaml.h>
 
 namespace evolving_ad_ns
 {
@@ -22,10 +20,15 @@ FrontEndPipe::FrontEndPipe(ros::NodeHandle &nh, const std::string package_folder
     paramlist_.cloud_sub_topic = config_node["topic_sub"]["cloud_sub_topic"].as<std::string>();
     paramlist_.cloud_pub_topic = config_node["topic_pub"]["cloud_pub_topic"].as<std::string>();
 
+    paramlist_.model_file_path = paramlist_.package_folder_path + "/model//pointpillar.onnx";
     /*[2]--topic sub and pub*/
     cloud_sub_ptr_ = std::make_shared<CloudSub>(nh, paramlist_.cloud_sub_topic);
     cloud_pub_ptr_ = std::make_shared<CloudPub>(nh, paramlist_.cloud_pub_topic, "map");
     veh_tf_pub_ptr_ = std::make_shared<TfPub>("map", "ground_link");
+    bbx_pub_ptr_ = std::make_shared<BbxPub>(nh, "object_result", "map");
+
+    /*algorithm module*/
+    object_detect_ptr_ = std::make_shared<ObjectDetect>(paramlist_.model_file_path);
 }
 
 bool FrontEndPipe::Run()
@@ -38,6 +41,22 @@ bool FrontEndPipe::Run()
     {
         CloudMsg cloud_msg = cloud_msg_queue_.front();
         cloud_msg_queue_.pop_front();
+
+        std::vector<int> indices_src;
+        CloudMsg::CLOUD_PTR cloud_ptr_out(new CloudMsg::CLOUD());
+        pcl::removeNaNFromPointCloud(*cloud_msg.cloud_ptr, *cloud_ptr_out, indices_src);
+        *cloud_msg.cloud_ptr = *cloud_ptr_out;
+
+        if (cloud_ptr_out->points.size() == 0)
+        {
+            std::cout << "异常点!!!!!!!" << std::endl;
+            exit(EXIT_FAILURE);
+        }
+
+        ObjectsMsg objects_msg;
+        object_detect_ptr_->Detect(cloud_msg, objects_msg);
+
+        bbx_pub_ptr_->Publish(objects_msg);
         cloud_pub_ptr_->Publish(cloud_msg);
     }
 

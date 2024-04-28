@@ -4,7 +4,7 @@
 
 #topic subscriber------------------------------------------------
 topic_sub: #
-  cloud_sub_topic: /rslidar_points
+  cloud_sub_topic: /rslidar_points #/velodyne_points
   imu_sub_topic: /imu_raw
   gnss_sub_topic: /ublox_gps_node/fix
   gt_sub_topic: /novatel_data/inspvax
