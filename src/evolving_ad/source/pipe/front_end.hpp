@@ -23,8 +23,6 @@
 #include "msg/object_msg.hpp"
 // module
 #include "module/object_detect/object_detect.hpp"
-// pcl
-#include <pcl/filters/filter.h>
 
 namespace evolving_ad_ns
 {

@@ -42,17 +42,6 @@ bool FrontEndPipe::Run()
         CloudMsg cloud_msg = cloud_msg_queue_.front();
         cloud_msg_queue_.pop_front();
 
-        std::vector<int> indices_src;
-        CloudMsg::CLOUD_PTR cloud_ptr_out(new CloudMsg::CLOUD());
-        pcl::removeNaNFromPointCloud(*cloud_msg.cloud_ptr, *cloud_ptr_out, indices_src);
-        *cloud_msg.cloud_ptr = *cloud_ptr_out;
-
-        if (cloud_ptr_out->points.size() == 0)
-        {
-            std::cout << "异常点!!!!!!!" << std::endl;
-            exit(EXIT_FAILURE);
-        }
-
         ObjectsMsg objects_msg;
         object_detect_ptr_->Detect(cloud_msg, objects_msg);
 

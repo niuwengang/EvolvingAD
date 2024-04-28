@@ -19,9 +19,9 @@ find_package (GeographicLib REQUIRED)
 include_directories(${GeographicLib_INCLUDE_DIRS})
 list(APPEND thirdpartylib  ${GeographicLib_LIBRARIES})
 
-# #openmp no need install 
-# find_package(OpenMP REQUIRED)
-# list(APPEND thirdpartylib  OpenMP::OpenMP_CXX)
+#openmp no need install 
+find_package(OpenMP REQUIRED)
+list(APPEND thirdpartylib  OpenMP::OpenMP_CXX)
 
 
 

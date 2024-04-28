@@ -16,6 +16,7 @@
 #include <mutex>
 // pcl
 #include <pcl_conversions/pcl_conversions.h>
+#include <pcl/filters/filter.h>
 // ros
 #include <ros/ros.h>
 #include <sensor_msgs/PointCloud2.h>

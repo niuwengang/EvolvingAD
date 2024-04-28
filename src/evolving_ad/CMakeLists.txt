@@ -71,10 +71,17 @@ if(USE_CUDA)
   target_link_libraries(thirdparty_pointpillar   libnvinfer.so libnvonnxparser.so) 
 endif()
 
+##thirdparty--fasticp
+aux_source_directory(thirdpartylib/fast_gicp/src  THIRDPARTY_FAST_GICP_SRC)
+add_library(thirdparty_fast_gicp   ${THIRDPARTY_FAST_GICP_SRC})
+target_link_libraries(thirdparty_fast_gicp ${thirdpartylib} ) 
+
 #module
 file(GLOB_RECURSE MODULE_SRC "source/module/*.cpp")
 add_library(module ${MODULE_SRC})
-target_link_libraries(module ${catkin_LIBRARIES} ${thirdpartylib}  msg thirdparty_pointpillar ) 
+target_link_libraries(module ${catkin_LIBRARIES} ${thirdpartylib}   msg 
+thirdparty_pointpillar 
+thirdparty_fast_gicp ) 
 
 
 #pipe
