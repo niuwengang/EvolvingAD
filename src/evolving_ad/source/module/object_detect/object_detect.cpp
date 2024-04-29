@@ -81,7 +81,9 @@ void ObjectDetect::Detect(const CloudMsg &cloud_msg, ObjectsMsg &objects_msg)
         object_msg.l = box.l;
         object_msg.h = box.h;
 
-        object_msg.heading = box.rt;
+        Eigen::AngleAxisf yawAngle(Eigen::AngleAxisf(box.rt, Eigen::Vector3f::UnitZ()));
+        object_msg.q = yawAngle;
+
         object_msg.score = box.score;
         object_msg.id = box.id;
 

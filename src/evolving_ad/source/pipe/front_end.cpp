@@ -70,6 +70,7 @@ bool FrontEndPipe::Run()
         frame.time_stamp = cloud_msg.time_stamp;
         frame.pose = pose;
         *frame.cloud_msg.cloud_ptr = *cloud_msg.cloud_ptr; //! deep copy
+        frame.objects_msg.objects_vec = objects_msg.objects_vec;
         frame_queue_.push_back(frame);
     }
 
@@ -88,6 +89,7 @@ void FrontEndPipe::SendFrameQueue(std::deque<Frame> &frame_queue, std::mutex &mu
             frame.time_stamp = frame_queue_.at(i).time_stamp;
             frame.pose = frame_queue_.at(i).pose;
             *frame.cloud_msg.cloud_ptr = *frame_queue_.at(i).cloud_msg.cloud_ptr;
+            frame.objects_msg.objects_vec = frame_queue_.at(i).objects_msg.objects_vec;
 
             mutex.lock();
             frame_queue.push_back(frame);

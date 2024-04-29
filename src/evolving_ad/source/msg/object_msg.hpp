@@ -14,6 +14,7 @@
 #define _OBJECT_MSG_HPP_
 
 #include <Eigen/Core>
+#include <Eigen/Geometry>
 #include <deque>
 #include <string>
 
@@ -33,7 +34,10 @@ class ObjectMsg
   public:
     float x = 0, y = 0, z = 0; // center
     float w = 0, l = 0, h = 0; // dim
-    float heading = 0;
+
+    Eigen::Quaternionf q;
+    // float heading = 0;
+
     int id = 0.0;
     float score = 0.0;
     Label label; // od semantic class

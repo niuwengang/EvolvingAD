@@ -21,7 +21,7 @@ class CloudMsg
     CloudMsg();
     ~CloudMsg() = default;
 
-    using POINT = pcl::PointXYZ;
+    using POINT = pcl::PointXYZI;
     using CLOUD = pcl::PointCloud<POINT>;
     using CLOUD_PTR = CLOUD::Ptr;
 

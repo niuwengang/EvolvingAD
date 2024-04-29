@@ -47,11 +47,10 @@ void BbxPub::Publish(const ObjectsMsg &objects_msg)
         od_bbox.pose.position.y = object_msg.y;
         od_bbox.pose.position.z = object_msg.z;
 
-        tf::Quaternion q = tf::createQuaternionFromRPY(0, 0, object_msg.heading);
-        od_bbox.pose.orientation.x = q.x();
-        od_bbox.pose.orientation.y = q.y();
-        od_bbox.pose.orientation.z = q.z();
-        od_bbox.pose.orientation.w = q.w();
+        od_bbox.pose.orientation.x = object_msg.q.x();
+        od_bbox.pose.orientation.y = object_msg.q.y();
+        od_bbox.pose.orientation.z = object_msg.q.z();
+        od_bbox.pose.orientation.w = object_msg.q.w();
         od_bbox.dimensions.x = object_msg.w; //! may have issue
         od_bbox.dimensions.y = object_msg.l;
         od_bbox.dimensions.z = object_msg.h;

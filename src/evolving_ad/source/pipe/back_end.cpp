@@ -47,6 +47,24 @@ bool BackEndPipe::Run()
         cloud_pub_ptr_->Publish(transformed_cloud_ptr, 0.0);
         lidar_odom_pub_ptr_->Publish(frame.pose, 0);
         veh_tf_pub_ptr_->SendTransform(frame.pose);
+
+        std::cout << "bbx queue:" << frame.objects_msg.objects_vec.size() << std::endl;
+        for (auto &object : frame.objects_msg.objects_vec)
+        {
+            Eigen::Matrix4f object_pose;
+            object_pose.block<3, 1>(0, 3) << object.x, object.y, object.z;
+            object_pose.block<3, 3>(0, 0) = object.q.toRotationMatrix();
+
+            object_pose = frame.pose * object_pose;
+
+            object.x = object_pose(0, 3);
+            object.y = object_pose(1, 3);
+            object.z = object_pose(2, 3);
+
+            object.q = Eigen::Quaternionf(object_pose.block<3, 3>(0, 0));
+        }
+
+        bbx_pub_ptr_->Publish(frame.objects_msg);
     }
     return true;
 }
@@ -63,6 +81,7 @@ void BackEndPipe::ReveiveFrameQueue(std::deque<Frame> &frame_queue, std::mutex &
             frame.time_stamp = frame_queue.at(i).time_stamp;
             frame.pose = frame_queue.at(i).pose;
             *frame.cloud_msg.cloud_ptr = *frame_queue.at(i).cloud_msg.cloud_ptr;
+            frame.objects_msg.objects_vec = frame_queue.at(i).objects_msg.objects_vec;
 
             frame_queue_.push_back(frame);
         }
