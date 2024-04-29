@@ -30,7 +30,7 @@ class LidarOdom
     void ComputePose(const CloudMsg &cloud_msg, Eigen::Matrix4f &new_pose);
 
   private:
-    void UpdateLocalMap(const NormalFrame &normal_frame);
+    void UpdateLocalMap(const Frame &normal_frame);
 
     std::shared_ptr<CloudFilterInterface> single_scan_filter_ptr_ = nullptr; // filter for single scan
     std::shared_ptr<CloudFilterInterface> local_map_filter_ptr_ = nullptr;   // filter for local map
@@ -38,7 +38,7 @@ class LidarOdom
 
     Eigen::Matrix4f init_pose_ = Eigen::Matrix4f::Identity();
 
-    std::deque<KeyFrame> local_keyframe_queue_;
+    std::deque<Frame> local_keyframe_queue_;
     CloudMsg::CLOUD_PTR local_map_ptr_;
 
     struct ParamList

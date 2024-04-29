@@ -38,7 +38,7 @@ void LidarOdom::ComputePose(const CloudMsg &cloud_msg, Eigen::Matrix4f &new_pose
     static Eigen::Matrix4f predict_pose = init_pose_;
     static Eigen::Matrix4f last_key_frame_pose = init_pose_;
 
-    NormalFrame normal_frame;
+    Frame normal_frame;
     normal_frame.time_stamp = cloud_msg.time_stamp;
     std::vector<int> indices;
     pcl::removeNaNFromPointCloud(*cloud_msg.cloud_ptr, *normal_frame.cloud_msg.cloud_ptr, indices);
@@ -82,10 +82,10 @@ void LidarOdom::ComputePose(const CloudMsg &cloud_msg, Eigen::Matrix4f &new_pose
     return;
 }
 
-void LidarOdom::UpdateLocalMap(const NormalFrame &normal_frame)
+void LidarOdom::UpdateLocalMap(const Frame &normal_frame)
 {
     /*[1]--add new keyframe to queue*/
-    KeyFrame keyframe;
+    Frame keyframe;
     keyframe.pose = normal_frame.pose;
     *keyframe.cloud_msg.cloud_ptr = *normal_frame.cloud_msg.cloud_ptr; // deep copy
     keyframe.time_stamp = normal_frame.time_stamp;

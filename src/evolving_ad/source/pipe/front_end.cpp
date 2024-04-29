@@ -16,7 +16,7 @@ FrontEndPipe::FrontEndPipe(ros::NodeHandle &nh, const std::string package_folder
     paramlist_.package_folder_path = package_folder_path;
 
     YAML::Node config_node = YAML::LoadFile(paramlist_.package_folder_path + "/config/front_end.yaml");
-    
+
     paramlist_.gnss_sub_topic = config_node["topic_sub"]["gnss_sub_topic"].as<std::string>();
     paramlist_.cloud_sub_topic = config_node["topic_sub"]["cloud_sub_topic"].as<std::string>();
     paramlist_.cloud_pub_topic = config_node["topic_pub"]["cloud_pub_topic"].as<std::string>();
@@ -73,6 +73,12 @@ bool FrontEndPipe::Run()
         cloud_pub_ptr_->Publish(cloud_msg);
         veh_tf_pub_ptr_->SendTransform(pose);
         lidar_odom_pub_ptr_->Publish(pose, 0);
+
+        Frame frame;
+        frame.time_stamp = cloud_msg.time_stamp;
+        frame.pose = pose;
+        *frame.cloud_msg.cloud_ptr = *cloud_msg.cloud_ptr;
+        frame_queue_.push_back(frame);
     }
 
     gnss_sub_ptr_->ParseData(gnss_msg_queue_);
@@ -88,6 +94,24 @@ bool FrontEndPipe::Run()
     }
 
     return true;
+}
+
+void FrontEndPipe::SendFrameQueue(std::deque<Frame> &frame_queue)
+{
+    if (!frame_queue_.empty())
+    {
+        for (int i = 0; i < frame_queue_.size(); i++)
+        {
+            Frame frame; // deep copy
+            frame.index = frame_queue_.at(i).index;
+            frame.time_stamp = frame_queue_.at(i).time_stamp;
+            frame.pose = frame_queue_.at(i).pose;
+            *frame.cloud_msg.cloud_ptr = *frame_queue_.at(i).cloud_msg.cloud_ptr;
+
+            frame_queue.push_back(frame);
+        }
+        frame_queue_.clear();
+    }
 }
 
 } // namespace evolving_ad_ns

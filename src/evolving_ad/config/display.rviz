@@ -6,9 +6,8 @@ Panels:
       Expanded:
         - /Global Options1
         - /Status1
-        - /lidar_odom1
         - /lidar_odom1/Shape1
-        - /gnss_odom1
+        - /gnss_odom1/Status1
         - /gnss_odom1/Shape1
       Splitter Ratio: 0.5
     Tree Height: 696
@@ -173,7 +172,7 @@ Visualization Manager:
         Shaft Length: 1
         Shaft Radius: 0.05000000074505806
         Value: Axes
-      Topic: /loc_node/my_lidar_odom
+      Topic: /front_end_node/my_lidar_odom
       Unreliable: false
       Value: true
     - Angle Tolerance: 0.10000000149011612
@@ -208,7 +207,7 @@ Visualization Manager:
         Shaft Length: 1
         Shaft Radius: 1
         Value: Arrow
-      Topic: /loc_node/my_gnss_odom
+      Topic: /front_end_node/my_gnss_odom
       Unreliable: false
       Value: true
   Enabled: true
@@ -239,7 +238,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 636.7872924804688
+      Distance: 308.9361877441406
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
@@ -247,17 +246,17 @@ Visualization Manager:
         Value: false
       Field of View: 0.7853981852531433
       Focal Point:
-        X: -23.380741119384766
-        Y: 17.685049057006836
-        Z: 156.494873046875
+        X: -41.435123443603516
+        Y: -23.391071319580078
+        Z: 4.479070663452148
       Focal Shape Fixed Size: false
       Focal Shape Size: 0.05000000074505806
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 1.1697962284088135
+      Pitch: 1.0047966241836548
       Target Frame: <Fixed Frame>
-      Yaw: 2.3440306186676025
+      Yaw: 3.9403984546661377
     Saved: ~
 Window Geometry:
   Displays:

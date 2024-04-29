@@ -89,13 +89,15 @@ thirdparty_fast_gicp )
 
 
 #pipe--------------------------------------------
-add_library(front_end source/pipe/front_end.cpp)
-target_link_libraries(front_end ${catkin_LIBRARIES} 
+add_library(pipe source/pipe/front_end.cpp)
+target_link_libraries(pipe ${catkin_LIBRARIES} 
 topic_sub  
 topic_pub 
-module msg 
+module 
+msg 
 tools)
 
 #exec--------------------------------------------
 add_executable(ad_node  source/exec/ad_node.cpp)
-target_link_libraries(ad_node front_end )
+target_link_libraries(ad_node pipe )
+

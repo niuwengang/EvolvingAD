@@ -44,6 +44,7 @@ class FrontEndPipe
     ~FrontEndPipe() = default;
 
     bool Run();
+    void SendFrameQueue(std::deque<Frame> &frame_queue);
 
   private:
     /*pub and sub*/
@@ -59,7 +60,7 @@ class FrontEndPipe
     /*variable*/
     std::deque<CloudMsg> cloud_msg_queue_;
     std::deque<GnssMsg> gnss_msg_queue_;
-
+    std::deque<Frame> frame_queue_;
     /*tools*/
     std::shared_ptr<TimeRecord> time_record_ptr_ = nullptr;
 

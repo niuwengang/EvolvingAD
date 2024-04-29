@@ -9,29 +9,14 @@ namespace evolving_ad_ns
 class Frame
 {
   public:
+    Frame(){};
+    Frame(const CloudMsg &in_cloud_msg);
+    ~Frame() = default;
+
+    unsigned int index = 0;
     double time_stamp = 0.0;
     Eigen::Matrix4f pose = Eigen::Matrix4f::Identity();
     CloudMsg cloud_msg;
-};
-
-class KeyFrame : public Frame
-{
-  public:
-    unsigned int index = 0;
-    Eigen::Matrix4f opted_pose = Eigen::Matrix4f::Identity();
-    CloudMsg transformed_cloud_msg;
-};
-
-class NormalFrame : public Frame
-{
-  public:
-    NormalFrame() = default;
-    NormalFrame(const CloudMsg &cloud_msg);
-};
-
-class DiscardFrame : public Frame
-{
-  public:
 };
 
 } // namespace evolving_ad_ns
