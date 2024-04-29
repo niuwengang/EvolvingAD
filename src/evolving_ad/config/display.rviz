@@ -1,16 +1,14 @@
 Panels:
   - Class: rviz/Displays
-    Help Height: 138
+    Help Height: 0
     Name: Displays
     Property Tree Widget:
       Expanded:
         - /Global Options1
         - /Status1
-        - /lidar_odom1/Shape1
-        - /gnss_odom1/Status1
-        - /gnss_odom1/Shape1
+        - /back_end1
       Splitter Ratio: 0.5
-    Tree Height: 696
+    Tree Height: 834
   - Class: rviz/Selection
     Name: Selection
   - Class: rviz/Tool Properties
@@ -28,7 +26,7 @@ Panels:
   - Class: rviz/Time
     Name: Time
     SyncMode: 0
-    SyncSource: PointCloud2
+    SyncSource: back_cam
 Preferences:
   PromptSaveOnExit: true
 Toolbars:
@@ -55,58 +53,6 @@ Visualization Manager:
       Reference Frame: <Fixed Frame>
       Value: true
     - Alpha: 1
-      Autocompute Intensity Bounds: true
-      Autocompute Value Bounds:
-        Max Value: 17.884395599365234
-        Min Value: -3.745307207107544
-        Value: true
-      Axis: Z
-      Channel Name: intensity
-      Class: rviz/PointCloud2
-      Color: 85; 87; 83
-      Color Transformer: FlatColor
-      Decay Time: 0
-      Enabled: true
-      Invert Rainbow: false
-      Max Color: 255; 255; 255
-      Min Color: 0; 0; 0
-      Name: PointCloud2
-      Position Transformer: XYZ
-      Queue Size: 10
-      Selectable: true
-      Size (Pixels): 3
-      Size (m): 0.10000000149011612
-      Style: Points
-      Topic: /cloud
-      Unreliable: false
-      Use Fixed Frame: true
-      Use rainbow: true
-      Value: true
-    - Class: rviz/Image
-      Enabled: true
-      Image Topic: /camera_array/cam0/image_raw
-      Max Value: 1
-      Median window: 5
-      Min Value: 0
-      Name: front_cam
-      Normalize Range: true
-      Queue Size: 2
-      Transport Hint: compressed
-      Unreliable: false
-      Value: true
-    - Class: rviz/Image
-      Enabled: true
-      Image Topic: /camera_array/cam3/image_raw
-      Max Value: 1
-      Median window: 5
-      Min Value: 0
-      Name: back_cam
-      Normalize Range: true
-      Queue Size: 2
-      Transport Hint: compressed
-      Unreliable: false
-      Value: true
-    - Alpha: 1
       Class: rviz/RobotModel
       Collision Enabled: false
       Enabled: true
@@ -127,89 +73,114 @@ Visualization Manager:
       Update Interval: 0
       Value: true
       Visual Enabled: true
-    - Class: jsk_rviz_plugin/BoundingBoxArray
+    - Class: rviz/Group
+      Displays:
+        - Angle Tolerance: 0.10000000149011612
+          Class: rviz/Odometry
+          Covariance:
+            Orientation:
+              Alpha: 0.5
+              Color: 255; 255; 127
+              Color Style: Unique
+              Frame: Local
+              Offset: 1
+              Scale: 1
+              Value: true
+            Position:
+              Alpha: 0.30000001192092896
+              Color: 204; 51; 204
+              Scale: 1
+              Value: true
+            Value: true
+          Enabled: true
+          Keep: 0
+          Name: lidar_odom
+          Position Tolerance: 0.10000000149011612
+          Queue Size: 10
+          Shape:
+            Alpha: 1
+            Axes Length: 1
+            Axes Radius: 0.10000000149011612
+            Color: 255; 25; 0
+            Head Length: 1
+            Head Radius: 0.10000000149011612
+            Shaft Length: 1
+            Shaft Radius: 1
+            Value: Axes
+          Topic: /back_end_lidar_odom
+          Unreliable: false
+          Value: true
+        - Class: jsk_rviz_plugin/BoundingBoxArray
+          Enabled: true
+          Name: bbx
+          Queue Size: 10
+          Topic: /back_end_bbx
+          Unreliable: false
+          Value: true
+          alpha: 10
+          color: 52; 101; 164
+          coloring: Flat color
+          line width: 0.07999999821186066
+          only edge: true
+          show coords: false
+        - Alpha: 1
+          Autocompute Intensity Bounds: true
+          Autocompute Value Bounds:
+            Max Value: 33.92937469482422
+            Min Value: -3.872621536254883
+            Value: true
+          Axis: Z
+          Channel Name: intensity
+          Class: rviz/PointCloud2
+          Color: 239; 41; 41
+          Color Transformer: FlatColor
+          Decay Time: 0
+          Enabled: true
+          Invert Rainbow: false
+          Max Color: 255; 255; 255
+          Min Color: 0; 0; 0
+          Name: transformed_cloud
+          Position Transformer: XYZ
+          Queue Size: 10
+          Selectable: true
+          Size (Pixels): 2
+          Size (m): 0.009999999776482582
+          Style: Points
+          Topic: /back_end_cloud
+          Unreliable: false
+          Use Fixed Frame: true
+          Use rainbow: true
+          Value: true
       Enabled: true
-      Name: BoundingBoxArray
-      Queue Size: 10
-      Topic: /loc_node/object_result
-      Unreliable: false
-      Value: true
-      alpha: 10
-      color: 52; 101; 164
-      coloring: Flat color
-      line width: 0.07999999821186066
-      only edge: true
-      show coords: false
-    - Angle Tolerance: 0.10000000149011612
-      Class: rviz/Odometry
-      Covariance:
-        Orientation:
-          Alpha: 0.5
-          Color: 255; 255; 127
-          Color Style: Unique
-          Frame: Local
-          Offset: 1
-          Scale: 1
+      Name: back_end
+    - Class: rviz/Group
+      Displays:
+        - Class: rviz/Image
+          Enabled: true
+          Image Topic: /camera_array/cam3/image_raw
+          Max Value: 1
+          Median window: 5
+          Min Value: 0
+          Name: back_cam
+          Normalize Range: true
+          Queue Size: 2
+          Transport Hint: compressed
+          Unreliable: false
           Value: true
-        Position:
-          Alpha: 0.30000001192092896
-          Color: 204; 51; 204
-          Scale: 1
+        - Class: rviz/Image
+          Enabled: true
+          Image Topic: /camera_array/cam0/image_raw
+          Max Value: 1
+          Median window: 5
+          Min Value: 0
+          Name: front_cam
+          Normalize Range: true
+          Queue Size: 2
+          Transport Hint: compressed
+          Unreliable: false
           Value: true
-        Value: true
       Enabled: true
-      Keep: 0
-      Name: lidar_odom
-      Position Tolerance: 0.10000000149011612
-      Queue Size: 10
-      Shape:
-        Alpha: 1
-        Axes Length: 1
-        Axes Radius: 0.10000000149011612
-        Color: 255; 25; 0
-        Head Length: 0.30000001192092896
-        Head Radius: 0.10000000149011612
-        Shaft Length: 1
-        Shaft Radius: 0.05000000074505806
-        Value: Axes
-      Topic: /front_end_node/my_lidar_odom
-      Unreliable: false
-      Value: true
-    - Angle Tolerance: 0.10000000149011612
-      Class: rviz/Odometry
-      Covariance:
-        Orientation:
-          Alpha: 0.5
-          Color: 255; 255; 127
-          Color Style: Unique
-          Frame: Local
-          Offset: 1
-          Scale: 1
-          Value: true
-        Position:
-          Alpha: 0.30000001192092896
-          Color: 204; 51; 204
-          Scale: 1
-          Value: true
-        Value: true
-      Enabled: true
-      Keep: 0
-      Name: gnss_odom
-      Position Tolerance: 0.10000000149011612
-      Queue Size: 10
-      Shape:
-        Alpha: 1
-        Axes Length: 1
-        Axes Radius: 0.10000000149011612
-        Color: 255; 25; 0
-        Head Length: 1
-        Head Radius: 0.10000000149011612
-        Shaft Length: 1
-        Shaft Radius: 1
-        Value: Arrow
-      Topic: /front_end_node/my_gnss_odom
-      Unreliable: false
-      Value: true
+      Name: surround_cam
   Enabled: true
   Global Options:
     Background Color: 255; 255; 255
@@ -238,7 +209,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 308.9361877441406
+      Distance: 189.64520263671875
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
@@ -246,17 +217,17 @@ Visualization Manager:
         Value: false
       Field of View: 0.7853981852531433
       Focal Point:
-        X: -41.435123443603516
-        Y: -23.391071319580078
-        Z: 4.479070663452148
+        X: 277.90478515625
+        Y: 350.16943359375
+        Z: -8.53600025177002
       Focal Shape Fixed Size: false
       Focal Shape Size: 0.05000000074505806
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 1.0047966241836548
+      Pitch: 0.8853987455368042
       Target Frame: <Fixed Frame>
-      Yaw: 3.9403984546661377
+      Yaw: 3.9703917503356934
     Saved: ~
 Window Geometry:
   Displays:

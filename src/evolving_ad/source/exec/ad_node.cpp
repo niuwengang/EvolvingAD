@@ -37,7 +37,7 @@ class Scheduler
     }
     void BackEndThread()
     {
-        ros::Rate rate_sub(10);
+        ros::Rate rate_sub(100);
         std::shared_ptr<BackEndPipe> back_end_ptr = std::make_shared<BackEndPipe>(nh2_, package_folder_path_);
 
         while (ros::ok())

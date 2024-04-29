@@ -15,30 +15,23 @@ FrontEndPipe::FrontEndPipe(ros::NodeHandle &nh, const std::string package_folder
     /*[1]--load params*/
     paramlist_.package_folder_path = package_folder_path;
 
-    YAML::Node config_node = YAML::LoadFile(paramlist_.package_folder_path + "/config/front_end.yaml");
+    YAML::Node config_node = YAML::LoadFile(paramlist_.package_folder_path + "/config/ad.yaml");
 
-    paramlist_.gnss_sub_topic = config_node["topic_sub"]["gnss_sub_topic"].as<std::string>();
     paramlist_.cloud_sub_topic = config_node["topic_sub"]["cloud_sub_topic"].as<std::string>();
-    paramlist_.cloud_pub_topic = config_node["topic_pub"]["cloud_pub_topic"].as<std::string>();
-    paramlist_.odom_pub_topic = config_node["topic_pub"]["odom_pub_topic"].as<std::string>();
 
     paramlist_.model_file_path = paramlist_.package_folder_path + "/model//pointpillar.onnx";
 
     /*[2]--topic sub */
     cloud_sub_ptr_ = std::make_shared<CloudSub>(nh, paramlist_.cloud_sub_topic);
-    gnss_sub_ptr_ = std::make_shared<GnssSub>(nh, paramlist_.gnss_sub_topic);
-
     /*[3]--topic pub */
-    cloud_pub_ptr_ = std::make_shared<CloudPub>(nh, paramlist_.cloud_pub_topic, "map");
-    veh_tf_pub_ptr_ = std::make_shared<TfPub>("map", "ground_link");
-    bbx_pub_ptr_ = std::make_shared<BbxPub>(nh, "object_result", "map");
-    gnss_odom_pub_ptr_ = std::make_shared<OdomPub>(nh, "my_gnss_odom", "map", "gnss");
-    lidar_odom_pub_ptr_ = std::make_shared<OdomPub>(nh, "my_lidar_odom", "map", "lidar");
+    // cloud_pub_ptr_ = std::make_shared<CloudPub>(nh, "front_end_cloud", "map");
+    // veh_tf_pub_ptr_ = std::make_shared<TfPub>("map", "ground_link");
+    // bbx_pub_ptr_ = std::make_shared<BbxPub>(nh, "front_end_bbx", "map");
+    // lidar_odom_pub_ptr_ = std::make_shared<OdomPub>(nh, "front_end_lidar_odom", "map", "lidar");
 
     /*[4]--algorithm module*/
     object_detect_ptr_ = std::make_shared<ObjectDetect>(paramlist_.model_file_path);
     lidar_odom_ptr_ = std::make_shared<LidarOdom>(config_node["lidar_odom"]);
-    gnss_odom_ptr_ = std::make_shared<GnssOdom>(config_node["lidar_odom"]);
 
     /*[4]--tools*/
     time_record_ptr_ = std::make_shared<TimeRecord>();
@@ -57,7 +50,6 @@ bool FrontEndPipe::Run()
     {
         CloudMsg cloud_msg = cloud_msg_queue_.front();
         cloud_msg_queue_.pop_front();
-
         ObjectsMsg objects_msg;
 
         time_record_ptr_->Start();
@@ -69,28 +61,16 @@ bool FrontEndPipe::Run()
 
         spdlog::info("Front$ exec {} hz", time_record_ptr_->GetFrequency(1000));
 
-        bbx_pub_ptr_->Publish(objects_msg);
-        cloud_pub_ptr_->Publish(cloud_msg);
-        veh_tf_pub_ptr_->SendTransform(pose);
-        lidar_odom_pub_ptr_->Publish(pose, 0);
+        // bbx_pub_ptr_->Publish(objects_msg);
+        // cloud_pub_ptr_->Publish(cloud_msg);
+        // veh_tf_pub_ptr_->SendTransform(pose);
+        // lidar_odom_pub_ptr_->Publish(pose, 0);
 
         Frame frame;
         frame.time_stamp = cloud_msg.time_stamp;
         frame.pose = pose;
         *frame.cloud_msg.cloud_ptr = *cloud_msg.cloud_ptr; //! deep copy
         frame_queue_.push_back(frame);
-    }
-
-    gnss_sub_ptr_->ParseData(gnss_msg_queue_);
-    if (!gnss_msg_queue_.empty())
-    {
-        GnssMsg gnss_msg = gnss_msg_queue_.front();
-        gnss_msg_queue_.pop_front();
-
-        gnss_odom_ptr_->InitPose(gnss_msg);
-        Eigen::Matrix4f pose = Eigen::Matrix4f::Identity();
-        gnss_odom_ptr_->ComputePose(gnss_msg, pose);
-        gnss_odom_pub_ptr_->Publish(pose, 0);
     }
 
     return true;

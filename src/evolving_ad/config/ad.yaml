@@ -9,10 +9,6 @@ topic_sub: #
   gnss_sub_topic: /ublox_gps_node/fix
   gt_sub_topic: /novatel_data/inspvax
 
-topic_pub:
-  cloud_pub_topic: /cloud
-  odom_pub_topic: /odom
-
 #lidar odom setting-------------------------------------------------
 lidar_odom:
   keyframe_distance: 2.0
