@@ -1,5 +1,5 @@
 #ifndef _FRAME_HPP_
-#define _FRMAE_HPP_
+#define _FRAME_HPP_
 
 #include "cloud_msg.hpp"
 

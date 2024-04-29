@@ -89,7 +89,8 @@ thirdparty_fast_gicp )
 
 
 #pipe--------------------------------------------
-add_library(pipe source/pipe/front_end.cpp)
+aux_source_directory(source/pipe  PIPE_SRC)
+add_library(pipe ${PIPE_SRC})
 target_link_libraries(pipe ${catkin_LIBRARIES} 
 topic_sub  
 topic_pub 

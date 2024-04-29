@@ -44,7 +44,7 @@ class FrontEndPipe
     ~FrontEndPipe() = default;
 
     bool Run();
-    void SendFrameQueue(std::deque<Frame> &frame_queue);
+    void SendFrameQueue(std::deque<Frame> &frame_queue, std::mutex &mutex);
 
   private:
     /*pub and sub*/

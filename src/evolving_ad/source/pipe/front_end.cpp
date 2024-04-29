@@ -77,7 +77,7 @@ bool FrontEndPipe::Run()
         Frame frame;
         frame.time_stamp = cloud_msg.time_stamp;
         frame.pose = pose;
-        *frame.cloud_msg.cloud_ptr = *cloud_msg.cloud_ptr;
+        *frame.cloud_msg.cloud_ptr = *cloud_msg.cloud_ptr; //! deep copy
         frame_queue_.push_back(frame);
     }
 
@@ -96,8 +96,9 @@ bool FrontEndPipe::Run()
     return true;
 }
 
-void FrontEndPipe::SendFrameQueue(std::deque<Frame> &frame_queue)
+void FrontEndPipe::SendFrameQueue(std::deque<Frame> &frame_queue, std::mutex &mutex)
 {
+
     if (!frame_queue_.empty())
     {
         for (int i = 0; i < frame_queue_.size(); i++)
@@ -108,7 +109,9 @@ void FrontEndPipe::SendFrameQueue(std::deque<Frame> &frame_queue)
             frame.pose = frame_queue_.at(i).pose;
             *frame.cloud_msg.cloud_ptr = *frame_queue_.at(i).cloud_msg.cloud_ptr;
 
+            mutex.lock();
             frame_queue.push_back(frame);
+            mutex.unlock();
         }
         frame_queue_.clear();
     }
