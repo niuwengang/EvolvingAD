@@ -6,10 +6,10 @@ Panels:
       Expanded:
         - /Global Options1
         - /Status1
-        - /PointCloud21
-        - /BoundingBoxArray1
-        - /Odometry1
-        - /Odometry1/Shape1
+        - /lidar_odom1
+        - /lidar_odom1/Shape1
+        - /gnss_odom1
+        - /gnss_odom1/Shape1
       Splitter Ratio: 0.5
     Tree Height: 696
   - Class: rviz/Selection
@@ -160,7 +160,7 @@ Visualization Manager:
         Value: true
       Enabled: true
       Keep: 0
-      Name: Odometry
+      Name: lidar_odom
       Position Tolerance: 0.10000000149011612
       Queue Size: 10
       Shape:
@@ -173,7 +173,42 @@ Visualization Manager:
         Shaft Length: 1
         Shaft Radius: 0.05000000074505806
         Value: Axes
-      Topic: /loc_node/my_odom
+      Topic: /loc_node/my_lidar_odom
+      Unreliable: false
+      Value: true
+    - Angle Tolerance: 0.10000000149011612
+      Class: rviz/Odometry
+      Covariance:
+        Orientation:
+          Alpha: 0.5
+          Color: 255; 255; 127
+          Color Style: Unique
+          Frame: Local
+          Offset: 1
+          Scale: 1
+          Value: true
+        Position:
+          Alpha: 0.30000001192092896
+          Color: 204; 51; 204
+          Scale: 1
+          Value: true
+        Value: true
+      Enabled: true
+      Keep: 0
+      Name: gnss_odom
+      Position Tolerance: 0.10000000149011612
+      Queue Size: 10
+      Shape:
+        Alpha: 1
+        Axes Length: 1
+        Axes Radius: 0.10000000149011612
+        Color: 255; 25; 0
+        Head Length: 1
+        Head Radius: 0.10000000149011612
+        Shaft Length: 1
+        Shaft Radius: 1
+        Value: Arrow
+      Topic: /loc_node/my_gnss_odom
       Unreliable: false
       Value: true
   Enabled: true
@@ -204,7 +239,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 51.70740509033203
+      Distance: 636.7872924804688
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
@@ -212,17 +247,17 @@ Visualization Manager:
         Value: false
       Field of View: 0.7853981852531433
       Focal Point:
-        X: 18.44830322265625
-        Y: -7.840571880340576
-        Z: 0.6373593807220459
+        X: -23.380741119384766
+        Y: 17.685049057006836
+        Z: 156.494873046875
       Focal Shape Fixed Size: false
       Focal Shape Size: 0.05000000074505806
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 1.1497962474822998
+      Pitch: 1.1697962284088135
       Target Frame: <Fixed Frame>
-      Yaw: 3.270397901535034
+      Yaw: 2.3440306186676025
     Saved: ~
 Window Geometry:
   Displays:
