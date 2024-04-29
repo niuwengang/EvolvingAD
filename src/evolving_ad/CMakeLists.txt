@@ -37,7 +37,7 @@ if(USE_CUDA)
 endif()
 
 
-#ros
+#ros--------------------------------------------
 find_package(catkin REQUIRED COMPONENTS roscpp std_msgs roslib tf)
 include_directories(${catkin_INCLUDE_DIRS})
 catkin_package()
@@ -48,46 +48,54 @@ set(thirdpartylib "")
 include(cmake/thirdpartylib.cmake)
 
 
-#msg
+#msg--------------------------------------------
 aux_source_directory(source/msg   MSG_SRC)
 add_library(msg  ${MSG_SRC})
 target_link_libraries(msg  ${catkin_LIBRARIES} ${thirdpartylib})
 
-#topic sub
+#topic--------------------------------------------
 aux_source_directory(source/topic_sub   TOPIC_SUB)
 add_library(topic_sub  ${TOPIC_SUB})
 target_link_libraries(topic_sub  ${catkin_LIBRARIES} ${thirdpartylib})
 
-#topic pub
 aux_source_directory(source/topic_pub   TOPIC_PUB)
 add_library(topic_pub  ${TOPIC_PUB})
 target_link_libraries(topic_pub  ${catkin_LIBRARIES} ${thirdpartylib})
 
-
-#thirdparty--pointpillar
+#thirdparty--pointpillar--------------------------------------------
 if(USE_CUDA)
   aux_source_directory(thirdpartylib/pointpillar/src   THIRDPARTY_POINT_PILLAR_SRC)
   cuda_add_library(thirdparty_pointpillar   ${THIRDPARTY_POINT_PILLAR_SRC})
   target_link_libraries(thirdparty_pointpillar   libnvinfer.so libnvonnxparser.so) 
 endif()
 
-##thirdparty--fasticp
+##thirdparty--fasticp--------------------------------------------
 aux_source_directory(thirdpartylib/fast_gicp/src  THIRDPARTY_FAST_GICP_SRC)
 add_library(thirdparty_fast_gicp   ${THIRDPARTY_FAST_GICP_SRC})
 target_link_libraries(thirdparty_fast_gicp ${thirdpartylib} ) 
 
-#module
+#tools--------------------------------------------
+aux_source_directory(source/tools TOOLS_SRC)
+add_library(tools ${TOOLS_SRC})
+target_link_libraries(tools ${thirdpartylib} ) 
+
+#module--------------------------------------------
 file(GLOB_RECURSE MODULE_SRC "source/module/*.cpp")
 add_library(module ${MODULE_SRC})
-target_link_libraries(module ${catkin_LIBRARIES} ${thirdpartylib}   msg 
+target_link_libraries(module ${catkin_LIBRARIES} ${thirdpartylib} 
+msg 
 thirdparty_pointpillar 
 thirdparty_fast_gicp ) 
 
 
-#pipe
+#pipe--------------------------------------------
 add_library(front_end source/pipe/front_end.cpp)
-target_link_libraries(front_end ${catkin_LIBRARIES} topic_sub  topic_pub module msg )
+target_link_libraries(front_end ${catkin_LIBRARIES} 
+topic_sub  
+topic_pub 
+module msg 
+tools)
 
-#exec
+#exec--------------------------------------------
 add_executable(ad_node  source/exec/ad_node.cpp)
 target_link_libraries(ad_node front_end )

@@ -24,8 +24,14 @@
 #include "msg/object_msg.hpp"
 // module
 #include "module/object_detect/object_detect.hpp"
+#include "module/odom/gnss_odom.hpp"
 #include "module/odom/lidar_odom.hpp"
-#include "module/odom/odom_interface.hpp"
+// tools
+#include "tools/tools.hpp"
+// splog
+#include <spdlog/spdlog.h>
+// thread
+#include <thread>
 
 namespace evolving_ad_ns
 {
@@ -49,9 +55,13 @@ class FrontEndPipe
     /*variable*/
     std::deque<CloudMsg> cloud_msg_queue_;
 
+    /*tools*/
+    std::shared_ptr<TimeRecord> time_record_ptr_ = nullptr;
+
     /*algorithm module*/
     std::shared_ptr<ObjectDetect> object_detect_ptr_ = nullptr;
-    std::shared_ptr<OdomInterface> lidar_odom_ptr_ = nullptr;
+    std::shared_ptr<LidarOdom> lidar_odom_ptr_ = nullptr;
+    std::shared_ptr<GnssOdom> gnss_odom_ptr_ = nullptr;
 
     struct ParamList
     {

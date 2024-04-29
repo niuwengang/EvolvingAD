@@ -9,7 +9,6 @@
 #ifndef _LIDAR_ODOM_HPP_
 #define _LIDAR_ODOM_HPP_
 
-#include "odom_interface.hpp"
 // yaml
 #include <yaml-cpp/yaml.h>
 // module--cloud filter
@@ -19,15 +18,16 @@
 #include "module/cloud_registration/cloud_registration_interface.hpp"
 #include "module/cloud_registration/fast_gicp_registration.hpp"
 // msg
+#include "msg/frame.hpp"
 
 namespace evolving_ad_ns
 {
-class LidarOdom : public OdomInterface
+class LidarOdom
 {
   public:
     LidarOdom(const YAML::Node &config_node);
-    bool InitPose(const Eigen::Matrix4f &init_pose) override;
-    void ComputePose(const NormalFrame &in_normal_frame, Eigen::Matrix4f &new_pose) override;
+    bool InitPose(const Eigen::Matrix4f &init_pose);
+    void ComputePose(const CloudMsg &cloud_msg, Eigen::Matrix4f &new_pose);
 
   private:
     void UpdateLocalMap(const NormalFrame &normal_frame);

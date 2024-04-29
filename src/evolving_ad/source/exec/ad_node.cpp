@@ -20,7 +20,7 @@ class Scheduler
   public:
     void LocThread()
     {
-        ros::Rate rate_sub(100);
+        ros::Rate rate_sub(10);
         std::shared_ptr<evolving_ad_ns::FrontEndPipe> front_end_ptr =
             std::make_shared<evolving_ad_ns::FrontEndPipe>(nh_, package_folder_path_);
 

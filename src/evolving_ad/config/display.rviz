@@ -136,9 +136,9 @@ Visualization Manager:
       Unreliable: false
       Value: true
       alpha: 10
-      color: 25; 255; 0
+      color: 52; 101; 164
       coloring: Flat color
-      line width: 0.05000000074505806
+      line width: 0.07999999821186066
       only edge: true
       show coords: false
     - Angle Tolerance: 0.10000000149011612
@@ -204,7 +204,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 130.77256774902344
+      Distance: 51.70740509033203
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
@@ -212,17 +212,17 @@ Visualization Manager:
         Value: false
       Field of View: 0.7853981852531433
       Focal Point:
-        X: 10.333730697631836
-        Y: 1.6183527708053589
-        Z: 2.6676604747772217
+        X: 18.44830322265625
+        Y: -7.840571880340576
+        Z: 0.6373593807220459
       Focal Shape Fixed Size: false
       Focal Shape Size: 0.05000000074505806
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.5953981876373291
+      Pitch: 1.1497962474822998
       Target Frame: <Fixed Frame>
-      Yaw: 3.0653979778289795
+      Yaw: 3.270397901535034
     Saved: ~
 Window Geometry:
   Displays:

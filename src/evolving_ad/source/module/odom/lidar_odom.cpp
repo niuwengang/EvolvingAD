@@ -31,7 +31,7 @@ bool LidarOdom::InitPose(const Eigen::Matrix4f &init_pose)
     return init_flag;
 }
 
-void LidarOdom::ComputePose(const NormalFrame &in_normal_frame, Eigen::Matrix4f &new_pose)
+void LidarOdom::ComputePose(const CloudMsg &cloud_msg, Eigen::Matrix4f &new_pose)
 {
     static Eigen::Matrix4f step_pose = Eigen::Matrix4f::Identity(); // pose diff
     static Eigen::Matrix4f last_pose = init_pose_;
@@ -39,9 +39,9 @@ void LidarOdom::ComputePose(const NormalFrame &in_normal_frame, Eigen::Matrix4f 
     static Eigen::Matrix4f last_key_frame_pose = init_pose_;
 
     NormalFrame normal_frame;
-    normal_frame.time_stamp = in_normal_frame.time_stamp;
+    normal_frame.time_stamp = cloud_msg.time_stamp;
     std::vector<int> indices;
-    pcl::removeNaNFromPointCloud(*in_normal_frame.cloud_msg.cloud_ptr, *normal_frame.cloud_msg.cloud_ptr, indices);
+    pcl::removeNaNFromPointCloud(*cloud_msg.cloud_ptr, *normal_frame.cloud_msg.cloud_ptr, indices);
 
     /*[1]--first frame*/
     if (local_keyframe_queue_.size() == 0)
