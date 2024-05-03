@@ -23,6 +23,8 @@
 // msg
 #include "msg/object_msg.hpp"
 // module
+#include "module/ground_segement/dipg_ground_segement.hpp"
+#include "module/ground_segement/ground_segement_interface.hpp"
 #include "module/object_detect/object_detect.hpp"
 #include "module/odom/lidar_odom.hpp"
 // tools
@@ -58,6 +60,7 @@ class FrontEndPipe
     /* pub*/
     std::shared_ptr<CloudPub> static_cloud_pub_ptr_ = nullptr;
     std::shared_ptr<CloudPub> dynamic_cloud_pub_ptr_ = nullptr;
+    std::shared_ptr<CloudPub> ground_cloud_pub_ptr_ = nullptr;
     std::shared_ptr<BbxPub> bbx_pub_ptr_ = nullptr;
 
     /*variable*/
@@ -68,6 +71,7 @@ class FrontEndPipe
     /*algorithm module*/
     std::shared_ptr<ObjectDetect> object_detect_ptr_ = nullptr;
     std::shared_ptr<LidarOdom> lidar_odom_ptr_ = nullptr;
+    std::shared_ptr<GroundSegementInterface> ground_seg_ptr_ = nullptr;
 
     struct ParamList
     {

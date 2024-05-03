@@ -29,16 +29,17 @@ FrontEndPipe::FrontEndPipe(ros::NodeHandle &nh, const std::string package_folder
     cloud_sub_ptr_ = std::make_shared<CloudSub>(nh, paramlist_.cloud_sub_topic);
 
     /*[3]--topic pub */
-
 #ifdef DEBUG_DOR
     static_cloud_pub_ptr_ = std::make_shared<CloudPub>(nh, "front_end_static_cloud", "map");
     dynamic_cloud_pub_ptr_ = std::make_shared<CloudPub>(nh, "front_end_dynamic_cloud", "map");
     bbx_pub_ptr_ = std::make_shared<BbxPub>(nh, "front_end_bbx", "map");
+    ground_cloud_pub_ptr_ = std::make_shared<CloudPub>(nh, "front_end_ground_cloud", "map");
 #endif
 
     /*[4]--algorithm module*/
     object_detect_ptr_ = std::make_shared<ObjectDetect>(paramlist_.model_file_path); // todo: noted it
     lidar_odom_ptr_ = std::make_shared<LidarOdom>(config_node["lidar_odom"]);
+    ground_seg_ptr_ = std::make_shared<DipgGroundSegment>();
 
     /*[5]--tools*/
     time_record_ptr_ = std::make_shared<TimeRecord>();
@@ -56,7 +57,6 @@ FrontEndPipe::FrontEndPipe(ros::NodeHandle &nh, const std::string package_folder
  */
 bool FrontEndPipe::Run()
 {
-
     cloud_sub_ptr_->ParseMsg(cloud_msg_queue_);
 
     if (!cloud_msg_queue_.empty())
@@ -66,14 +66,24 @@ bool FrontEndPipe::Run()
 
         time_record_ptr_->Start();
 
+        std::vector<int> indices;
+        CloudMsg::CLOUD_PTR nan_cloud_ptr_(new CloudMsg::CLOUD());
+        pcl::removeNaNFromPointCloud(*cloud_msg.cloud_ptr, *nan_cloud_ptr_, indices);
+        *cloud_msg.cloud_ptr = *nan_cloud_ptr_;
+
         /*[1]--object detection*/
         ObjectsMsg objects_msg;
         object_detect_ptr_->Detect(cloud_msg, objects_msg);
 
+        /*[2]--ground segement*/
+        CloudMsg::CLOUD_PTR ground_cloud_ptr_(new CloudMsg::CLOUD());
+        CloudMsg::CLOUD_PTR no_ground_cloud_ptr_(new CloudMsg::CLOUD());
+        ground_seg_ptr_->Segement(cloud_msg.cloud_ptr, ground_cloud_ptr_, no_ground_cloud_ptr_);
+
         /*[2]--dynamic removal*/
         CloudMsg::CLOUD_PTR static_cloud_ptr(new CloudMsg::CLOUD());
         CloudMsg::CLOUD_PTR dynamic_cloud_ptr(new CloudMsg::CLOUD());
-        DorPost(objects_msg, cloud_msg.cloud_ptr, static_cloud_ptr, dynamic_cloud_ptr);
+        DorPost(objects_msg, no_ground_cloud_ptr_, static_cloud_ptr, dynamic_cloud_ptr);
         *cloud_msg.cloud_ptr = *static_cloud_ptr;
 
         /*[3]--lidar odom*/
@@ -83,14 +93,15 @@ bool FrontEndPipe::Run()
 
         spdlog::info("FrontEnd$ exec {} hz", time_record_ptr_->GetFrequency(1000));
 
-        /*[3]--display*/
+        /*[4]--display*/
 #ifdef DEBUG_DOR
         bbx_pub_ptr_->Publish(objects_msg);
         static_cloud_pub_ptr_->Publish(static_cloud_ptr);
         dynamic_cloud_pub_ptr_->Publish(dynamic_cloud_ptr);
+        ground_cloud_pub_ptr_->Publish(ground_cloud_ptr_);
 #endif
 
-        /*[4]--copy to frame*/
+        /*[5]--copy to frame*/
         Frame frame;
         frame.time_stamp = cloud_msg.time_stamp;                 // timestamp
         frame.pose = pose;                                       // pose
@@ -138,7 +149,6 @@ void FrontEndPipe::SendFrameQueue(std::deque<Frame> &frame_queue, std::mutex &mu
 void FrontEndPipe::DorPost(const ObjectsMsg &objects_msg, const CloudMsg::CLOUD_PTR &cloud_ptr,
                            CloudMsg::CLOUD_PTR &static_cloud_ptr, CloudMsg::CLOUD_PTR &dynamic_cloud_ptr)
 {
-
     std::vector<int> multibox_index;
     multibox_index.reserve(cloud_ptr->points.size());
 
