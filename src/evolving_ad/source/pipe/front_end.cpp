@@ -10,37 +10,50 @@
 
 namespace evolving_ad_ns
 {
+
+/**
+ * @brief FrontEndPipe init config
+ * @param[in] nh
+ * @param[in] package_folder_path
+ * @return
+ */
 FrontEndPipe::FrontEndPipe(ros::NodeHandle &nh, const std::string package_folder_path)
 {
     /*[1]--load params*/
     paramlist_.package_folder_path = package_folder_path;
-
     YAML::Node config_node = YAML::LoadFile(paramlist_.package_folder_path + "/config/ad.yaml");
-
     paramlist_.cloud_sub_topic = config_node["topic_sub"]["cloud_sub_topic"].as<std::string>();
-
     paramlist_.model_file_path = paramlist_.package_folder_path + "/model//pointpillar.onnx";
 
     /*[2]--topic sub */
     cloud_sub_ptr_ = std::make_shared<CloudSub>(nh, paramlist_.cloud_sub_topic);
+
     /*[3]--topic pub */
-    // cloud_pub_ptr_ = std::make_shared<CloudPub>(nh, "front_end_cloud", "map");
-    // veh_tf_pub_ptr_ = std::make_shared<TfPub>("map", "ground_link");
-    // bbx_pub_ptr_ = std::make_shared<BbxPub>(nh, "front_end_bbx", "map");
-    // lidar_odom_pub_ptr_ = std::make_shared<OdomPub>(nh, "front_end_lidar_odom", "map", "lidar");
+
+#ifdef DEBUG_DOR
+    static_cloud_pub_ptr_ = std::make_shared<CloudPub>(nh, "front_end_static_cloud", "map");
+    dynamic_cloud_pub_ptr_ = std::make_shared<CloudPub>(nh, "front_end_dynamic_cloud", "map");
+    bbx_pub_ptr_ = std::make_shared<BbxPub>(nh, "front_end_bbx", "map");
+#endif
 
     /*[4]--algorithm module*/
-    object_detect_ptr_ = std::make_shared<ObjectDetect>(paramlist_.model_file_path);
+    object_detect_ptr_ = std::make_shared<ObjectDetect>(paramlist_.model_file_path); // todo: noted it
     lidar_odom_ptr_ = std::make_shared<LidarOdom>(config_node["lidar_odom"]);
 
-    /*[4]--tools*/
+    /*[5]--tools*/
     time_record_ptr_ = std::make_shared<TimeRecord>();
 
-    spdlog::info("FrontEnd$ init success");
+    /*[6]--log*/
     std::thread::id threadId = std::this_thread::get_id();
     spdlog::info("FrontEnd$ thread id:{}", *(std::thread::native_handle_type *)(&threadId));
+    spdlog::info("FrontEnd$ init success");
 }
 
+/**
+ * @brief FrontEndPipe run
+ * @param[in]
+ * @return
+ */
 bool FrontEndPipe::Run()
 {
 
@@ -50,46 +63,61 @@ bool FrontEndPipe::Run()
     {
         CloudMsg cloud_msg = cloud_msg_queue_.front();
         cloud_msg_queue_.pop_front();
-        ObjectsMsg objects_msg;
 
         time_record_ptr_->Start();
 
+        /*[1]--object detection*/
+        ObjectsMsg objects_msg;
         object_detect_ptr_->Detect(cloud_msg, objects_msg);
+
+        /*[2]--dynamic removal*/
+        CloudMsg::CLOUD_PTR static_cloud_ptr(new CloudMsg::CLOUD());
+        CloudMsg::CLOUD_PTR dynamic_cloud_ptr(new CloudMsg::CLOUD());
+        DorPost(objects_msg, cloud_msg.cloud_ptr, static_cloud_ptr, dynamic_cloud_ptr);
+        *cloud_msg.cloud_ptr = *static_cloud_ptr;
+
+        /*[3]--lidar odom*/
         lidar_odom_ptr_->InitPose(Eigen::Matrix4f::Identity());
         Eigen::Matrix4f pose = Eigen::Matrix4f::Identity();
         lidar_odom_ptr_->ComputePose(cloud_msg, pose);
 
-        spdlog::info("Front$ exec {} hz", time_record_ptr_->GetFrequency(1000));
+        spdlog::info("FrontEnd$ exec {} hz", time_record_ptr_->GetFrequency(1000));
 
-        // bbx_pub_ptr_->Publish(objects_msg);
-        // cloud_pub_ptr_->Publish(cloud_msg);
-        // veh_tf_pub_ptr_->SendTransform(pose);
-        // lidar_odom_pub_ptr_->Publish(pose, 0);
+        /*[3]--display*/
+#ifdef DEBUG_DOR
+        bbx_pub_ptr_->Publish(objects_msg);
+        static_cloud_pub_ptr_->Publish(static_cloud_ptr);
+        dynamic_cloud_pub_ptr_->Publish(dynamic_cloud_ptr);
+#endif
 
+        /*[4]--copy to frame*/
         Frame frame;
-        frame.time_stamp = cloud_msg.time_stamp;
-        frame.pose = pose;
-        *frame.cloud_msg.cloud_ptr = *cloud_msg.cloud_ptr; //! deep copy
-        frame.objects_msg.objects_vec = objects_msg.objects_vec;
+        frame.time_stamp = cloud_msg.time_stamp;                 // timestamp
+        frame.pose = pose;                                       // pose
+        *frame.cloud_msg.cloud_ptr = *cloud_msg.cloud_ptr;       // cloud
+        frame.objects_msg.objects_vec = objects_msg.objects_vec; // ods_vec
         frame_queue_.push_back(frame);
     }
-
     return true;
 }
 
+/**
+ * @brief send frame queue to other thread
+ * @param[in] frame_queue
+ * @param[in] mutex
+ * @return
+ */
 void FrontEndPipe::SendFrameQueue(std::deque<Frame> &frame_queue, std::mutex &mutex)
 {
-
     if (!frame_queue_.empty())
     {
-        for (int i = 0; i < frame_queue_.size(); i++)
+        for (size_t i = 0; i < frame_queue_.size(); i++)
         {
-            Frame frame; // deep copy
-            frame.index = frame_queue_.at(i).index;
-            frame.time_stamp = frame_queue_.at(i).time_stamp;
-            frame.pose = frame_queue_.at(i).pose;
-            *frame.cloud_msg.cloud_ptr = *frame_queue_.at(i).cloud_msg.cloud_ptr;
-            frame.objects_msg.objects_vec = frame_queue_.at(i).objects_msg.objects_vec;
+            Frame frame;
+            frame.time_stamp = frame_queue_.at(i).time_stamp;                           // timestamp
+            frame.pose = frame_queue_.at(i).pose;                                       // pose
+            *frame.cloud_msg.cloud_ptr = *frame_queue_.at(i).cloud_msg.cloud_ptr;       // cloud
+            frame.objects_msg.objects_vec = frame_queue_.at(i).objects_msg.objects_vec; // ods_vec
 
             mutex.lock();
             frame_queue.push_back(frame);
@@ -97,6 +125,57 @@ void FrontEndPipe::SendFrameQueue(std::deque<Frame> &frame_queue, std::mutex &mu
         }
         frame_queue_.clear();
     }
+}
+
+/**
+ * @brief dynamic object removal
+ * @param[in] objects_msg
+ * @param[in] cloud_ptr
+ * @param[out] static_cloud_ptr
+ * @param[out] dynamic_cloud_ptr
+ * @return
+ */
+void FrontEndPipe::DorPost(const ObjectsMsg &objects_msg, const CloudMsg::CLOUD_PTR &cloud_ptr,
+                           CloudMsg::CLOUD_PTR &static_cloud_ptr, CloudMsg::CLOUD_PTR &dynamic_cloud_ptr)
+{
+
+    std::vector<int> multibox_index;
+    multibox_index.reserve(cloud_ptr->points.size());
+
+    for (const auto &object_msg : objects_msg.objects_vec)
+    {
+        pcl::CropBox<CloudMsg::POINT> clipper;
+
+        Eigen::Vector4f minPoint(-object_msg.w * 0.5, -object_msg.l * 0.5, -object_msg.h * 0.5, 1.0);
+        Eigen::Vector4f maxPoint(object_msg.w * 0.5, object_msg.l * 0.5, object_msg.h * 0.5, 1.0);
+
+        clipper.setMin(minPoint);
+        clipper.setMax(maxPoint);
+
+        clipper.setTranslation(Eigen::Vector3f(object_msg.x, object_msg.y, object_msg.z));
+        clipper.setRotation(object_msg.q.matrix().eulerAngles(2, 1, 0));
+
+        clipper.setInputCloud(cloud_ptr);
+
+        std::vector<int> singbox_index;
+        clipper.setNegative(false);
+        clipper.filter(singbox_index);
+        multibox_index.insert(multibox_index.begin(), singbox_index.begin(), singbox_index.end()); //! maybe risk
+    }
+
+    pcl::ExtractIndices<CloudMsg::POINT> extract;
+    extract.setInputCloud(cloud_ptr);
+    extract.setIndices(boost::make_shared<pcl::Indices>(multibox_index));
+    extract.setNegative(false); // inline
+
+    static_cloud_ptr.reset(new CloudMsg::CLOUD());
+    dynamic_cloud_ptr.reset(new CloudMsg::CLOUD());
+
+    extract.setNegative(true);
+    extract.filter(*static_cloud_ptr);
+
+    extract.setNegative(false);
+    extract.filter(*dynamic_cloud_ptr);
 }
 
 } // namespace evolving_ad_ns

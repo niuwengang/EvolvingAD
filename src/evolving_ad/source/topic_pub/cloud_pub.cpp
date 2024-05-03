@@ -32,7 +32,7 @@ CloudPub::CloudPub(ros::NodeHandle &nh, const std::string topic_name, const std:
  * @return
  * @note use extern timestamp
  */
-void CloudPub::Publish(const CloudMsg::CLOUD_PTR &cloud_ptr, const double time_stamp)
+void CloudPub::Publish(const CloudMsg::CLOUD_PTR &cloud_ptr, const double time_stamp )
 {
 
     sensor_msgs::PointCloud2Ptr cloud_ptr_output(new sensor_msgs::PointCloud2());

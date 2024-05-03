@@ -24,7 +24,6 @@
 #include "msg/object_msg.hpp"
 // module
 #include "module/object_detect/object_detect.hpp"
-
 #include "module/odom/lidar_odom.hpp"
 // tools
 #include "tools/tools.hpp"
@@ -32,6 +31,11 @@
 #include <spdlog/spdlog.h>
 // thread
 #include <thread>
+// pcl
+#include <pcl/filters/crop_box.h>
+#include <pcl/filters/extract_indices.h>
+
+#define DEBUG_DOR
 
 namespace evolving_ad_ns
 {
@@ -43,16 +47,18 @@ class FrontEndPipe
     ~FrontEndPipe() = default;
 
     bool Run();
-    void SendFrameQueue(std::deque<Frame> &frame_queue, std::mutex &mutex);
+    void SendFrameQueue(std::deque<Frame> &frame_queue, std::mutex &mutex); // send message to other thread
+  private:
+    void DorPost(const ObjectsMsg &ods_msg, const CloudMsg::CLOUD_PTR &cloud_ptr, CloudMsg::CLOUD_PTR &static_cloud_ptr,
+                 CloudMsg::CLOUD_PTR &dynamic_cloud_ptr);
 
   private:
     /* sub*/
     std::shared_ptr<CloudSub> cloud_sub_ptr_ = nullptr;
     /* pub*/
-    // std::shared_ptr<CloudPub> cloud_pub_ptr_ = nullptr;
-    // std::shared_ptr<TfPub> veh_tf_pub_ptr_ = nullptr;
-    // std::shared_ptr<BbxPub> bbx_pub_ptr_ = nullptr;
-    // std::shared_ptr<OdomPub> lidar_odom_pub_ptr_ = nullptr;
+    std::shared_ptr<CloudPub> static_cloud_pub_ptr_ = nullptr;
+    std::shared_ptr<CloudPub> dynamic_cloud_pub_ptr_ = nullptr;
+    std::shared_ptr<BbxPub> bbx_pub_ptr_ = nullptr;
 
     /*variable*/
     std::deque<CloudMsg> cloud_msg_queue_;
@@ -69,7 +75,6 @@ class FrontEndPipe
         std::string package_folder_path;
         std::string model_file_path;
         std::string cloud_sub_topic;
-
     } paramlist_;
 };
 } // namespace evolving_ad_ns

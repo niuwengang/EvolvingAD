@@ -74,7 +74,7 @@ void BackEndPipe::ReveiveFrameQueue(std::deque<Frame> &frame_queue, std::mutex &
     mutex.lock();
     if (!frame_queue.empty())
     {
-        for (int i = 0; i < frame_queue.size(); i++)
+        for (size_t i = 0; i < frame_queue.size(); i++)
         {
             Frame frame; // deep copy
             frame.index = frame_queue.at(i).index;
