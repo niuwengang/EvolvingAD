@@ -5,6 +5,7 @@ Panels:
     Property Tree Widget:
       Expanded:
         - /debug1
+        - /debug1/ground1
       Splitter Ratio: 0.5
     Tree Height: 1737
   - Class: rviz/Selection
@@ -250,6 +251,34 @@ Visualization Manager:
           line width: 0.10000000149011612
           only edge: true
           show coords: false
+        - Alpha: 1
+          Autocompute Intensity Bounds: true
+          Autocompute Value Bounds:
+            Max Value: 10
+            Min Value: -10
+            Value: true
+          Axis: Z
+          Channel Name: intensity
+          Class: rviz/PointCloud2
+          Color: 211; 215; 207
+          Color Transformer: FlatColor
+          Decay Time: 0
+          Enabled: true
+          Invert Rainbow: false
+          Max Color: 255; 255; 255
+          Min Color: 0; 0; 0
+          Name: ground
+          Position Transformer: XYZ
+          Queue Size: 10
+          Selectable: true
+          Size (Pixels): 3
+          Size (m): 0.10000000149011612
+          Style: Squares
+          Topic: /front_end_ground_cloud
+          Unreliable: false
+          Use Fixed Frame: true
+          Use rainbow: true
+          Value: true
       Enabled: true
       Name: debug
   Enabled: true
@@ -280,7 +309,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 127.30592346191406
+      Distance: 68.16159057617188
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
@@ -296,9 +325,9 @@ Visualization Manager:
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 1.5697963237762451
+      Pitch: 0.929796576499939
       Target Frame: <Fixed Frame>
-      Yaw: 3.1503963470458984
+      Yaw: 2.9903981685638428
     Saved: ~
 Window Geometry:
   Displays:

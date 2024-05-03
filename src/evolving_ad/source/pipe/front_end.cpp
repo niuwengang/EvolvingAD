@@ -80,20 +80,20 @@ bool FrontEndPipe::Run()
         CloudMsg::CLOUD_PTR no_ground_cloud_ptr_(new CloudMsg::CLOUD());
         ground_seg_ptr_->Segement(cloud_msg.cloud_ptr, ground_cloud_ptr_, no_ground_cloud_ptr_);
 
-        /*[2]--dynamic removal*/
+        /*[3]--dynamic removal*/
         CloudMsg::CLOUD_PTR static_cloud_ptr(new CloudMsg::CLOUD());
         CloudMsg::CLOUD_PTR dynamic_cloud_ptr(new CloudMsg::CLOUD());
         DorPost(objects_msg, no_ground_cloud_ptr_, static_cloud_ptr, dynamic_cloud_ptr);
         *cloud_msg.cloud_ptr = *static_cloud_ptr;
 
-        /*[3]--lidar odom*/
+        /*[4]--lidar odom*/
         lidar_odom_ptr_->InitPose(Eigen::Matrix4f::Identity());
         Eigen::Matrix4f pose = Eigen::Matrix4f::Identity();
         lidar_odom_ptr_->ComputePose(cloud_msg, pose);
 
         spdlog::info("FrontEnd$ exec {} hz", time_record_ptr_->GetFrequency(1000));
 
-        /*[4]--display*/
+        /*[5]--display*/
 #ifdef DEBUG_DOR
         bbx_pub_ptr_->Publish(objects_msg);
         static_cloud_pub_ptr_->Publish(static_cloud_ptr);
@@ -101,7 +101,7 @@ bool FrontEndPipe::Run()
         ground_cloud_pub_ptr_->Publish(ground_cloud_ptr_);
 #endif
 
-        /*[5]--copy to frame*/
+        /*[6]--copy to frame*/
         Frame frame;
         frame.time_stamp = cloud_msg.time_stamp;                 // timestamp
         frame.pose = pose;                                       // pose
