@@ -11,10 +11,9 @@
 #include <ros/ros.h>
 // thread
 #include <thread>
-//
+// pipe
 #include "pipe/back_end.hpp"
 #include "pipe/front_end.hpp"
-// msg
 
 namespace evolving_ad_ns
 {
@@ -25,27 +24,26 @@ class Scheduler
   public:
     void FrontEndThread()
     {
-        ros::Rate rate_sub(10);
+        ros::Rate rate_front_end(10);
         std::shared_ptr<FrontEndPipe> front_end_ptr = std::make_shared<FrontEndPipe>(nh1_, package_folder_path_);
 
         while (ros::ok())
         {
             front_end_ptr->Run();
             front_end_ptr->SendFrameQueue(frame_queue_, scheduler_mutex_);
-            rate_sub.sleep();
+            rate_front_end.sleep();
         }
     }
     void BackEndThread()
     {
-        ros::Rate rate_sub(100);
+        ros::Rate rate_back_end(100);
         std::shared_ptr<BackEndPipe> back_end_ptr = std::make_shared<BackEndPipe>(nh2_, package_folder_path_);
 
         while (ros::ok())
         {
             back_end_ptr->ReveiveFrameQueue(frame_queue_, scheduler_mutex_);
             back_end_ptr->Run();
-
-            rate_sub.sleep();
+            rate_back_end.sleep();
         }
     }
 
@@ -71,19 +69,19 @@ class Scheduler
     std::mutex scheduler_mutex_;
 };
 } // namespace evolving_ad_ns
+
 int main(int argc, char **argv)
 {
     ros::init(argc, argv, "ad_node");
     ros::NodeHandle nh1, nh2;
-    ros::Rate rate_main(100);
+    ros::Rate rate_main_thread(100);
 
     std::shared_ptr<evolving_ad_ns::Scheduler> scheduler_ptr = std::make_shared<evolving_ad_ns::Scheduler>(nh1, nh2);
 
     while (ros::ok())
     {
-
         ros::spinOnce();
-        rate_main.sleep();
+        rate_main_thread.sleep();
     }
     return 0;
 }
