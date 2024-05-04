@@ -74,6 +74,7 @@ https://github.com/ros-drivers/novatel_span_driver <br>
 ## 4.Acknowledgements
 https://github.com/OpenDriveLab/UniAD  <br>
 https://github.com/SmallMunich/nutonomy_pointpillars <br>
+https://github.com/EEPT-LAB/DipG-Seg<br>
 https://github.com/SMRT-AIST/fast_gicp <br>
 https://github.com/Little-Potato-1990/localization_in_auto_driving <br>
 

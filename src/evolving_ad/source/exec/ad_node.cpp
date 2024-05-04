@@ -43,10 +43,10 @@ Scheduler::Scheduler(ros::NodeHandle &nh1, ros::NodeHandle &nh2)
     nh2_ = nh2;
     package_folder_path_ = ros::package::getPath("evolving_ad");
     std::thread Thread1(&Scheduler::FrontEndThread, this);
-    // std::thread Thread2(&Scheduler::BackEndThread, this);
+    std::thread Thread2(&Scheduler::BackEndThread, this);
 
     Thread1.detach();
-    // Thread2.detach();
+    Thread2.detach();
 }
 
 void Scheduler::FrontEndThread()
@@ -57,22 +57,22 @@ void Scheduler::FrontEndThread()
     while (ros::ok())
     {
         front_end_ptr->Run();
-        // front_end_ptr->SendFrameQueue(frame_queue_, scheduler_mutex_);
+        front_end_ptr->SendFrameQueue(frame_queue_, scheduler_mutex_);
         rate_front_end.sleep();
     }
 }
 
 void Scheduler::BackEndThread()
 {
-    // ros::Rate rate_back_end(100);
-    // std::shared_ptr<BackEndPipe> back_end_ptr = std::make_shared<BackEndPipe>(nh2_, package_folder_path_);
+    ros::Rate rate_back_end(100);
+    std::shared_ptr<BackEndPipe> back_end_ptr = std::make_shared<BackEndPipe>(nh2_, package_folder_path_);
 
-    // while (ros::ok())
-    // {
-    //     back_end_ptr->ReveiveFrameQueue(frame_queue_, scheduler_mutex_);
-    //     back_end_ptr->Run();
-    //     rate_back_end.sleep();
-    // }
+    while (ros::ok())
+    {
+        back_end_ptr->ReveiveFrameQueue(frame_queue_, scheduler_mutex_);
+        back_end_ptr->Run();
+        rate_back_end.sleep();
+    }
 }
 
 } // namespace evolving_ad_ns

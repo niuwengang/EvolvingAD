@@ -10,8 +10,8 @@ namespace evolving_ad_ns
 class Frame
 {
   public:
-    Frame(){};
-    Frame(const CloudMsg &in_cloud_msg);
+    Frame() = default;
+    Frame &operator=(const Frame &other);
     ~Frame() = default;
 
     unsigned int index = 0;
