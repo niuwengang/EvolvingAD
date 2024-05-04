@@ -4,14 +4,6 @@
  * @author  niu_wengang@163.com
  * @date    2024-04-09
  * @version 0.1.1
- * spdlog level
- * trace = SPDLOG_LEVEL_TRACE, // low
- * debug = SPDLOG_LEVEL_DEBUG,
- * info = SPDLOG_LEVEL_INFO,
- * warn = SPDLOG_LEVEL_WARN,
- * err = SPDLOG_LEVEL_ERROR,
- * critical = SPDLOG_LEVEL_CRITICAL, // high
- * off = SPDLOG_LEVEL_OFF,
  */
 
 #ifndef _TOOLS_HPP_
@@ -22,6 +14,12 @@
 // c++
 #include <chrono>
 #include <deque>
+#include <fstream>
+#include <iostream>
+// spdlog
+#include <spdlog/sinks/basic_file_sink.h>    //log file
+#include <spdlog/sinks/stdout_color_sinks.h> //terminal
+#include <spdlog/spdlog.h>
 
 namespace evolving_ad_ns
 {
@@ -40,6 +38,18 @@ class TimeRecord
     std::deque<double> time_queue_;
     double sum_time_ = 0.0;
 };
+
+class LogRecord
+{
+  public:
+    LogRecord() = delete;
+    LogRecord(const std::string log_folder_path, const std::string log_name);
+    ~LogRecord() = default;
+
+    std::shared_ptr<spdlog::logger> file_ = nullptr;
+    std::shared_ptr<spdlog::logger> terminal_ = nullptr;
+};
+
 } // namespace evolving_ad_ns
 
 #endif //_TOOLS_HPP_

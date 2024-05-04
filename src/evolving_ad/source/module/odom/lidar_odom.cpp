@@ -85,11 +85,7 @@ void LidarOdom::ComputePose(const CloudMsg &cloud_msg, Eigen::Matrix4f &new_pose
 void LidarOdom::UpdateLocalMap(const Frame &normal_frame)
 {
     /*[1]--add new keyframe to queue*/
-    Frame keyframe;
-    keyframe.pose = normal_frame.pose;
-    *keyframe.cloud_msg.cloud_ptr = *normal_frame.cloud_msg.cloud_ptr; // deep copy
-    keyframe.time_stamp = normal_frame.time_stamp;
-
+    Frame keyframe = normal_frame;
     local_keyframe_queue_.push_back(keyframe);
 
     /*[2]--maintain the local map queue*/

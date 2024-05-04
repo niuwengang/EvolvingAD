@@ -50,4 +50,34 @@ double TimeRecord::GetFrequency(const unsigned int slide_windows)
 
     return static_cast<double>(time_queue_.size()) * 1000.0 / sum_time_;
 }
+/**
+ * @brief logrecord init
+ * @param[in] log_folder_path
+ * @param[in] log_name
+ * @return frequency
+ * @note
+ * spdlog level
+ * trace = SPDLOG_LEVEL_TRACE, // low
+ * debug = SPDLOG_LEVEL_DEBUG,
+ * info = SPDLOG_LEVEL_INFO,
+ * warn = SPDLOG_LEVEL_WARN,
+ * err = SPDLOG_LEVEL_ERROR,
+ * critical = SPDLOG_LEVEL_CRITICAL, // high
+ * off = SPDLOG_LEVEL_OFF,
+ */
+LogRecord::LogRecord(const std::string log_folder_path, const std::string log_name)
+{
+    /*[1]--create log file*/
+    std::string log_file_path = log_folder_path + "/" + log_name + ".txt";
+    std::ofstream file_writer(log_file_path, std::ios_base::out); // over write not append
+
+    file_ = spdlog::basic_logger_mt(log_name + ".", log_file_path);
+    terminal_ = spdlog::stdout_color_mt(log_name);
+
+    file_->set_level(spdlog::level::trace);
+    file_->flush_on(spdlog::level::trace);
+
+    terminal_->set_level(spdlog::level::trace);
+    terminal_->flush_on(spdlog::level::trace);
 }
+} // namespace evolving_ad_ns

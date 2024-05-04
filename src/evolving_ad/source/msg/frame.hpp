@@ -11,6 +11,7 @@ class Frame
 {
   public:
     Frame() = default;
+    Frame(const Frame &other);
     Frame &operator=(const Frame &other);
     ~Frame() = default;
 

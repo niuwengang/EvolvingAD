@@ -124,11 +124,7 @@ void FrontEndPipe::SendFrameQueue(std::deque<Frame> &frame_queue, std::mutex &mu
     {
         for (size_t i = 0; i < frame_queue_.size(); i++)
         {
-            Frame frame;
-            frame.time_stamp = frame_queue_.at(i).time_stamp;                           // timestamp
-            frame.pose = frame_queue_.at(i).pose;                                       // pose
-            *frame.cloud_msg.cloud_ptr = *frame_queue_.at(i).cloud_msg.cloud_ptr;       // cloud
-            frame.objects_msg.objects_vec = frame_queue_.at(i).objects_msg.objects_vec; // ods_vec
+            Frame frame = frame_queue_.at(i);
 
             mutex.lock();
             frame_queue.push_back(frame);

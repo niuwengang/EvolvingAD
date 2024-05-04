@@ -1,10 +1,9 @@
 # #!/bin/bash
 
 play_rate=1.0
-#dataset_path="/media/g/Elements/dataset/urban_loc/CA-20190828190411_blur_align.bag"
+dataset_path="/media/g/Elements/dataset/urban_loc/CA-20190828190411_blur_align.bag"
+dataset_path="/media/g/Elements/dataset/urban_loc/CA-20190828151211_blur_align-001.bag"
 
-#dataset_path="/media/g/Elements/dataset/urban_loc/CA-20190828151211_blur_align-001.bag"
-#dataset_path="/media/g/Elements/dataset/urban_loc/CA-20190828184706_blur_align.bag"
 
 
 gnome-terminal --window \

@@ -4,7 +4,7 @@
 
 #topic subscriber------------------------------------------------
 topic_sub: #
-  cloud_sub_topic: /rslidar_points #/velodyne_points  ///kitti：kitti/velo/pointcloud
+  cloud_sub_topic: /rslidar_points #32 scans
   imu_sub_topic: /imu_raw
   gnss_sub_topic: /ublox_gps_node/fix
   gt_sub_topic: /novatel_data/inspvax
@@ -16,3 +16,20 @@ lidar_odom:
   single_scan_leaf_size: 1.0 #filter size
   local_map_leaf_size: 1.0
   registration_resolution: 1.0
+
+#
+Extrinsic:
+  t_lidar2gnss: [4.318e-01, 5.08e-01, 5.08e-01]
+  T_lidar2gt: 
+    [0., -1., 0., -5.245e-01,
+    -1., 0., 0., 1.06045,
+    0., 0., -1., 7.98576e-01]
+  T_lidar2imu: 
+    [0., -1., 0., 0.,
+     1., 0., 0., 0., 
+     0., 0., 1., 7.62e-02]
+  T_lidar2cam0:
+   [ -4.7324731432882849e-03, 1.2489446573634877e-02, 9.9991080473321836e-01, 1.8499563388803192e-01,
+        -9.9990518155032682e-01, -1.2990043852130206e-02, -4.5701935984787667e-03, -2.4227446820327757e-02,
+        1.2931806012923930e-02, -9.9983762305936663e-01, 1.2549737377333781e-02, -3.3589470159409335e-01,
+        0., 0., 0., 1. ]

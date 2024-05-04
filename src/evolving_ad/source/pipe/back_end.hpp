@@ -11,6 +11,7 @@
 
 // pcl
 #include <pcl/common/transforms.h>
+#include <pcl/registration/icp.h>
 
 #include "module/odom/gnss_odom.hpp"
 // topic sub
@@ -20,6 +21,8 @@
 #include "topic_pub/cloud_pub.hpp"
 #include "topic_pub/odom_pub.hpp"
 #include "topic_pub/tf_pub.hpp"
+// tools
+#include "tools/tools.hpp"
 
 namespace evolving_ad_ns
 {
@@ -31,7 +34,13 @@ class BackEndPipe
     BackEndPipe(ros::NodeHandle &nh, const std::string package_folder_path);
     ~BackEndPipe() = default;
     bool Run();
+
     void ReveiveFrameQueue(std::deque<Frame> &frame_queue, std::mutex &mutex);
+
+  private:
+    bool ReadMsg(bool &gnss_sync_flag);
+    void OnlineCalibration(const std::vector<Eigen::Vector3f> &gnss_point_vec,
+                           const std::vector<Eigen::Vector3f> &lidar_point_vec, Eigen::Matrix4f &T_gnss2lidar);
 
   private:
     /*sub*/
@@ -46,8 +55,14 @@ class BackEndPipe
     /*algorithm module*/
     std::shared_ptr<GnssOdom> gnss_odom_ptr_ = nullptr;
 
+    /*tools*/
+    std::shared_ptr<LogRecord> log_record_ptr_ = nullptr;
+
     std::deque<Frame> frame_queue_;
     std::deque<GnssMsg> gnss_msg_queue_;
+
+    Frame frame_;
+    GnssMsg gnss_msg_;
 
     struct ParamList
     {

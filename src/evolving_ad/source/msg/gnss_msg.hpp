@@ -64,6 +64,8 @@ class GnssMsg
   public:
     void InitEnu();
     Eigen::Vector3f OdomUpdate();
+    static bool TimeSync(std::deque<GnssMsg> &unsynced_gnss_msg_queue, GnssMsg &synced_gnss_msg,
+                         const double sync_time);
 };
 
 } // namespace evolving_ad_ns
