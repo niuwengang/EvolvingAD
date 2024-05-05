@@ -16,6 +16,7 @@
 #include "module/odom/gnss_odom.hpp"
 // topic sub
 #include "topic_sub/gnss_sub.hpp"
+#include "topic_sub/gt_sub.hpp"
 // topic pub
 #include "topic_pub/bbx_pub.hpp"
 #include "topic_pub/cloud_pub.hpp"
@@ -45,8 +46,10 @@ class BackEndPipe
   private:
     /*sub*/
     std::shared_ptr<GnssSub> gnss_sub_ptr_ = nullptr;
+    std::shared_ptr<GtSub> gt_sub_ptr_ = nullptr;
     /*pub*/
     std::shared_ptr<OdomPub> gnss_odom_pub_ptr_ = nullptr;
+    std::shared_ptr<OdomPub> gt_odom_pub_ptr_ = nullptr;
     std::shared_ptr<OdomPub> lidar_odom_pub_ptr_ = nullptr;
     std::shared_ptr<CloudPub> cloud_pub_ptr_ = nullptr;
     std::shared_ptr<TfPub> veh_tf_pub_ptr_ = nullptr;
@@ -54,21 +57,26 @@ class BackEndPipe
 
     /*algorithm module*/
     std::shared_ptr<GnssOdom> gnss_odom_ptr_ = nullptr;
+    std::shared_ptr<GnssOdom> gt_odom_ptr_ = nullptr;
 
     /*tools*/
     std::shared_ptr<LogRecord> log_record_ptr_ = nullptr;
 
     std::deque<Frame> frame_queue_;
     std::deque<GnssMsg> gnss_msg_queue_;
+    std::deque<GnssMsg> gt_msg_queue_;
 
     Frame frame_;
     GnssMsg gnss_msg_;
+    GnssMsg gt_msg_;
 
     struct ParamList
     {
       public:
         std::string package_folder_path;
         std::string gnss_sub_topic;
+        std::string gt_sub_topic;
+
     } paramlist_;
 };
 } // namespace evolving_ad_ns

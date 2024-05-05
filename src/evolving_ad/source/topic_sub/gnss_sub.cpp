@@ -45,8 +45,6 @@ void GnssSub::MsgCallback(const sensor_msgs::NavSatFixConstPtr &gnss_msg_ptr)
     gnss_msg_queue_.push_back(gnss_msg);
 
     mutex_.unlock();
-
-    return;
 }
 
 /**
@@ -61,7 +59,5 @@ void GnssSub::ParseData(std::deque<GnssMsg> &gnss_msg_queue)
         gnss_msg_queue.insert(gnss_msg_queue.end(), gnss_msg_queue_.begin(), gnss_msg_queue_.end());
         gnss_msg_queue_.clear();
     }
-
-    return;
 }
 } // namespace evolving_ad_ns

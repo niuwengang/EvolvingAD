@@ -7,14 +7,12 @@ GnssOdom::GnssOdom(const YAML::Node &config_node)
 }
 bool GnssOdom::InitPose(GnssMsg &gnss_msg)
 {
-    static bool init_flag = false;
-
-    if (init_flag == false)
+    if (init_flag_ == false)
     {
         gnss_msg.InitEnu();
-        init_flag = true;
+        init_flag_ = true;
     }
-    return init_flag;
+    return init_flag_;
 }
 
 void GnssOdom::ComputePose(GnssMsg &gnss_msg, Eigen::Matrix4f &new_pose)

@@ -25,6 +25,7 @@ class GnssOdom
 
   private:
     Eigen::Matrix4f init_pose_ = Eigen::Matrix4f::Identity();
+    bool init_flag_ = false;
 };
 
 } // namespace evolving_ad_ns

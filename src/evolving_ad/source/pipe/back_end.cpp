@@ -9,34 +9,61 @@ BackEndPipe::BackEndPipe(ros::NodeHandle &nh, const std::string package_folder_p
     YAML::Node config_node = YAML::LoadFile(paramlist_.package_folder_path + "/config/ad.yaml");
 
     paramlist_.gnss_sub_topic = config_node["topic_sub"]["gnss_sub_topic"].as<std::string>();
+    paramlist_.gt_sub_topic = config_node["topic_sub"]["gt_sub_topic"].as<std::string>();
     /*[2]--sub*/
     gnss_sub_ptr_ = std::make_shared<GnssSub>(nh, paramlist_.gnss_sub_topic);
+    gt_sub_ptr_ = std::make_shared<GtSub>(nh, paramlist_.gt_sub_topic);
     /*[3]--pub*/
     gnss_odom_pub_ptr_ = std::make_shared<OdomPub>(nh, "back_end_gnss_odom", "map", "gnss");
+    gt_odom_pub_ptr_ = std::make_shared<OdomPub>(nh, "back_end_gnss_gt", "map", "gnss");
     cloud_pub_ptr_ = std::make_shared<CloudPub>(nh, "back_end_cloud", "map");
     veh_tf_pub_ptr_ = std::make_shared<TfPub>("map", "ground_link");
     bbx_pub_ptr_ = std::make_shared<BbxPub>(nh, "back_end_bbx", "map");
     lidar_odom_pub_ptr_ = std::make_shared<OdomPub>(nh, "back_end_lidar_odom", "map", "lidar");
     /*[4]--algorithm module*/
     gnss_odom_ptr_ = std::make_shared<GnssOdom>(config_node["lidar_odom"]);
+    gt_odom_ptr_ = std::make_shared<GnssOdom>(config_node["lidar_odom"]);
     /*[5]--tools*/
     log_record_ptr_ = std::make_shared<LogRecord>(paramlist_.package_folder_path + "/log", "back_end");
 }
 
 bool BackEndPipe::Run()
 {
+
+    gt_sub_ptr_->ParseData(gt_msg_queue_);
+    if (gt_msg_queue_.size() > 0)
+    {
+        gt_msg_ = gt_msg_queue_.front();
+        gt_msg_queue_.pop_front();
+
+        gt_odom_ptr_->InitPose(gt_msg_);
+        Eigen::Matrix4f gt_pose = Eigen::Matrix4f::Identity();
+        gnss_odom_ptr_->ComputePose(gt_msg_, gt_pose);
+
+        gt_odom_pub_ptr_->Publish(gt_pose);
+    }
+
+    if (frame_queue_.size() > 0)
+    {
+        frame_ = frame_queue_.front();
+        frame_queue_.pop_front();
+    }
+
+// #define NOT_READY
+#ifdef NOT_READY
+
     bool gnss_sync_flag = false;
 
     static Eigen::Matrix4f T_gnss2lidar = Eigen::Matrix4f::Identity();
+
     static bool T_gnss2lidar_init_flag = false;
-    static int cnt = 50;
-    static std::vector<Eigen::Vector3f> lidar_point_vec, gnss_point_vec;
+    static int cnt = 10;                                                 // temp
+    static std::vector<Eigen::Vector3f> lidar_point_vec, gnss_point_vec; // temp
 
     if (ReadMsg(gnss_sync_flag) == true)
     {
         if (gnss_sync_flag == true)
         {
-            // log_record_ptr_->file_->info("timestamp:{}", frame_.time_stamp);
             gnss_odom_ptr_->InitPose(gnss_msg_);
             Eigen::Matrix4f gnss_pose = Eigen::Matrix4f::Identity();
             gnss_odom_ptr_->ComputePose(gnss_msg_, gnss_pose);
@@ -60,68 +87,37 @@ bool BackEndPipe::Run()
         }
         if (T_gnss2lidar_init_flag == true)
         {
+            /*[1]--lidar odom display*/
             frame_.pose = T_gnss2lidar * frame_.pose;
             lidar_odom_pub_ptr_->Publish(frame_.pose);
+            veh_tf_pub_ptr_->SendTransform(frame_.pose);
+
+            /*[2]--cloud  display*/
+            CloudMsg::CLOUD_PTR transformed_cloud_ptr(new CloudMsg::CLOUD());
+            pcl::transformPointCloud(*frame_.cloud_msg.cloud_ptr, *transformed_cloud_ptr, frame_.pose);
+            cloud_pub_ptr_->Publish(transformed_cloud_ptr, 0.0);
+
+            /*[3]--object display*/
+            for (auto &object : frame_.objects_msg.objects_vec)
+            {
+                Eigen::Matrix4f object_pose;
+                object_pose.block<3, 1>(0, 3) << object.x, object.y, object.z;
+                object_pose.block<3, 3>(0, 0) = object.q.toRotationMatrix();
+
+                object_pose = frame_.pose * object_pose;
+
+                object.x = object_pose(0, 3);
+                object.y = object_pose(1, 3);
+                object.z = object_pose(2, 3);
+                object.q = Eigen::Quaternionf(object_pose.block<3, 3>(0, 0));
+            }
+            bbx_pub_ptr_->Publish(frame_.objects_msg);
         }
     }
 
+#endif
     return true;
 }
-
-// static std::deque<GnssMsg> unsynced_gnss_msg_queue;
-// GnssMsg::TimeSync();
-
-//     /*[1]--get the first message*/
-//     GnssMsg gnss_msg = gnss_msg_queue_.front();
-//     gnss_msg_queue_.pop_front();
-
-//     /*[2]--check nan*/
-//     if (std::isnan(gnss_msg.latitude + gnss_msg.longitude + gnss_msg.altitude))
-//     {
-//         return false;
-//     }
-
-//     /*[3]--init neu*/
-
-//     /*[4]-calculate neu odom*/
-//
-
-// }
-
-// const double gnss_lidar_time_diff =
-//     gnss_msg.time_stamp -
-
-// if (!gnss_msg_queue_.empty())
-// {
-
-//     log_record_ptr_->file_->info("gnss timestamp:\t{}", gnss_msg.time_stamp);
-
-// }
-
-//     log_record_ptr_->file_->info("lidar timestamp:\t{}", frame.time_stamp);
-
-//     // CloudMsg::CLOUD_PTR transformed_cloud_ptr(new CloudMsg::CLOUD());
-//     // pcl::transformPointCloud(*frame.cloud_msg.cloud_ptr, *transformed_cloud_ptr, frame.pose);
-
-//     // cloud_pub_ptr_->Publish(transformed_cloud_ptr, 0.0);
-
-//     // veh_tf_pub_ptr_->SendTransform(frame.pose);
-
-//     // for (auto &object : frame.objects_msg.objects_vec)
-//     // {
-//     //     Eigen::Matrix4f object_pose;
-//     //     object_pose.block<3, 1>(0, 3) << object.x, object.y, object.z;
-//     //     object_pose.block<3, 3>(0, 0) = object.q.toRotationMatrix();
-
-//     //     object_pose = frame.pose * object_pose;
-
-//     //     object.x = object_pose(0, 3);
-//     //     object.y = object_pose(1, 3);
-//     //     object.z = object_pose(2, 3);
-//     //     object.q = Eigen::Quaternionf(object_pose.block<3, 3>(0, 0));
-//     // }
-
-//     // bbx_pub_ptr_->Publish(frame.objects_msg);
 
 bool BackEndPipe::ReadMsg(bool &gnss_sync_flag)
 {
@@ -184,7 +180,7 @@ void BackEndPipe::OnlineCalibration(const std::vector<Eigen::Vector3f> &gnss_poi
     CloudMsg::CLOUD_PTR source_cloud_ptr(new CloudMsg::CLOUD());
     CloudMsg::CLOUD_PTR target_cloud_ptr(new CloudMsg::CLOUD());
 
-    for (int index = 0; index < gnss_point_vec.size(); index++)
+    for (size_t index = 0; index < gnss_point_vec.size(); index++)
     {
         CloudMsg::POINT point;
         point.x = gnss_point_vec[index](0);
@@ -193,7 +189,7 @@ void BackEndPipe::OnlineCalibration(const std::vector<Eigen::Vector3f> &gnss_poi
         target_cloud_ptr->points.push_back(point);
     }
 
-    for (int index = 0; index < lidar_point_vec.size(); index++)
+    for (size_t index = 0; index < lidar_point_vec.size(); index++)
     {
         CloudMsg::POINT point;
         point.x = lidar_point_vec[index](0);
@@ -213,7 +209,7 @@ void BackEndPipe::OnlineCalibration(const std::vector<Eigen::Vector3f> &gnss_poi
     CloudMsg::CLOUD_PTR result_cloud_ptr(new CloudMsg::CLOUD());
 
     Eigen::Matrix4f initial_transform = Eigen::Matrix4f::Identity();
-    log_record_ptr_->file_->info("角度差:{}", angleDegrees);
+
     if (abs(angleDegrees) > M_PI_2)
     {
         Eigen::AngleAxisf rotationVector(M_PI, Eigen::Vector3f::UnitZ());

@@ -49,6 +49,10 @@ class GnssMsg
     double latitude = 0.0;
     double altitude = 0.0;
 
+    double roll = 0.0;
+    double pitch = 0.0;
+    double azimuth = 0.0;
+
     double local_e = 0.0;
     double local_n = 0.0;
     double local_u = 0.0;

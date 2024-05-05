@@ -38,8 +38,8 @@ endif()
 
 
 #ros--------------------------------------------
-find_package(catkin REQUIRED COMPONENTS roscpp std_msgs roslib tf)
-include_directories(${catkin_INCLUDE_DIRS})
+find_package(catkin REQUIRED COMPONENTS roscpp std_msgs roslib tf novatel_msgs)
+include_directories(include ${catkin_INCLUDE_DIRS})
 catkin_package()
 
 include_directories(source)
