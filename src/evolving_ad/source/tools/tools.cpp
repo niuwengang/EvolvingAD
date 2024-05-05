@@ -106,7 +106,7 @@ void TrajRecord::SavePose(const Eigen::Matrix4f &pose, const double time_stamp)
 
     for (int i = 0; i < 8; i++)
     {
-        traj_ofs_ << tum_output[i];
+        traj_ofs_ << std::fixed << tum_output[i];
 
         if (i == 7)
         {

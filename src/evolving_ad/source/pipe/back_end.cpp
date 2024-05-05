@@ -27,6 +27,7 @@ BackEndPipe::BackEndPipe(ros::NodeHandle &nh, const std::string package_folder_p
     log_record_ptr_ = std::make_shared<LogRecord>(paramlist_.package_folder_path + "/log", "back_end");
 
     gt_traj_record_ptr_ = std::make_shared<TrajRecord>(paramlist_.package_folder_path + "/result/traj", "gt");
+    gnss_traj_record_ptr_ = std::make_shared<TrajRecord>(paramlist_.package_folder_path + "/result/traj", "gnss");
 }
 
 bool BackEndPipe::Run()
@@ -46,7 +47,7 @@ bool BackEndPipe::Run()
 
         gt_odom_pub_ptr_->Publish(gt_pose, gt_msg_.time_stamp);
 
-        gt_traj_record_ptr_->SavePose(gt_pose);
+        gt_traj_record_ptr_->SavePose(gt_pose, gt_msg_.time_stamp);
     }
 
     gnss_sub_ptr_->ParseData(gnss_msg_queue_);
@@ -62,6 +63,7 @@ bool BackEndPipe::Run()
         log_record_ptr_->file_->info("gnss timestamp:{}", gnss_msg_.time_stamp);
 
         gnss_odom_pub_ptr_->Publish(gnss_pose);
+        gnss_traj_record_ptr_->SavePose(gnss_pose, gnss_msg_.time_stamp);
     }
 
     if (frame_queue_.size() > 0)
