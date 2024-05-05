@@ -9,6 +9,10 @@
 #ifndef _TOOLS_HPP_
 #define _TOOLS_HPP_
 
+#include <filesystem>
+// Eigen
+#include <Eigen/Core>
+#include <Eigen/Geometry>
 // ros
 #include <ros/ros.h>
 // c++
@@ -48,6 +52,23 @@ class LogRecord
 
     std::shared_ptr<spdlog::logger> file_ = nullptr;
     std::shared_ptr<spdlog::logger> terminal_ = nullptr;
+};
+
+class TrajRecord
+{
+  public:
+    TrajRecord(const std::string &traj_folder_path, const std::string &file_name);
+    void SavePose(const Eigen::Matrix4f &pose, const double time_stamp);
+
+  private:
+    std::ofstream traj_ofs_;
+};
+
+class FileManager
+{
+  public:
+    static bool CreateFolder(const std::string &in_folder_path);
+    static bool CreateTxtFile(std::ofstream &ofs, const std::string file_path);
 };
 
 } // namespace evolving_ad_ns

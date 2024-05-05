@@ -106,7 +106,7 @@ Visualization Manager:
             Head Radius: 2
             Shaft Length: 5
             Shaft Radius: 5
-            Value: Axes
+            Value: Arrow
           Topic: /back_end_gnss_odom
           Unreliable: false
           Value: true
@@ -389,7 +389,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/XYOrbit
-      Distance: 574.1956176757812
+      Distance: 1021.19921875
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
@@ -397,17 +397,17 @@ Visualization Manager:
         Value: false
       Field of View: 0.7853981852531433
       Focal Point:
-        X: -237.72549438476562
-        Y: -61.526084899902344
-        Z: 0
+        X: -222.69686889648438
+        Y: -92.94796752929688
+        Z: -9.947022044798359e-05
       Focal Shape Fixed Size: true
       Focal Shape Size: 0.05000000074505806
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.9597963690757751
+      Pitch: 1.20979642868042
       Target Frame: <Fixed Frame>
-      Yaw: 0.7940390706062317
+      Yaw: 5.964040279388428
     Saved: ~
 Window Geometry:
   Displays:

@@ -40,6 +40,7 @@ class LidarOdom
 
     std::deque<Frame> local_keyframe_queue_;
     CloudMsg::CLOUD_PTR local_map_ptr_;
+    bool init_flag_ = false;
 
     struct ParamList
     {

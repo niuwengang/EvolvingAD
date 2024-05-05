@@ -21,14 +21,13 @@ LidarOdom::LidarOdom(const YAML::Node &config_node)
 
 bool LidarOdom::InitPose(const Eigen::Matrix4f &init_pose)
 {
-    static bool init_flag = false;
 
-    if (init_flag == false)
+    if (init_flag_ == false)
     {
         init_pose_ = init_pose;
-        init_flag = true;
+        init_flag_ = true;
     }
-    return init_flag;
+    return init_flag_;
 }
 
 void LidarOdom::ComputePose(const CloudMsg &cloud_msg, Eigen::Matrix4f &new_pose)

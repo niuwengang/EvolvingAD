@@ -25,6 +25,8 @@ BackEndPipe::BackEndPipe(ros::NodeHandle &nh, const std::string package_folder_p
     gt_odom_ptr_ = std::make_shared<GnssOdom>(config_node["lidar_odom"]);
     /*[5]--tools*/
     log_record_ptr_ = std::make_shared<LogRecord>(paramlist_.package_folder_path + "/log", "back_end");
+
+    gt_traj_record_ptr_ = std::make_shared<TrajRecord>(paramlist_.package_folder_path + "/result/traj", "gt");
 }
 
 bool BackEndPipe::Run()
@@ -42,7 +44,9 @@ bool BackEndPipe::Run()
 
         log_record_ptr_->file_->info("gt timestamp:{}", gt_msg_.time_stamp);
 
-        gt_odom_pub_ptr_->Publish(gt_pose);
+        gt_odom_pub_ptr_->Publish(gt_pose, gt_msg_.time_stamp);
+
+        gt_traj_record_ptr_->SavePose(gt_pose);
     }
 
     gnss_sub_ptr_->ParseData(gnss_msg_queue_);

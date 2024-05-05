@@ -80,4 +80,83 @@ LogRecord::LogRecord(const std::string log_folder_path, const std::string log_na
     terminal_->set_level(spdlog::level::trace);
     terminal_->flush_on(spdlog::level::trace);
 }
+
+TrajRecord::TrajRecord(const std::string &traj_folder_path, const std::string &file_name)
+{
+    FileManager::CreateFolder(traj_folder_path);
+    FileManager::CreateTxtFile(traj_ofs_, traj_folder_path + "/" + file_name + ".txt");
+}
+
+/*use tum method*/
+void TrajRecord::SavePose(const Eigen::Matrix4f &pose, const double time_stamp)
+{
+    std::vector<double> tum_output(8);
+
+    tum_output[0] = time_stamp;
+
+    tum_output[1] = pose(0, 3); // x
+    tum_output[2] = pose(1, 3); // y
+    tum_output[3] = pose(2, 3); // z
+
+    Eigen::Quaternionf q(pose.block<3, 3>(0, 0));
+    tum_output[4] = q.x(); // qx
+    tum_output[5] = q.y(); // qy
+    tum_output[6] = q.z(); // qz
+    tum_output[7] = q.w(); // qw
+
+    for (int i = 0; i < 8; i++)
+    {
+        traj_ofs_ << tum_output[i];
+
+        if (i == 7)
+        {
+            traj_ofs_ << std::endl;
+            return;
+        }
+        traj_ofs_ << " ";
+    }
+    traj_ofs_ << std::endl;
+}
+
+bool FileManager::CreateFolder(const std::string &in_folder_path)
+{
+    std::filesystem::path folder_path(in_folder_path);
+
+    if (!std::filesystem::exists(folder_path))
+    {
+        try
+        {
+            std::filesystem::create_directories(folder_path);
+            return true;
+        }
+        catch (const std::exception &e)
+        {
+            return false;
+        }
+    }
+    else
+    {
+        return true;
+    }
+}
+
+bool FileManager::CreateTxtFile(std::ofstream &ofs, const std::string file_path)
+{
+    // check if file exist
+    if (std::filesystem::exists(file_path))
+    {
+        return true;
+    }
+
+    ofs.open(file_path.c_str(), std::ios::app);
+    if (ofs.is_open())
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
 } // namespace evolving_ad_ns

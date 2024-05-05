@@ -61,6 +61,7 @@ class BackEndPipe
 
     /*tools*/
     std::shared_ptr<LogRecord> log_record_ptr_ = nullptr;
+    std::shared_ptr<TrajRecord> gt_traj_record_ptr_ = nullptr;
 
     std::deque<Frame> frame_queue_;
     std::deque<GnssMsg> gnss_msg_queue_;
@@ -74,6 +75,8 @@ class BackEndPipe
     {
       public:
         std::string package_folder_path;
+        std::string result_folder_path;
+
         std::string gnss_sub_topic;
         std::string gt_sub_topic;
 
