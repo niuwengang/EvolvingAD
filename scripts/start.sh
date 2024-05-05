@@ -1,10 +1,16 @@
 # #!/bin/bash
 
 play_rate=1.0
-dataset_path="/media/g/Elements/dataset/urban_loc/CA-20190828190411_blur_align.bag"
-dataset_path="/media/g/Elements/dataset/urban_loc/CA-20190828151211_blur_align-001.bag"
 
 
+if [ "$1" == "1" ]; then
+    dataset_path="/media/g/Elements/dataset/urban_loc/CA-20190828190411_blur_align.bag"
+elif [ "$1" == "2" ]; then
+    dataset_path="/media/g/Elements/dataset/urban_loc/CA-20190828151211_blur_align-001.bag"
+else
+    echo "unknown param"
+    exit 1 
+fi
 
 gnome-terminal --window \
 --tab -e 'bash -c "sleep 1s;roscore; exec bash"' \

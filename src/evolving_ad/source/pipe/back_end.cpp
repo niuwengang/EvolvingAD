@@ -163,7 +163,7 @@ void BackEndPipe::OnlineCalibration(const std::vector<Eigen::Vector3f> &gnss_poi
                                     const std::vector<Eigen::Vector3f> &lidar_point_vec, Eigen::Matrix4f &T_gnss2lidar)
 {
 
-    auto calculateAngle = [](double x1, double y1, double x2, double y2) -> float { // 计算点积
+    auto calculateAngle = [](double x1, double y1, double x2, double y2) -> float {
         double dotProduct = x1 * x2 + y1 * y2;
 
         double magnitudeA = std::sqrt(x1 * x1 + y1 * y1);
@@ -173,8 +173,7 @@ void BackEndPipe::OnlineCalibration(const std::vector<Eigen::Vector3f> &gnss_poi
 
         double angleRadians = std::acos(cosTheta);
 
-        double angleDegrees = angleRadians * (180.0 / M_PI);
-        return angleDegrees;
+        return angleRadians;
     };
 
     float angleDegrees = calculateAngle(gnss_point_vec.back()(0), gnss_point_vec.back()(1), lidar_point_vec.back()(0),
@@ -214,17 +213,18 @@ void BackEndPipe::OnlineCalibration(const std::vector<Eigen::Vector3f> &gnss_poi
     CloudMsg::CLOUD_PTR result_cloud_ptr(new CloudMsg::CLOUD());
 
     Eigen::Matrix4f initial_transform = Eigen::Matrix4f::Identity();
-    // if (abs(angleDegrees) > M_PI_2)
-    // {
-    //     Eigen::AngleAxisf rotationVector(M_PI, Eigen::Vector3f::UnitZ());
-    //     Eigen::Matrix3f rotationMatrix = rotationVector.toRotationMatrix();
-    //     initial_transform.block<3, 3>(0, 0) = rotationMatrix;
-    //     icp.align(*result_cloud_ptr, initial_transform);
-    // }
-    // else
-  //  {
+    log_record_ptr_->file_->info("角度差:{}", angleDegrees);
+    if (abs(angleDegrees) > M_PI_2)
+    {
+        Eigen::AngleAxisf rotationVector(M_PI, Eigen::Vector3f::UnitZ());
+        Eigen::Matrix3f rotationMatrix = rotationVector.toRotationMatrix();
+        initial_transform.block<3, 3>(0, 0) = rotationMatrix;
+        icp.align(*result_cloud_ptr, initial_transform);
+    }
+    else
+    {
         icp.align(*result_cloud_ptr);
-    //}
+    }
 
     // std::cout << icp.getFinalTransformation() << std::endl;
     T_gnss2lidar = icp.getFinalTransformation();
