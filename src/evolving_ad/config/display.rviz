@@ -5,12 +5,8 @@ Panels:
     Property Tree Widget:
       Expanded:
         - /result1
-        - /result1/gnss_odom1
         - /result1/gnss_odom1/Shape1
-        - /result1/lidar_odom1
         - /result1/lidar_odom1/Shape1
-        - /Axes1
-        - /gt个_odom1
       Splitter Ratio: 0.5
     Tree Height: 1737
   - Class: rviz/Selection
@@ -147,6 +143,41 @@ Visualization Manager:
             Shaft Radius: 5
             Value: Axes
           Topic: /back_end_lidar_odom
+          Unreliable: false
+          Value: true
+        - Angle Tolerance: 0.10000000149011612
+          Class: rviz/Odometry
+          Covariance:
+            Orientation:
+              Alpha: 0.5
+              Color: 255; 255; 127
+              Color Style: Unique
+              Frame: Local
+              Offset: 1
+              Scale: 1
+              Value: true
+            Position:
+              Alpha: 0.30000001192092896
+              Color: 204; 51; 204
+              Scale: 1
+              Value: true
+            Value: true
+          Enabled: true
+          Keep: 0
+          Name: gt_odom
+          Position Tolerance: 0.10000000149011612
+          Queue Size: 10
+          Shape:
+            Alpha: 1
+            Axes Length: 1
+            Axes Radius: 0.10000000149011612
+            Color: 255; 25; 0
+            Head Length: 1
+            Head Radius: 0.10000000149011612
+            Shaft Length: 1
+            Shaft Radius: 5
+            Value: Axes
+          Topic: /back_end_gnss_gt
           Unreliable: false
           Value: true
         - Class: jsk_rviz_plugin/BoundingBoxArray
@@ -330,41 +361,6 @@ Visualization Manager:
       Reference Frame: <Fixed Frame>
       Show Trail: false
       Value: true
-    - Angle Tolerance: 0.10000000149011612
-      Class: rviz/Odometry
-      Covariance:
-        Orientation:
-          Alpha: 0.5
-          Color: 255; 255; 127
-          Color Style: Unique
-          Frame: Local
-          Offset: 1
-          Scale: 1
-          Value: true
-        Position:
-          Alpha: 0.30000001192092896
-          Color: 204; 51; 204
-          Scale: 1
-          Value: true
-        Value: true
-      Enabled: true
-      Keep: 0
-      Name: gt个_odom
-      Position Tolerance: 0.10000000149011612
-      Queue Size: 10
-      Shape:
-        Alpha: 1
-        Axes Length: 1
-        Axes Radius: 0.10000000149011612
-        Color: 255; 25; 0
-        Head Length: 1
-        Head Radius: 0.10000000149011612
-        Shaft Length: 1
-        Shaft Radius: 5
-        Value: Axes
-      Topic: /back_end_gnss_gt
-      Unreliable: false
-      Value: true
   Enabled: true
   Global Options:
     Background Color: 255; 255; 255
@@ -392,8 +388,8 @@ Visualization Manager:
   Value: true
   Views:
     Current:
-      Class: rviz/Orbit
-      Distance: 1078.9244384765625
+      Class: rviz/XYOrbit
+      Distance: 574.1956176757812
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
@@ -401,17 +397,17 @@ Visualization Manager:
         Value: false
       Field of View: 0.7853981852531433
       Focal Point:
-        X: -258.9497375488281
-        Y: -304.53570556640625
-        Z: -22.501583099365234
-      Focal Shape Fixed Size: false
+        X: -237.72549438476562
+        Y: -61.526084899902344
+        Z: 0
+      Focal Shape Fixed Size: true
       Focal Shape Size: 0.05000000074505806
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 1.3197964429855347
+      Pitch: 0.9597963690757751
       Target Frame: <Fixed Frame>
-      Yaw: 2.067220687866211
+      Yaw: 0.7940390706062317
     Saved: ~
 Window Geometry:
   Displays:

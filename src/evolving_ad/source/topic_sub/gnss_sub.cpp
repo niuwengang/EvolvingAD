@@ -34,7 +34,7 @@ void GnssSub::MsgCallback(const sensor_msgs::NavSatFixConstPtr &gnss_msg_ptr)
     mutex_.lock();
     /*[1]--load mesage*/
     GnssMsg gnss_msg;
-    gnss_msg.time_stamp = gnss_msg_ptr->header.stamp.toSec();
+    gnss_msg.time_stamp = ros::Time::now().toSec(); // gnss_msg_ptr->header.stamp.toSec();
     gnss_msg.latitude = gnss_msg_ptr->latitude;
     gnss_msg.longitude = gnss_msg_ptr->longitude;
     gnss_msg.altitude = gnss_msg_ptr->altitude;

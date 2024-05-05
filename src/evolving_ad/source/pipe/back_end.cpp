@@ -40,7 +40,24 @@ bool BackEndPipe::Run()
         Eigen::Matrix4f gt_pose = Eigen::Matrix4f::Identity();
         gnss_odom_ptr_->ComputePose(gt_msg_, gt_pose);
 
+        log_record_ptr_->file_->info("gt timestamp:{}", gt_msg_.time_stamp);
+
         gt_odom_pub_ptr_->Publish(gt_pose);
+    }
+
+    gnss_sub_ptr_->ParseData(gnss_msg_queue_);
+    if (gnss_msg_queue_.size() > 0)
+    {
+        gnss_msg_ = gnss_msg_queue_.front();
+        gnss_msg_queue_.pop_front();
+
+        gnss_odom_ptr_->InitPose(gnss_msg_);
+        Eigen::Matrix4f gnss_pose = Eigen::Matrix4f::Identity();
+        gnss_odom_ptr_->ComputePose(gnss_msg_, gnss_pose);
+
+        log_record_ptr_->file_->info("gnss timestamp:{}", gnss_msg_.time_stamp);
+
+        gnss_odom_pub_ptr_->Publish(gnss_pose);
     }
 
     if (frame_queue_.size() > 0)

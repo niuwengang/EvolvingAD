@@ -33,7 +33,7 @@ void CloudSub::MsgCallback(const sensor_msgs::PointCloud2::ConstPtr &cloud_msg_p
 
     /*[1]--load cloud message*/
     CloudMsg cloud_msg;
-    cloud_msg.time_stamp = cloud_msg_ptr->header.stamp.toSec();
+    cloud_msg.time_stamp = ros::Time::now().toSec(); // cloud_msg_ptr->header.stamp.toSec();
     pcl::fromROSMsg(*cloud_msg_ptr, *(cloud_msg.cloud_ptr));
 
     /*[2]--add message to queue*/

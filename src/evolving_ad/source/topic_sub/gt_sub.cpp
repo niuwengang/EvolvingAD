@@ -14,12 +14,10 @@ void GtSub::MsgCallback(const novatel_msgs::INSPVAXConstPtr &inspvax_ptr)
     GnssMsg gt_msg;
 
     const int LEAPSEC = 27;
-    double time_stamp =
-        inspvax_ptr->header.gps_week * 7 * 24 * 3600 + inspvax_ptr->header.gps_week_seconds + 315964800 - LEAPSEC;
+    // double time_stamp = static_cast<double>(inspvax_ptr->header.gps_week * 7 * 24 * 3600 +
+    //                                       inspvax_ptr->header.gps_week_seconds + (3652 * 86400) - LEAPSEC);
 
-    std::cout << "gps timestamp:" << time_stamp << std::endl;
-
-    gt_msg.time_stamp = time_stamp;
+    gt_msg.time_stamp = ros::Time::now().toSec(); // time_stamp;
     gt_msg.latitude = inspvax_ptr->latitude;
     gt_msg.longitude = inspvax_ptr->longitude;
     gt_msg.altitude = inspvax_ptr->altitude;
