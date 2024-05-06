@@ -1,5 +1,8 @@
 #include "g2o_opter.hpp"
 
+namespace evolving_ad_ns
+{
+
 /**
  * @brief g2o init
  * @param[in] solver_type opt method
@@ -154,3 +157,4 @@ unsigned int G2oOpter::GetOptNodeNum()
 {
     return g2o_opter_ptr_->vertices().size();
 }
+} // namespace evolving_ad_ns

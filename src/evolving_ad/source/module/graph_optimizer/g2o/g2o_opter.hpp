@@ -36,6 +36,9 @@ G2O_USE_OPTIMIZATION_LIBRARY(cholmod)
 G2O_USE_OPTIMIZATION_LIBRARY(csparse)
 G2O_USE_TYPE_GROUP(slam3d);
 
+namespace evolving_ad_ns
+{
+
 class G2oOpter : public GraphOptimizerInterface
 {
   public:
@@ -63,5 +66,5 @@ class G2oOpter : public GraphOptimizerInterface
     g2o::RobustKernelFactory *robust_kernel_factory_;
     std::unique_ptr<g2o::SparseOptimizer> g2o_opter_ptr_ = nullptr;
 };
-
+} // namespace evolving_ad_ns
 #endif

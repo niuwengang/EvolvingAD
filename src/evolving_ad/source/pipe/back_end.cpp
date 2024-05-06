@@ -30,6 +30,7 @@ BackEndPipe::BackEndPipe(ros::NodeHandle &nh, const std::string package_folder_p
     gnss_odom_ptr_ = std::make_shared<GnssOdom>(config_node["lidar_odom"]);
     gt_odom_ptr_ = std::make_shared<GnssOdom>(config_node["lidar_odom"]);
     lidar2gnss_calibration_ptr_ = std::make_shared<Lidar2GnssCalibration>(0.1, 20);
+    graph_optimizer_ptr_ = std::make_shared<G2oOpter>("lm_var");
 
     /*[5]--tools*/
     log_record_ptr_ = std::make_shared<LogRecord>(paramlist_.package_folder_path + "/log", "back_end");
@@ -41,16 +42,23 @@ bool BackEndPipe::Run()
 {
 
     gnss_sub_ptr_->ParseData(gnss_msg_queue_);
+
+    bool gnss_synced_flag = false;
+    Eigen::Matrix4f gnss_pose = Eigen::Matrix4f::Identity();
+
     if (frame_queue_.size() > 0)
     {
         frame_ = frame_queue_.front();
         frame_queue_.pop_front();
 
-        if (GnssMsg::TimeSync(gnss_msg_queue_, gnss_msg_, frame_.time_stamp))
+        /*[1]--gnss fusion*/
+        gnss_synced_flag = GnssMsg::TimeSync(gnss_msg_queue_, gnss_msg_, frame_.time_stamp);
+        if (gnss_synced_flag == true)
         {
+
             gnss_odom_ptr_->InitPose(gnss_msg_);
             gt_odom_ptr_->InitPose(gnss_msg_);
-            Eigen::Matrix4f gnss_pose = Eigen::Matrix4f::Identity();
+
             gnss_odom_ptr_->ComputePose(gnss_msg_, gnss_pose);
 
             if (online_calibration_flag_ == false)
@@ -61,34 +69,57 @@ bool BackEndPipe::Run()
 
             gnss_odom_pub_ptr_->Publish(gnss_pose);
         }
+
+        /*[2]--lidar fusion*/
         if (online_calibration_flag_ == true)
         {
             frame_.pose = T_gnss2lidar_ * frame_.pose;
 
-            /*a--display odom*/
+            double dis = fabs(frame_.pose(0, 3) - last_keyframe_pose_(0, 3)) +
+                         fabs(frame_.pose(1, 3) - last_keyframe_pose_(1, 3)) +
+                         fabs(frame_.pose(2, 3) - last_keyframe_pose_(2, 3));
+
+            if (dis >= 2.0 or keyframe_queue_.size() == 0)
+            {
+                frame_.index = static_cast<unsigned int>(keyframe_queue_.size());
+                keyframe_queue_.push_back(frame_); // add to keyframe queue
+
+                /*add vertex*/
+                Eigen::Isometry3d isometry;
+                isometry.matrix() = frame_.pose.cast<double>();
+                if (graph_optimizer_ptr_->GetOptNodeNum() == 0) // first must be fixed
+                {
+                    graph_optimizer_ptr_->AddSe3Vertex(isometry, true);
+                }
+                else
+                {
+                    graph_optimizer_ptr_->AddSe3Vertex(isometry, false);
+                }
+
+                /*add inter edge*/
+                unsigned int node_num = graph_optimizer_ptr_->GetOptNodeNum();
+
+                if (node_num >= 2) // at least two nodes
+                {
+                    Eigen::Matrix4f relative_pose = last_keyframe_pose_.inverse() * frame_.pose;
+                    isometry.matrix() = relative_pose.cast<double>();
+                    std::array<double, 6> noise_array = {0.5, 0.5, 0.5, 0.001, 0.001, 0.001};
+                    graph_optimizer_ptr_->AddInteriorSe3Edge(node_num - 2, node_num - 1, isometry, noise_array);
+                }
+
+                if (gnss_synced_flag == true)
+                {
+                    Eigen::Vector3d xyz(static_cast<double>(gnss_pose(0, 3)), static_cast<double>(gnss_pose(1, 3)),
+                                        static_cast<double>(gnss_pose(2, 3)));
+                    std::array<double, 3> noise_array = {2.0, 2.0, 2.0};
+                    graph_optimizer_ptr_->AddPriorXYZEdge(node_num - 1, xyz, noise_array);
+                }
+
+                last_keyframe_pose_ = frame_.pose; // record last pose
+            }
+
             lidar_odom_pub_ptr_->Publish(frame_.pose);
             veh_tf_pub_ptr_->SendTransform(frame_.pose);
-
-            /*b--display cloud*/
-            CloudMsg::CLOUD_PTR transformed_cloud_ptr(new CloudMsg::CLOUD());
-            pcl::transformPointCloud(*frame_.cloud_msg.cloud_ptr, *transformed_cloud_ptr, frame_.pose);
-            cloud_pub_ptr_->Publish(transformed_cloud_ptr, 0.0);
-
-            /*b--display object*/
-            for (auto &object : frame_.objects_msg.objects_vec)
-            {
-                Eigen::Matrix4f object_pose;
-                object_pose.block<3, 1>(0, 3) << object.x, object.y, object.z;
-                object_pose.block<3, 3>(0, 0) = object.q.toRotationMatrix();
-
-                object_pose = frame_.pose * object_pose; // has been aligned to gnss
-
-                object.x = object_pose(0, 3);
-                object.y = object_pose(1, 3);
-                object.z = object_pose(2, 3);
-                object.q = Eigen::Quaternionf(object_pose.block<3, 3>(0, 0));
-            }
-            bbx_pub_ptr_->Publish(frame_.objects_msg);
         }
     }
 
@@ -128,3 +159,24 @@ void BackEndPipe::ReveiveFrameQueue(std::deque<Frame> &frame_queue, std::mutex &
 }
 
 } // namespace evolving_ad_ns
+
+// /*b--display cloud*/
+// CloudMsg::CLOUD_PTR transformed_cloud_ptr(new CloudMsg::CLOUD());
+// pcl::transformPointCloud(*frame_.cloud_msg.cloud_ptr, *transformed_cloud_ptr, frame_.pose);
+// cloud_pub_ptr_->Publish(transformed_cloud_ptr, 0.0);
+
+// /*b--display object*/
+// for (auto &object : frame_.objects_msg.objects_vec)
+// {
+//     Eigen::Matrix4f object_pose;
+//     object_pose.block<3, 1>(0, 3) << object.x, object.y, object.z;
+//     object_pose.block<3, 3>(0, 0) = object.q.toRotationMatrix();
+
+//     object_pose = frame_.pose * object_pose; // has been aligned to gnss
+
+//     object.x = object_pose(0, 3);
+//     object.y = object_pose(1, 3);
+//     object.z = object_pose(2, 3);
+//     object.q = Eigen::Quaternionf(object_pose.block<3, 3>(0, 0));
+// }
+// bbx_pub_ptr_->Publish(frame_.objects_msg);

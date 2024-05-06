@@ -14,6 +14,8 @@
 
 // module
 #include "module/calibration/calibration.hpp"
+#include "module/graph_optimizer/g2o/g2o_opter.hpp"
+#include "module/graph_optimizer/graph_optimizer_interface.hpp"
 #include "module/odom/gnss_odom.hpp"
 // topic sub
 #include "topic_sub/gnss_sub.hpp"
@@ -40,6 +42,7 @@ class BackEndPipe
     void ReveiveFrameQueue(std::deque<Frame> &frame_queue, std::mutex &mutex);
 
   private:
+  private:
     /*sub*/
     std::shared_ptr<GnssSub> gnss_sub_ptr_ = nullptr;
     std::shared_ptr<GtSub> gt_sub_ptr_ = nullptr;
@@ -54,7 +57,9 @@ class BackEndPipe
     /*algorithm module*/
     std::shared_ptr<GnssOdom> gnss_odom_ptr_ = nullptr;
     std::shared_ptr<GnssOdom> gt_odom_ptr_ = nullptr;
+
     std::shared_ptr<Lidar2GnssCalibration> lidar2gnss_calibration_ptr_ = nullptr;
+    std::shared_ptr<GraphOptimizerInterface> graph_optimizer_ptr_ = nullptr;
 
     /*tools*/
     std::shared_ptr<LogRecord> log_record_ptr_ = nullptr;
@@ -65,12 +70,16 @@ class BackEndPipe
     std::deque<GnssMsg> gnss_msg_queue_;
     std::deque<GnssMsg> gt_msg_queue_;
 
+    std::deque<Frame> keyframe_queue_; //!
+
     Frame frame_;
     GnssMsg gnss_msg_;
     GnssMsg gt_msg_;
 
     Eigen::Matrix4f T_gnss2lidar_ = Eigen::Matrix4f::Identity();
     bool online_calibration_flag_ = false;
+
+    Eigen::Matrix4f last_keyframe_pose_ = Eigen::Matrix4f::Identity();
 
     struct ParamList
     {
