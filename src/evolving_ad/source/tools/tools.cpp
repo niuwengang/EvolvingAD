@@ -4,14 +4,6 @@
  * @author  niu_wengang@163.com
  * @date    2024-04-09
  * @version 0.1.1
- * spdlog level
- * trace = SPDLOG_LEVEL_TRACE, // low
- * debug = SPDLOG_LEVEL_DEBUG,
- * info = SPDLOG_LEVEL_INFO,
- * warn = SPDLOG_LEVEL_WARN,
- * err = SPDLOG_LEVEL_ERROR,
- * critical = SPDLOG_LEVEL_CRITICAL, // high
- * off = SPDLOG_LEVEL_OFF,
  */
 
 #include "tools.hpp"
@@ -95,12 +87,18 @@ TrajRecord::TrajRecord(const std::string &traj_folder_path, const std::string &f
     FileManager::CreateTxtFile(traj_ofs_, traj_folder_path + "/" + file_name + ".txt");
 }
 
-/*use tum method*/
+/**
+ * @brief TrajRecord init
+ * @param[in] pose
+ * @param[in] time_stamp
+ * @return frequency
+ * @note use tum format to save pose
+ */
 void TrajRecord::SavePose(const Eigen::Matrix4f &pose, const double time_stamp)
 {
     std::vector<double> tum_output(8);
 
-    tum_output[0] = time_stamp;
+    tum_output[0] = time_stamp; // t
 
     tum_output[1] = pose(0, 3); // x
     tum_output[2] = pose(1, 3); // y
@@ -126,6 +124,12 @@ void TrajRecord::SavePose(const Eigen::Matrix4f &pose, const double time_stamp)
     traj_ofs_ << std::endl;
 }
 
+/**
+ * @brief create folder
+ * @param[in] folder_path
+ * @return bool
+ * @note use tum format to save pose
+ */
 bool FileManager::CreateFolder(const std::string &folder_path)
 {
     std::filesystem::path fs_folder_path(folder_path);
@@ -148,6 +152,13 @@ bool FileManager::CreateFolder(const std::string &folder_path)
     }
 }
 
+/**
+ * @brief create txt file
+ * @param[in] ofs
+ * @param[in] file_path
+ * @return bool
+ * @note
+ */
 bool FileManager::CreateTxtFile(std::ofstream &ofs, const std::string file_path)
 {
     // check if file exist
@@ -167,6 +178,13 @@ bool FileManager::CreateTxtFile(std::ofstream &ofs, const std::string file_path)
     }
 }
 
+/**
+ * @brief clear folder
+ * @param[in] ofs
+ * @param[in] file_path
+ * @return bool
+ * @note use tum format to save pose
+ */
 bool FileManager::ClearFolder(const std::string &folder_path)
 {
     std::filesystem::path fs_folder_path(folder_path);

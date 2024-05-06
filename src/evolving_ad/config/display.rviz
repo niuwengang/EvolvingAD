@@ -5,8 +5,12 @@ Panels:
     Property Tree Widget:
       Expanded:
         - /result1
+        - /result1/gnss_odom1
         - /result1/gnss_odom1/Shape1
+        - /result1/lidar_odom1
         - /result1/lidar_odom1/Shape1
+        - /result1/gt_odom1
+        - /result1/gt_odom1/Shape1
       Splitter Ratio: 0.5
     Tree Height: 1737
   - Class: rviz/Selection
@@ -26,7 +30,7 @@ Panels:
   - Class: rviz/Time
     Name: Time
     SyncMode: 0
-    SyncSource: back_cam
+    SyncSource: front_cam
 Preferences:
   PromptSaveOnExit: true
 Toolbars:
@@ -99,13 +103,13 @@ Visualization Manager:
           Queue Size: 10
           Shape:
             Alpha: 1
-            Axes Length: 2
+            Axes Length: 1
             Axes Radius: 0.5
             Color: 255; 25; 0
-            Head Length: 2
-            Head Radius: 2
-            Shaft Length: 5
-            Shaft Radius: 5
+            Head Length: 0.10000000149011612
+            Head Radius: 0.5
+            Shaft Length: 0.10000000149011612
+            Shaft Radius: 0.10000000149011612
             Value: Arrow
           Topic: /back_end_gnss_odom
           Unreliable: false
@@ -135,7 +139,7 @@ Visualization Manager:
           Shape:
             Alpha: 1
             Axes Length: 1
-            Axes Radius: 0.10000000149011612
+            Axes Radius: 0.5
             Color: 255; 25; 0
             Head Length: 1
             Head Radius: 0.10000000149011612
@@ -171,12 +175,12 @@ Visualization Manager:
             Alpha: 1
             Axes Length: 1
             Axes Radius: 0.10000000149011612
-            Color: 255; 25; 0
-            Head Length: 1
-            Head Radius: 0.10000000149011612
-            Shaft Length: 1
-            Shaft Radius: 5
-            Value: Axes
+            Color: 0; 0; 0
+            Head Length: 0.10000000149011612
+            Head Radius: 0.5
+            Shaft Length: 0.10000000149011612
+            Shaft Radius: 0.10000000149011612
+            Value: Arrow
           Topic: /back_end_gnss_gt
           Unreliable: false
           Value: true
@@ -388,26 +392,20 @@ Visualization Manager:
   Value: true
   Views:
     Current:
-      Class: rviz/XYOrbit
-      Distance: 1021.19921875
+      Angle: 0
+      Class: rviz/TopDownOrtho
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
-      Field of View: 0.7853981852531433
-      Focal Point:
-        X: -222.69686889648438
-        Y: -92.94796752929688
-        Z: -9.947022044798359e-05
-      Focal Shape Fixed Size: true
-      Focal Shape Size: 0.05000000074505806
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 1.20979642868042
+      Scale: 27.708877563476562
       Target Frame: <Fixed Frame>
-      Yaw: 5.964040279388428
+      X: -203.34051513671875
+      Y: -102.97514343261719
     Saved: ~
 Window Geometry:
   Displays:

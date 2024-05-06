@@ -11,8 +11,9 @@
 
 // pcl
 #include <pcl/common/transforms.h>
-#include <pcl/registration/icp.h>
 
+// module
+#include "module/calibration/calibration.hpp"
 #include "module/odom/gnss_odom.hpp"
 // topic sub
 #include "topic_sub/gnss_sub.hpp"
@@ -39,11 +40,6 @@ class BackEndPipe
     void ReveiveFrameQueue(std::deque<Frame> &frame_queue, std::mutex &mutex);
 
   private:
-    bool ReadMsg(bool &gnss_sync_flag);
-    void OnlineCalibration(const std::vector<Eigen::Vector3f> &gnss_point_vec,
-                           const std::vector<Eigen::Vector3f> &lidar_point_vec, Eigen::Matrix4f &T_gnss2lidar);
-
-  private:
     /*sub*/
     std::shared_ptr<GnssSub> gnss_sub_ptr_ = nullptr;
     std::shared_ptr<GtSub> gt_sub_ptr_ = nullptr;
@@ -58,6 +54,7 @@ class BackEndPipe
     /*algorithm module*/
     std::shared_ptr<GnssOdom> gnss_odom_ptr_ = nullptr;
     std::shared_ptr<GnssOdom> gt_odom_ptr_ = nullptr;
+    std::shared_ptr<Lidar2GnssCalibration> lidar2gnss_calibration_ptr_ = nullptr;
 
     /*tools*/
     std::shared_ptr<LogRecord> log_record_ptr_ = nullptr;
@@ -71,6 +68,9 @@ class BackEndPipe
     Frame frame_;
     GnssMsg gnss_msg_;
     GnssMsg gt_msg_;
+
+    Eigen::Matrix4f T_gnss2lidar_ = Eigen::Matrix4f::Identity();
+    bool online_calibration_flag_ = false;
 
     struct ParamList
     {
