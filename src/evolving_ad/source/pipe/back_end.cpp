@@ -36,7 +36,8 @@ BackEndPipe::BackEndPipe(ros::NodeHandle &nh, const std::string package_folder_p
     /*[5]--tools*/
     log_record_ptr_ = std::make_shared<LogRecord>(paramlist_.package_folder_path + "/log", "back_end");
     gt_traj_record_ptr_ = std::make_shared<TrajRecord>(paramlist_.package_folder_path + "/result/traj", "gt");
-    gnss_traj_record_ptr_ = std::make_shared<TrajRecord>(paramlist_.package_folder_path + "/result/traj", "gnss");
+    my_traj_record_ptr_ = std::make_shared<TrajRecord>(paramlist_.package_folder_path + "/result/traj", "my");
+    watchdog_ptr_ = std::make_shared<WatchDog>(nh, 1.0, 30);
 }
 
 bool BackEndPipe::Run()
@@ -90,7 +91,7 @@ bool BackEndPipe::Run()
         gnss_odom_ptr_->ComputePose(gt_msg, gt_pose);
 
         gt_odom_pub_ptr_->Publish(gt_pose, gt_msg.time_stamp);
-        // gt_traj_record_ptr_->SavePose(gt_pose, gt_msg_.time_stamp);
+        gt_traj_record_ptr_->SavePose(gt_pose, gt_msg.time_stamp);
     }
 
     /*[4]--online_calibration_flag_ relay on gnss handle)*/
@@ -151,17 +152,34 @@ bool BackEndPipe::Run()
                 graph_optimizer_ptr_->AddPriorXYZEdge(node_num - 1, xyz, noise_array);
             }
 
-            std::deque<Eigen::Isometry3d> opted_pose_queue;
             if (graph_optimizer_ptr_->Opimtize() == true)
             {
-                graph_optimizer_ptr_->GetOptPoseQueue(opted_pose_queue);
-                path_pub_ptr_->Publish(opted_pose_queue);
+                graph_optimizer_ptr_->GetOptPoseQueue(opted_pose_queue_);
+                path_pub_ptr_->Publish(opted_pose_queue_);
             }
 
             last_keyframe_pose_ = frame.pose; // record last pose
         }
     }
-
+    /*[6]--*/
+    if (frame_update_flag == true or gnss_update_flag == true)
+    {
+        watchdog_ptr_->FeedDog();
+    }
+    if (watchdog_ptr_->GetTimeOutStatus() == true)
+    {
+        if (opted_pose_queue_.size() != keyframe_queue_.size())
+        {
+            log_record_ptr_->terminal_->error("not same nums");
+        }
+        for (int i = 0; i < opted_pose_queue_.size(); i++)
+        {
+            my_traj_record_ptr_->SavePose(opted_pose_queue_.at(i).matrix().cast<float>(),
+                                          keyframe_queue_.at(i).time_stamp);
+        }
+        log_record_ptr_->terminal_->info("has save my traj");
+        exit(EXIT_SUCCESS);
+    }
     return true;
 }
 

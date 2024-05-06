@@ -43,7 +43,6 @@ class BackEndPipe
     void ReveiveFrameQueue(std::deque<Frame> &frame_queue, std::mutex &mutex);
 
   private:
-  private:
     /*sub*/
     std::shared_ptr<GnssSub> gnss_sub_ptr_ = nullptr;
     std::shared_ptr<GtSub> gt_sub_ptr_ = nullptr;
@@ -66,13 +65,15 @@ class BackEndPipe
     /*tools*/
     std::shared_ptr<LogRecord> log_record_ptr_ = nullptr;
     std::shared_ptr<TrajRecord> gt_traj_record_ptr_ = nullptr;
-    std::shared_ptr<TrajRecord> gnss_traj_record_ptr_ = nullptr;
+    std::shared_ptr<TrajRecord> my_traj_record_ptr_ = nullptr;
+    std::shared_ptr<WatchDog> watchdog_ptr_ = nullptr;
 
     /*value*/
     std::deque<Frame> frame_queue_;
     std::deque<GnssMsg> gnss_msg_queue_;
     std::deque<GnssMsg> gt_msg_queue_;
     std::deque<Frame> keyframe_queue_;
+    std::deque<Eigen::Isometry3d> opted_pose_queue_;
     Eigen::Matrix4f T_gnss2lidar_ = Eigen::Matrix4f::Identity();
     bool online_calibration_flag_ = false;
     Eigen::Matrix4f last_keyframe_pose_ = Eigen::Matrix4f::Identity();

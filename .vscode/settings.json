@@ -121,5 +121,13 @@
     "typeinfo": "cpp",
     "variant": "cpp",
     "*.ipp": "cpp"
-  }
+  },
+  "python.autoComplete.extraPaths": [
+    "/home/g/workspace/EvolvingAD/devel/lib/python3/dist-packages",
+    "/opt/ros/noetic/lib/python3/dist-packages"
+  ],
+  "python.analysis.extraPaths": [
+    "/home/g/workspace/EvolvingAD/devel/lib/python3/dist-packages",
+    "/opt/ros/noetic/lib/python3/dist-packages"
+  ]
 }

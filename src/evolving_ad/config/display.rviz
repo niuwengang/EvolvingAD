@@ -5,12 +5,10 @@ Panels:
     Property Tree Widget:
       Expanded:
         - /result1
-        - /result1/gnss_odom1
         - /result1/gnss_odom1/Shape1
         - /result1/lidar_odom1/Shape1
         - /result1/gt_odom1/Shape1
-        - /Path1
-        - /Path1/Offset1
+        - /result1/Path1
       Splitter Ratio: 0.5
     Tree Height: 1215
   - Class: rviz/Selection
@@ -225,6 +223,30 @@ Visualization Manager:
           Use Fixed Frame: true
           Use rainbow: true
           Value: true
+        - Alpha: 1
+          Buffer Length: 1
+          Class: rviz/Path
+          Color: 46; 52; 54
+          Enabled: true
+          Head Diameter: 0.30000001192092896
+          Head Length: 0.20000000298023224
+          Length: 0.30000001192092896
+          Line Style: Billboards
+          Line Width: 0.05999999865889549
+          Name: Path
+          Offset:
+            X: 0
+            Y: 0
+            Z: 0
+          Pose Color: 255; 85; 255
+          Pose Style: None
+          Queue Size: 10
+          Radius: 0.029999999329447746
+          Shaft Diameter: 0.10000000149011612
+          Shaft Length: 0.10000000149011612
+          Topic: /opt_path
+          Unreliable: false
+          Value: true
       Enabled: true
       Name: result
     - Class: rviz/Group
@@ -365,30 +387,6 @@ Visualization Manager:
       Reference Frame: <Fixed Frame>
       Show Trail: false
       Value: true
-    - Alpha: 1
-      Buffer Length: 1
-      Class: rviz/Path
-      Color: 46; 52; 54
-      Enabled: true
-      Head Diameter: 0.30000001192092896
-      Head Length: 0.20000000298023224
-      Length: 0.30000001192092896
-      Line Style: Billboards
-      Line Width: 0.05999999865889549
-      Name: Path
-      Offset:
-        X: 0
-        Y: 0
-        Z: 0
-      Pose Color: 255; 85; 255
-      Pose Style: None
-      Queue Size: 10
-      Radius: 0.029999999329447746
-      Shaft Diameter: 0.10000000149011612
-      Shaft Length: 0.10000000149011612
-      Topic: /opt_path
-      Unreliable: false
-      Value: true
   Enabled: true
   Global Options:
     Background Color: 255; 255; 255
@@ -416,20 +414,36 @@ Visualization Manager:
   Value: true
   Views:
     Current:
-      Angle: 0
-      Class: rviz/TopDownOrtho
+      Class: jsk_rviz_plugin/TabletViewController
+      Control Mode: Orbit
+      Distance: 534.7948608398438
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
+      Eye:
+        X: -189.61109924316406
+        Y: -486.495849609375
+        Z: 344.1280822753906
+      Focus:
+        X: -360.38604736328125
+        Y: -228.1990509033203
+        Z: -91.90428924560547
       Invert Z Axis: false
+      Maintain Vertical Axis: true
+      Mouse Enabled: true
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Scale: 21.657363891601562
+      Placement Mouse Point: /rviz/current_mouse_point
+      Placement Publish Topic: /rviz/current_camera_placement
+      Placement Topic: /rviz/camera_placement
       Target Frame: <Fixed Frame>
-      X: -296.1226806640625
-      Y: -360.6411437988281
+      Transition Time: 0.5
+      Up:
+        X: 0
+        Y: 0
+        Z: 1
     Saved: ~
 Window Geometry:
   Displays:
