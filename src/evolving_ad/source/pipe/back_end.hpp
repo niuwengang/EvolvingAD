@@ -24,6 +24,7 @@
 #include "topic_pub/bbx_pub.hpp"
 #include "topic_pub/cloud_pub.hpp"
 #include "topic_pub/odom_pub.hpp"
+#include "topic_pub/path_pub.hpp"
 #include "topic_pub/tf_pub.hpp"
 // tools
 #include "tools/tools.hpp"
@@ -53,6 +54,7 @@ class BackEndPipe
     std::shared_ptr<CloudPub> cloud_pub_ptr_ = nullptr;
     std::shared_ptr<TfPub> veh_tf_pub_ptr_ = nullptr;
     std::shared_ptr<BbxPub> bbx_pub_ptr_ = nullptr;
+    std::shared_ptr<PathPub> path_pub_ptr_ = nullptr;
 
     /*algorithm module*/
     std::shared_ptr<GnssOdom> gnss_odom_ptr_ = nullptr;
@@ -66,19 +68,13 @@ class BackEndPipe
     std::shared_ptr<TrajRecord> gt_traj_record_ptr_ = nullptr;
     std::shared_ptr<TrajRecord> gnss_traj_record_ptr_ = nullptr;
 
+    /*value*/
     std::deque<Frame> frame_queue_;
     std::deque<GnssMsg> gnss_msg_queue_;
     std::deque<GnssMsg> gt_msg_queue_;
-
-    std::deque<Frame> keyframe_queue_; //!
-
-    Frame frame_;
-    GnssMsg gnss_msg_;
-    GnssMsg gt_msg_;
-
+    std::deque<Frame> keyframe_queue_;
     Eigen::Matrix4f T_gnss2lidar_ = Eigen::Matrix4f::Identity();
     bool online_calibration_flag_ = false;
-
     Eigen::Matrix4f last_keyframe_pose_ = Eigen::Matrix4f::Identity();
 
     struct ParamList

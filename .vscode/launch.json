@@ -8,8 +8,8 @@
       "args": [],
       "stopAtEntry": false,
       "externalConsole": false,
-      "cwd": "/home/g/workspace/SimpleUrbanNOA/src/urban_nav/source/module/pose_graph",
-      "program": "/home/g/workspace/SimpleUrbanNOA/src/urban_nav/source/module/pose_graph/build/Debug/outDebug",
+      "cwd": "/home/g/workspace/EvolvingAD/src/evolving_ad/source/pipe",
+      "program": "/home/g/workspace/EvolvingAD/src/evolving_ad/source/pipe/build/Debug/outDebug",
       "MIMode": "gdb",
       "miDebuggerPath": "gdb",
       "setupCommands": [
