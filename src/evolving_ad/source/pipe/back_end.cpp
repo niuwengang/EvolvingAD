@@ -7,7 +7,9 @@ BackEndPipe::BackEndPipe(ros::NodeHandle &nh, const std::string package_folder_p
     /*[1]--load params*/
     paramlist_.package_folder_path = package_folder_path;
     YAML::Node config_node = YAML::LoadFile(paramlist_.package_folder_path + "/config/ad.yaml");
+    FileManager::ClearFolder(paramlist_.package_folder_path + "/result");
 
+    exit(0);
     paramlist_.gnss_sub_topic = config_node["topic_sub"]["gnss_sub_topic"].as<std::string>();
     paramlist_.gt_sub_topic = config_node["topic_sub"]["gt_sub_topic"].as<std::string>();
     /*[2]--sub*/

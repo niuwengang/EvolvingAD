@@ -67,8 +67,9 @@ class TrajRecord
 class FileManager
 {
   public:
-    static bool CreateFolder(const std::string &in_folder_path);
+    static bool CreateFolder(const std::string &folder_path);
     static bool CreateTxtFile(std::ofstream &ofs, const std::string file_path);
+    static bool ClearFolder(const std::string &in_folder_path);
 };
 
 } // namespace evolving_ad_ns

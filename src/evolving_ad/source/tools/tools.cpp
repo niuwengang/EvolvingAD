@@ -50,6 +50,7 @@ double TimeRecord::GetFrequency(const unsigned int slide_windows)
 
     return static_cast<double>(time_queue_.size()) * 1000.0 / sum_time_;
 }
+
 /**
  * @brief logrecord init
  * @param[in] log_folder_path
@@ -81,6 +82,13 @@ LogRecord::LogRecord(const std::string log_folder_path, const std::string log_na
     terminal_->flush_on(spdlog::level::trace);
 }
 
+/**
+ * @brief TrajRecord init
+ * @param[in] traj_folder_path
+ * @param[in] file_name
+ * @return frequency
+ * @note
+ */
 TrajRecord::TrajRecord(const std::string &traj_folder_path, const std::string &file_name)
 {
     FileManager::CreateFolder(traj_folder_path);
@@ -118,15 +126,15 @@ void TrajRecord::SavePose(const Eigen::Matrix4f &pose, const double time_stamp)
     traj_ofs_ << std::endl;
 }
 
-bool FileManager::CreateFolder(const std::string &in_folder_path)
+bool FileManager::CreateFolder(const std::string &folder_path)
 {
-    std::filesystem::path folder_path(in_folder_path);
+    std::filesystem::path fs_folder_path(folder_path);
 
-    if (!std::filesystem::exists(folder_path))
+    if (!std::filesystem::exists(fs_folder_path))
     {
         try
         {
-            std::filesystem::create_directories(folder_path);
+            std::filesystem::create_directories(fs_folder_path);
             return true;
         }
         catch (const std::exception &e)
@@ -159,4 +167,14 @@ bool FileManager::CreateTxtFile(std::ofstream &ofs, const std::string file_path)
     }
 }
 
+bool FileManager::ClearFolder(const std::string &folder_path)
+{
+    std::filesystem::path fs_folder_path(folder_path);
+
+    if (std::filesystem::exists(fs_folder_path))
+    {
+        std::filesystem::remove_all(fs_folder_path);
+    }
+    return true;
+}
 } // namespace evolving_ad_ns
