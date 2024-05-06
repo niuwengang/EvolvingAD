@@ -17,34 +17,13 @@ Lidar2GnssCalibration::Lidar2GnssCalibration(const float distance_step, const un
 bool Lidar2GnssCalibration::Calibration(const Eigen::Vector3f gnss_point, const Eigen::Vector3f lidar_point,
                                         Eigen::Matrix4f &T_gnss2lidar)
 {
-    double dis1 =
-        sqrt(pow(gnss_point_vec_.back()(0) - gnss_point(0), 2) + pow(gnss_point_vec_.back()(1) - gnss_point(1), 2));
 
-    if (dis1 >= distance_step_)
-    {
-        gnss_point_vec_.push_back(gnss_point);
-    }
+    auto CalculateDistance = [](const float x1, const float y1, const float x2, const float y2) -> float {
+        return sqrt(pow(x1 - x2, 2) + std::pow(y1 - y2, 2));
+    };
 
-    double dis2 =
-        sqrt(pow(lidar_point_vec_.back()(0) - lidar_point(0), 2) + pow(lidar_point_vec_.back()(1) - lidar_point(1), 2));
-
-    if (dis2 >= distance_step_)
-    {
-        lidar_point_vec_.push_back(lidar_point);
-    }
-
-    auto calculateAngleBetweenVectors = [](double target_x, double target_y, double source_x,
+    auto CalculateAngleBetweenVectors = [](double target_x, double target_y, double source_x,
                                            double source_y) -> float {
-        // double dotProduct = x1 * x2 + y1 * y2;
-
-        // double magnitudeA = std::sqrt(x1 * x1 + y1 * y1);
-        // double magnitudeB = std::sqrt(x2 * x2 + y2 * y2);
-
-        // double cosTheta = dotProduct / (magnitudeA * magnitudeB);
-
-        // double angleRadians = std::acos(cosTheta);
-
-        // return angleRadians;
         float diff = atan2(target_y, target_x) - atan2(source_y, source_x);
 
         if (diff < 0)
@@ -54,6 +33,20 @@ bool Lidar2GnssCalibration::Calibration(const Eigen::Vector3f gnss_point, const 
         return diff;
     };
 
+    /*[1]--add point to queue*/
+    if (CalculateDistance(gnss_point_vec_.back()(0), gnss_point(0), gnss_point_vec_.back()(1), gnss_point(1)) >=
+        distance_step_)
+    {
+        gnss_point_vec_.push_back(gnss_point);
+    }
+
+    if (CalculateDistance(lidar_point_vec_.back()(0), lidar_point(0), lidar_point_vec_.back()(1), lidar_point(1)) >=
+        distance_step_)
+    {
+        lidar_point_vec_.push_back(lidar_point);
+    }
+
+    /*[2]--calculate T maxtix*/
     if (gnss_point_vec_.size() >= max_sampling_num_ and lidar_point_vec_.size() >= max_sampling_num_)
     {
         CloudMsg::CLOUD_PTR source_cloud_ptr(new CloudMsg::CLOUD());
@@ -73,7 +66,7 @@ bool Lidar2GnssCalibration::Calibration(const Eigen::Vector3f gnss_point, const 
             CloudMsg::POINT point;
             point.x = lidar_point_vec_[index](0);
             point.y = lidar_point_vec_[index](1);
-            point.z = 0; // lidar_point_vec[index](2);
+            point.z = 0;
             source_cloud_ptr->points.push_back(point);
         }
 
@@ -85,22 +78,18 @@ bool Lidar2GnssCalibration::Calibration(const Eigen::Vector3f gnss_point, const 
         icp.setEuclideanFitnessEpsilon(0.5);
         icp.setMaximumIterations(100);
 
-        float yaw_inital = calculateAngleBetweenVectors(gnss_point_vec_.back()(0), gnss_point_vec_.back()(1),
+        float yaw_inital = CalculateAngleBetweenVectors(gnss_point_vec_.back()(0), gnss_point_vec_.back()(1),
                                                         lidar_point_vec_.back()(0), lidar_point_vec_.back()(1));
 
         CloudMsg::CLOUD_PTR result_cloud_ptr(new CloudMsg::CLOUD());
-        // if (fabs(yaw_inital) > M_PI_2)
-        //{
+
         Eigen::Matrix4f initial_transform = Eigen::Matrix4f::Identity();
         Eigen::AngleAxisf rotationVector(yaw_inital, Eigen::Vector3f::UnitZ()); // anticlockwise
         initial_transform.block<3, 3>(0, 0) = rotationVector.toRotationMatrix();
         icp.align(*result_cloud_ptr, initial_transform);
-        //  }
-        // else
-        // {
-        //     icp.align(*result_cloud_ptr);
-        // }
+
         T_gnss2lidar = icp.getFinalTransformation();
+
         return true;
     }
     else
