@@ -46,6 +46,7 @@ include_directories(source)
 include_directories(./)
 set(thirdpartylib "")
 include(cmake/thirdpartylib.cmake)
+include(cmake/g2o.cmake)
 
 
 #msg--------------------------------------------
