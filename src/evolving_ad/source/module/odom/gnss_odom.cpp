@@ -15,6 +15,11 @@ bool GnssOdom::InitPose(GnssMsg &gnss_msg)
     return init_flag_;
 }
 
+bool GnssOdom::GetInitStatus()
+{
+    return init_flag_;
+}
+
 void GnssOdom::ComputePose(GnssMsg &gnss_msg, Eigen::Matrix4f &new_pose)
 {
     new_pose = Eigen::Matrix4f::Identity();

@@ -22,6 +22,7 @@ class GnssOdom
     GnssOdom(const YAML::Node &config_node);
     bool InitPose(GnssMsg &gnss_msg);
     void ComputePose(GnssMsg &gnss_msg, Eigen::Matrix4f &new_pose);
+    bool GetInitStatus();
 
   private:
     Eigen::Matrix4f init_pose_ = Eigen::Matrix4f::Identity();
