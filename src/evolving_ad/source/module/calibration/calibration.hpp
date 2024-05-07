@@ -17,7 +17,7 @@ class Lidar2GnssCalibration
 
   private:
     float distance_step_ = 0.1;
-    float max_sampling_num_ = 50.0;
+    float max_sampling_num_ = 20.0;
 
     std::vector<Eigen::Vector3f> gnss_point_vec_;
     std::vector<Eigen::Vector3f> lidar_point_vec_;
