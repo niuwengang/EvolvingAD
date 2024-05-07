@@ -7,17 +7,9 @@ if [ "$1" == "1" ]; then
     start_time=0
     duration_time=253
     dataset_path="/media/g/Elements/dataset/urban_loco/CA-20190828190411_blur_align.bag"
-elif [ "$1" == "2.a" ]; then
+elif [ "$1" == "2" ]; then
     start_time=0
     duration_time=300
-    dataset_path="/media/g/Elements/dataset/urban_loco/CA-20190828151211_blur_align-001.bag"
-elif [ "$1" == "2.b" ]; then
-    start_time=300
-    duration_time=300
-    dataset_path="/media/g/Elements/dataset/urban_loco/CA-20190828151211_blur_align-001.bag"
-elif [ "$1" == "2.c" ]; then
-    start_time=600
-    duration_time=329
     dataset_path="/media/g/Elements/dataset/urban_loco/CA-20190828151211_blur_align-001.bag"
 else
     echo "unknown param"

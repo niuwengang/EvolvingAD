@@ -120,7 +120,9 @@
     "typeindex": "cpp",
     "typeinfo": "cpp",
     "variant": "cpp",
-    "*.ipp": "cpp"
+    "*.ipp": "cpp",
+    "core": "cpp",
+    "numericaldiff": "cpp"
   },
   "python.autoComplete.extraPaths": [
     "/home/g/workspace/EvolvingAD/devel/lib/python3/dist-packages",

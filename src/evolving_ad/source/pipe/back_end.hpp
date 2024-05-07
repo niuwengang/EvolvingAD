@@ -77,6 +77,7 @@ class BackEndPipe
     Eigen::Matrix4f T_gnss2lidar_ = Eigen::Matrix4f::Identity();
     bool online_calibration_flag_ = false;
     Eigen::Matrix4f last_keyframe_pose_ = Eigen::Matrix4f::Identity();
+    Eigen::Matrix4f last_gnss_pose_ = Eigen::Matrix4f::Identity();
 
     struct ParamList
     {

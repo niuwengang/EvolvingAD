@@ -3,9 +3,6 @@
 # Evolving  Autonomous Driving
 </div>
 
-
-
-
 ## 1.Introduce
 A simple demo for  navigation on autopilot. However, it's just a personal toy program. <br>
 
@@ -13,8 +10,6 @@ A simple demo for  navigation on autopilot. However, it's just a personal toy pr
     <img src="/pic/display.jpeg" alt="图片alt" title="图片title" width="300px" height="200px" objectfit="cover" >
     <img src="/pic/display2.png" alt="图片alt" title="图片title" width="300px" height="200px" objectfit="cover" >
 </div>
-
-
 
 ## 2.Installation
 + ros component
@@ -70,7 +65,6 @@ https://github.com/ros-drivers/novatel_span_driver <br>
 
 ## 3.Pipeline
 
-
 ## 4.Acknowledgements
 https://github.com/OpenDriveLab/UniAD  <br>
 https://github.com/SmallMunich/nutonomy_pointpillars <br>
@@ -78,35 +72,42 @@ https://github.com/EEPT-LAB/DipG-Seg<br>
 https://github.com/SMRT-AIST/fast_gicp <br>
 https://github.com/Little-Potato-1990/localization_in_auto_driving <br>
 
-
 ## 5.Rules
 code comments obey Doxygen rules <br>
 git commits obey Angular rules <br>
 
-
 ## 6.Licence
 All assets and code are under  under GPLv3 license. <br>
 
-
-
-
-
-
-
 ## 7.Todo
-- [ ] To add loop closure.<br>
-- [ ] To add traj save and compare to gt automatically. <br>
-- [ ] To add pointcloud saving and stitching. <br>
-- [ ] To add imu-preintegration. <br>
-- [ ] To add carla scence. <br>
+For Perception<br>
+- [ ] Line detection.<br>
+- [ ] Online local map. <br>
 
+For Pnc<br>
+- [ ] Hybrid A star.<br>
+- [ ] Try reinforcement learning planning methods.<br>
+
+For Odometry<br>
+- [ ] Slide windows opt.<br>
+  
+For Simulation<br>
+- [ ] Hub . <br>
+- [ ] Support carla scence. <br>
 
 
 ## 8.Updates
 
-tag v0.1.4 (pre-release)<br>
-1. Use ublox gnss.<br>
-2. Add gt traj.<br>
+
+pre-relasase tag v0.1.5 <br>
+
+
+**2024/05/07** <br>
+tag v0.1.4 <br>
+1. Use spp gnss for fusion. <br>
+2. Refactor project with multi-thread framework. <br>
+3. Add online calibration for gnss with lidar. <br>
+4. Support urbanloco dataset. <br> 
 
 
 **2024/04/28** <br>

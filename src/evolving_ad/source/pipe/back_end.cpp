@@ -30,7 +30,7 @@ BackEndPipe::BackEndPipe(ros::NodeHandle &nh, const std::string package_folder_p
     /*[4]--algorithm module*/
     gnss_odom_ptr_ = std::make_shared<GnssOdom>(config_node["lidar_odom"]);
     gt_odom_ptr_ = std::make_shared<GnssOdom>(config_node["lidar_odom"]);
-    lidar2gnss_calibration_ptr_ = std::make_shared<Lidar2GnssCalibration>(0.1, 20);
+    lidar2gnss_calibration_ptr_ = std::make_shared<Lidar2GnssCalibration>(0.05, 30);
     graph_optimizer_ptr_ = std::make_shared<G2oOpter>("lm_var");
 
     /*[5]--tools*/
@@ -114,11 +114,10 @@ bool BackEndPipe::Run()
         veh_tf_pub_ptr_->SendTransform(frame.pose);
 
         /*a--opt*/
-        double dis = fabs(frame.pose(0, 3) - last_keyframe_pose_(0, 3)) +
-                     fabs(frame.pose(1, 3) - last_keyframe_pose_(1, 3)) +
-                     fabs(frame.pose(2, 3) - last_keyframe_pose_(2, 3));
-
-        if (dis >= 2.0 or keyframe_queue_.size() == 0)
+        if (sqrt(pow(frame.pose(0, 3) - last_keyframe_pose_(0, 3), 2) +
+                 pow(frame.pose(1, 3) - last_keyframe_pose_(1, 3), 2) +
+                 pow(frame.pose(2, 3) - last_keyframe_pose_(2, 3), 2)) >= 2.0 or
+            keyframe_queue_.size() == 0)
         {
             frame.index = static_cast<unsigned int>(keyframe_queue_.size());
             keyframe_queue_.push_back(frame); // add to keyframe queue
@@ -146,10 +145,16 @@ bool BackEndPipe::Run()
             /*add gps edge*/
             if (gnss_update_flag == true)
             {
-                Eigen::Vector3d xyz(static_cast<double>(gnss_pose(0, 3)), static_cast<double>(gnss_pose(1, 3)),
-                                    static_cast<double>(gnss_pose(2, 3)));
-                std::array<double, 3> noise_array = {2.0, 2.0, 2.0};
-                graph_optimizer_ptr_->AddPriorXYZEdge(node_num - 1, xyz, noise_array);
+
+                if (sqrt(pow(last_gnss_pose_(0, 3) - gnss_pose(0, 3), 2) +
+                         pow(last_gnss_pose_(1, 3) - gnss_pose(1, 3), 2)) >= 1)
+                {
+                    Eigen::Vector3d xyz(static_cast<double>(gnss_pose(0, 3)), static_cast<double>(gnss_pose(1, 3)),
+                                        static_cast<double>(gnss_pose(2, 3)));
+                    std::array<double, 3> noise_array = {5.0, 5.0, 5.0};
+                    graph_optimizer_ptr_->AddPriorXYZEdge(node_num - 1, xyz, noise_array);
+                    last_gnss_pose_ = gnss_pose;
+                }
             }
 
             if (graph_optimizer_ptr_->Opimtize() == true)
