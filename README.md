@@ -92,7 +92,7 @@ For Odometry<br>
 - [ ] Slide windows opt.<br>
   
 For Simulation<br>
-- [ ] Hub . <br>
+- [ ] HuD function . <br>
 - [ ] Support carla scence. <br>
 
 
