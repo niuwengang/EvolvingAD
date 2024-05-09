@@ -93,6 +93,7 @@ For Odometry<br>
   
 For Simulation<br>
 - [ ] HuD function . <br>
+- [ ] Add satellite map. <br>
 - [ ] Support carla scence. <br>
 
 
