@@ -4,13 +4,11 @@ play_rate=1.0
 
 
 if [ "$1" == "1" ]; then
-    start_time=0
-    duration_time=253
-    dataset_path="/media/g/Elements/dataset/urban_loco/CA-20190828190411_blur_align.bag"
+    dataset_path="/media/g/Elements/dataset/urban_loco/CABayBridge.bag"
 elif [ "$1" == "2" ]; then
-    start_time=0
-    duration_time=300
-    dataset_path="/media/g/Elements/dataset/urban_loco/CA-20190828151211_blur_align-001.bag"
+    dataset_path="/media/g/Elements/dataset/urban_loco/CAGoldenBridge.bag"
+elif [ "$1" == "2" ]; then
+    dataset_path="/media/g/Elements/dataset/urban_loco/CALombardStreet.bag"
 else
     echo "unknown param"
     exit 1 
