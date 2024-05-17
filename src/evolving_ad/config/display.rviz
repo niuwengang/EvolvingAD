@@ -4,13 +4,11 @@ Panels:
     Name: Displays
     Property Tree Widget:
       Expanded:
-        - /result1
-        - /result1/gnss_odom1/Shape1
-        - /result1/lidar_odom1/Shape1
-        - /result1/gt_odom1/Shape1
-        - /result1/Path1
+        - /front_end1
+        - /front_end1/odbject1
+        - /MarkerArray1
       Splitter Ratio: 0.5
-    Tree Height: 1215
+    Tree Height: 1737
   - Class: rviz/Selection
     Name: Selection
   - Class: rviz/Tool Properties
@@ -77,180 +75,6 @@ Visualization Manager:
       Visual Enabled: true
     - Class: rviz/Group
       Displays:
-        - Angle Tolerance: 0.10000000149011612
-          Class: rviz/Odometry
-          Covariance:
-            Orientation:
-              Alpha: 0.5
-              Color: 255; 255; 127
-              Color Style: Unique
-              Frame: Local
-              Offset: 1
-              Scale: 1
-              Value: true
-            Position:
-              Alpha: 0.30000001192092896
-              Color: 204; 51; 204
-              Scale: 1
-              Value: true
-            Value: true
-          Enabled: true
-          Keep: 0
-          Name: gnss_odom
-          Position Tolerance: 0.10000000149011612
-          Queue Size: 10
-          Shape:
-            Alpha: 1
-            Axes Length: 2
-            Axes Radius: 0.20000000298023224
-            Color: 255; 25; 0
-            Head Length: 0.10000000149011612
-            Head Radius: 0.5
-            Shaft Length: 0.10000000149011612
-            Shaft Radius: 0.10000000149011612
-            Value: Axes
-          Topic: /back_end_gnss_odom
-          Unreliable: false
-          Value: true
-        - Angle Tolerance: 0.10000000149011612
-          Class: rviz/Odometry
-          Covariance:
-            Orientation:
-              Alpha: 0.5
-              Color: 255; 255; 127
-              Color Style: Unique
-              Frame: Local
-              Offset: 1
-              Scale: 1
-              Value: true
-            Position:
-              Alpha: 0.30000001192092896
-              Color: 204; 51; 204
-              Scale: 1
-              Value: true
-            Value: true
-          Enabled: true
-          Keep: 0
-          Name: lidar_odom
-          Position Tolerance: 0.10000000149011612
-          Queue Size: 10
-          Shape:
-            Alpha: 1
-            Axes Length: 1
-            Axes Radius: 0.20000000298023224
-            Color: 255; 25; 0
-            Head Length: 1
-            Head Radius: 0.10000000149011612
-            Shaft Length: 1
-            Shaft Radius: 5
-            Value: Axes
-          Topic: /back_end_lidar_odom
-          Unreliable: false
-          Value: true
-        - Angle Tolerance: 0.10000000149011612
-          Class: rviz/Odometry
-          Covariance:
-            Orientation:
-              Alpha: 0.5
-              Color: 255; 255; 127
-              Color Style: Unique
-              Frame: Local
-              Offset: 1
-              Scale: 1
-              Value: true
-            Position:
-              Alpha: 0.30000001192092896
-              Color: 204; 51; 204
-              Scale: 1
-              Value: true
-            Value: true
-          Enabled: true
-          Keep: 0
-          Name: gt_odom
-          Position Tolerance: 0.10000000149011612
-          Queue Size: 10
-          Shape:
-            Alpha: 1
-            Axes Length: 1
-            Axes Radius: 0.10000000149011612
-            Color: 0; 0; 0
-            Head Length: 0.10000000149011612
-            Head Radius: 0.5
-            Shaft Length: 0.10000000149011612
-            Shaft Radius: 0.10000000149011612
-            Value: Arrow
-          Topic: /back_end_gnss_gt
-          Unreliable: false
-          Value: true
-        - Class: jsk_rviz_plugin/BoundingBoxArray
-          Enabled: true
-          Name: transformed_bbx
-          Queue Size: 10
-          Topic: /back_end_bbx
-          Unreliable: false
-          Value: true
-          alpha: 10
-          color: 52; 101; 164
-          coloring: Flat color
-          line width: 0.10000000149011612
-          only edge: true
-          show coords: false
-        - Alpha: 1
-          Autocompute Intensity Bounds: true
-          Autocompute Value Bounds:
-            Max Value: 33.92937469482422
-            Min Value: -3.872621536254883
-            Value: true
-          Axis: Z
-          Channel Name: intensity
-          Class: rviz/PointCloud2
-          Color: 239; 41; 41
-          Color Transformer: Intensity
-          Decay Time: 0
-          Enabled: true
-          Invert Rainbow: false
-          Max Color: 255; 255; 255
-          Min Color: 0; 0; 0
-          Name: transformed_cloud
-          Position Transformer: XYZ
-          Queue Size: 10
-          Selectable: true
-          Size (Pixels): 2
-          Size (m): 0.009999999776482582
-          Style: Points
-          Topic: /back_end_cloud
-          Unreliable: false
-          Use Fixed Frame: true
-          Use rainbow: true
-          Value: true
-        - Alpha: 1
-          Buffer Length: 1
-          Class: rviz/Path
-          Color: 46; 52; 54
-          Enabled: true
-          Head Diameter: 0.30000001192092896
-          Head Length: 0.20000000298023224
-          Length: 0.30000001192092896
-          Line Style: Billboards
-          Line Width: 0.05999999865889549
-          Name: Path
-          Offset:
-            X: 0
-            Y: 0
-            Z: 0
-          Pose Color: 255; 85; 255
-          Pose Style: None
-          Queue Size: 10
-          Radius: 0.029999999329447746
-          Shaft Diameter: 0.10000000149011612
-          Shaft Length: 0.10000000149011612
-          Topic: /opt_path
-          Unreliable: false
-          Value: true
-      Enabled: true
-      Name: result
-    - Class: rviz/Group
-      Displays:
         - Class: rviz/Image
           Enabled: true
           Image Topic: /camera_array/cam3/image_raw
@@ -277,6 +101,15 @@ Visualization Manager:
           Value: true
       Enabled: true
       Name: surround_cam
+    - Alpha: 1
+      Class: rviz/Axes
+      Enabled: false
+      Length: 20
+      Name: Axes
+      Radius: 1
+      Reference Frame: <Fixed Frame>
+      Show Trail: false
+      Value: false
     - Class: rviz/Group
       Displays:
         - Alpha: 1
@@ -288,104 +121,47 @@ Visualization Manager:
           Axis: Z
           Channel Name: intensity
           Class: rviz/PointCloud2
-          Color: 239; 41; 41
-          Color Transformer: FlatColor
+          Color: 255; 255; 255
+          Color Transformer: Intensity
           Decay Time: 0
           Enabled: true
           Invert Rainbow: false
           Max Color: 255; 255; 255
           Min Color: 0; 0; 0
-          Name: dynamic
+          Name: ground_cloud
           Position Transformer: XYZ
           Queue Size: 10
           Selectable: true
           Size (Pixels): 3
           Size (m): 0.10000000149011612
-          Style: Squares
-          Topic: /front_end_dynamic_cloud
-          Unreliable: false
-          Use Fixed Frame: true
-          Use rainbow: true
-          Value: true
-        - Alpha: 1
-          Autocompute Intensity Bounds: true
-          Autocompute Value Bounds:
-            Max Value: 10
-            Min Value: -10
-            Value: true
-          Axis: Z
-          Channel Name: intensity
-          Class: rviz/PointCloud2
-          Color: 114; 159; 207
-          Color Transformer: FlatColor
-          Decay Time: 0
-          Enabled: true
-          Invert Rainbow: false
-          Max Color: 255; 255; 255
-          Min Color: 0; 0; 0
-          Name: static
-          Position Transformer: XYZ
-          Queue Size: 10
-          Selectable: true
-          Size (Pixels): 3
-          Size (m): 0.10000000149011612
-          Style: Squares
-          Topic: /front_end_static_cloud
+          Style: Points
+          Topic: /front_end/static_cloud
           Unreliable: false
           Use Fixed Frame: true
           Use rainbow: true
           Value: true
         - Class: jsk_rviz_plugin/BoundingBoxArray
           Enabled: true
-          Name: bbx
+          Name: odbject
           Queue Size: 10
-          Topic: /front_end_bbx
+          Topic: /front_end/bbx
           Unreliable: false
           Value: true
-          alpha: 0.800000011920929
+          alpha: 1
           color: 25; 255; 0
-          coloring: ""
+          coloring: Label
           line width: 0.10000000149011612
           only edge: true
           show coords: false
-        - Alpha: 1
-          Autocompute Intensity Bounds: true
-          Autocompute Value Bounds:
-            Max Value: 10
-            Min Value: -10
-            Value: true
-          Axis: Z
-          Channel Name: intensity
-          Class: rviz/PointCloud2
-          Color: 211; 215; 207
-          Color Transformer: FlatColor
-          Decay Time: 0
-          Enabled: true
-          Invert Rainbow: false
-          Max Color: 255; 255; 255
-          Min Color: 0; 0; 0
-          Name: ground
-          Position Transformer: XYZ
-          Queue Size: 10
-          Selectable: true
-          Size (Pixels): 3
-          Size (m): 0.10000000149011612
-          Style: Squares
-          Topic: /front_end_ground_cloud
-          Unreliable: false
-          Use Fixed Frame: true
-          Use rainbow: true
-          Value: true
-      Enabled: false
-      Name: debug
-    - Alpha: 1
-      Class: rviz/Axes
       Enabled: true
-      Length: 20
-      Name: Axes
-      Radius: 1
-      Reference Frame: <Fixed Frame>
-      Show Trail: false
+      Name: front_end
+    - Class: rviz/MarkerArray
+      Enabled: true
+      Marker Topic: /front_end/bbx_str
+      Name: MarkerArray
+      Namespaces:
+        basic_shapes: true
+      Queue Size: 0
       Value: true
   Enabled: true
   Global Options:
@@ -416,20 +192,20 @@ Visualization Manager:
     Current:
       Class: jsk_rviz_plugin/TabletViewController
       Control Mode: Orbit
-      Distance: 430.58172607421875
+      Distance: 83.65826416015625
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Eye:
-        X: -212.61146545410156
-        Y: -42.94947814941406
-        Z: 436.3395080566406
+        X: 9.087801933288574
+        Y: -1.4455819129943848
+        Z: 72.39691162109375
       Focus:
-        X: -213.72203063964844
-        Y: -60.564613342285156
-        Z: 6.119696140289307
+        X: 7.0958991050720215
+        Y: -2.0704267024993896
+        Z: -11.235304832458496
       Invert Z Axis: false
       Maintain Vertical Axis: true
       Mouse Enabled: true
@@ -448,10 +224,10 @@ Visualization Manager:
 Window Geometry:
   Displays:
     collapsed: false
-  Height: 1654
+  Height: 2176
   Hide Left Dock: false
   Hide Right Dock: false
-  QMainWindow State: 000000ff00000000fd0000000400000000000003e30000052dfc0200000009fb0000001200530065006c0065006300740069006f006e000000006e000000b0000000b000fffffffb0000001e0054006f006f006c002000500072006f007000650072007400690065007302000001ed000001df00000185000000b2fb000000120056006900650077007300200054006f006f02000001df000002110000018500000122fb000000200054006f006f006c002000500072006f0070006500720074006900650073003203000002880000011d000002210000017afb000000100044006900730070006c006100790073010000006e0000052d0000018200fffffffb0000002000730065006c0065006300740069006f006e00200062007500660066006500720200000138000000aa0000023a00000294fb00000014005700690064006500530074006500720065006f02000000e6000000d2000003ee0000030bfb0000000c004b0069006e0065006300740200000186000001060000030c00000261fb0000000a0049006d00610067006500000004dd000001ab000000000000000000000001000003910000052dfc0200000005fb0000001e0054006f006f006c002000500072006f00700065007200740069006500730100000041000000780000000000000000fb0000001200660072006f006e0074005f00630061006d010000006e0000018c0000002600fffffffb00000010006200610063006b005f00630061006d0100000206000001bf0000002600fffffffb0000000a0056006900650077007301000003d1000001ca0000013200fffffffb0000001200530065006c0065006300740069006f006e010000025a000000b200000000000000000000000200000f700000023cfc0100000001fb0000000a00560069006500770073030000004e00000080000002e1000001970000000300000c00000000a1fc0100000002fb0000000800540069006d0065010000000000000c00000006dc00fffffffb0000000800540069006d00650100000000000004500000000000000000000004740000052d00000004000000040000000800000008fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
+  QMainWindow State: 000000ff00000000fd0000000400000000000004f800000737fc0200000009fb0000001200530065006c0065006300740069006f006e000000006e000000b0000000b000fffffffb0000001e0054006f006f006c002000500072006f007000650072007400690065007302000001ed000001df00000185000000b2fb000000120056006900650077007300200054006f006f02000001df000002110000018500000122fb000000200054006f006f006c002000500072006f0070006500720074006900650073003203000002880000011d000002210000017afb000000100044006900730070006c006100790073010000006e000007370000018200fffffffb0000002000730065006c0065006300740069006f006e00200062007500660066006500720200000138000000aa0000023a00000294fb00000014005700690064006500530074006500720065006f02000000e6000000d2000003ee0000030bfb0000000c004b0069006e0065006300740200000186000001060000030c00000261fb0000000a0049006d00610067006500000004dd000001ab0000000000000000000000010000039100000737fc0200000005fb0000001e0054006f006f006c002000500072006f00700065007200740069006500730100000041000000780000000000000000fb0000001200660072006f006e0074005f00630061006d010000006e0000022c0000002600fffffffb00000010006200610063006b005f00630061006d01000002a6000002710000002600fffffffb0000000a005600690065007700730100000523000002820000013200fffffffb0000001200530065006c0065006300740069006f006e010000025a000000b200000000000000000000000200000f700000023cfc0100000001fb0000000a00560069006500770073030000004e00000080000002e1000001970000000300000f70000000a1fc0100000002fb0000000800540069006d0065010000000000000f70000006dc00fffffffb0000000800540069006d00650100000000000004500000000000000000000006cf0000073700000004000000040000000800000008fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
   Selection:
     collapsed: false
   Time:
@@ -460,9 +236,9 @@ Window Geometry:
     collapsed: false
   Views:
     collapsed: false
-  Width: 3072
-  X: 0
-  Y: 211
+  Width: 3952
+  X: 3216
+  Y: 54
   back_cam:
     collapsed: false
   front_cam:

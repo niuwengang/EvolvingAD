@@ -65,12 +65,13 @@ void Scheduler::FrontEndThread()
 void Scheduler::BackEndThread()
 {
     ros::Rate rate_back_end(100);
-    std::shared_ptr<BackEndPipe> back_end_ptr = std::make_shared<BackEndPipe>(nh2_, package_folder_path_);
+    // std::shared_ptr<BackEndPipe> back_end_ptr = std::make_shared<BackEndPipe>(nh2_, package_folder_path_);
 
     while (ros::ok())
     {
-        back_end_ptr->ReveiveFrameQueue(frame_queue_, scheduler_mutex_);
-        back_end_ptr->Run();
+        frame_queue_.clear();
+        // back_end_ptr->ReveiveFrameQueue(frame_queue_, scheduler_mutex_);
+        // back_end_ptr->Run();
         rate_back_end.sleep();
     }
 }
@@ -80,7 +81,10 @@ void Scheduler::BackEndThread()
 int main(int argc, char **argv)
 {
     ros::init(argc, argv, "ad_node");
-    ros::NodeHandle nh1, nh2;
+
+    ros::NodeHandle nh1("front_end");
+    ros::NodeHandle nh2("back_end");
+
     ros::Rate rate_main_thread(100);
 
     std::shared_ptr<evolving_ad_ns::Scheduler> scheduler_ptr = std::make_shared<evolving_ad_ns::Scheduler>(nh1, nh2);

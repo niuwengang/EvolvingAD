@@ -38,7 +38,7 @@ class ObjectMsg
     Eigen::Quaternionf q;
     // float heading = 0;
 
-    int id = 0.0;
+    int id = 0.0; //
     float score = 0.0;
     Label label; // od semantic class
 };

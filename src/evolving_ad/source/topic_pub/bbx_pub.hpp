@@ -10,12 +10,13 @@
 #define _BBX_PUB_HPP_
 
 // ros
+#include "msg/object_msg.hpp"
 #include <jsk_recognition_msgs/BoundingBox.h>
 #include <jsk_recognition_msgs/BoundingBoxArray.h>
 #include <ros/ros.h>
 #include <tf/transform_datatypes.h>
-
-#include "msg/object_msg.hpp"
+#include <visualization_msgs/Marker.h>
+#include <visualization_msgs/MarkerArray.h>
 
 namespace evolving_ad_ns
 {
@@ -31,7 +32,8 @@ class BbxPub
     void Publish(const ObjectsMsg &objects_msg);
 
   private:
-    ros::Publisher pub_;
+    ros::Publisher bbx_pub_;
+    ros::Publisher marker_pub_;
     std::string frame_id_;
 };
 

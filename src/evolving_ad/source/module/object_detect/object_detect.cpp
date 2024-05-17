@@ -87,7 +87,7 @@ void ObjectDetect::Detect(const CloudMsg &cloud_msg, ObjectsMsg &objects_msg)
         object_msg.score = box.score;
         object_msg.id = box.id;
 
-        if (object_msg.score > 0.6)
+        if (object_msg.score >= 0.6)
         {
             objects_msg.objects_vec.push_back(object_msg);
         }

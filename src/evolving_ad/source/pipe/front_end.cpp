@@ -29,15 +29,13 @@ FrontEndPipe::FrontEndPipe(ros::NodeHandle &nh, const std::string package_folder
     cloud_sub_ptr_ = std::make_shared<CloudSub>(nh, paramlist_.cloud_sub_topic);
 
     /*[3]--topic pub */
-#ifdef DEBUG_DOR
-    static_cloud_pub_ptr_ = std::make_shared<CloudPub>(nh, "front_end_static_cloud", "map");
-    dynamic_cloud_pub_ptr_ = std::make_shared<CloudPub>(nh, "front_end_dynamic_cloud", "map");
-    bbx_pub_ptr_ = std::make_shared<BbxPub>(nh, "front_end_bbx", "map");
-    ground_cloud_pub_ptr_ = std::make_shared<CloudPub>(nh, "front_end_ground_cloud", "map");
-#endif
+    static_cloud_pub_ptr_ = std::make_shared<CloudPub>(nh, "static_cloud", "map");
+    ground_cloud_pub_ptr_ = std::make_shared<CloudPub>(nh, "ground_cloud", "map");
+    dynamic_cloud_pub_ptr_ = std::make_shared<CloudPub>(nh, "dynamic_cloud", "map");
+    bbx_pub_ptr_ = std::make_shared<BbxPub>(nh, "bbx", "map");
 
     /*[4]--algorithm module*/
-    object_detect_ptr_ = std::make_shared<ObjectDetect>(paramlist_.model_file_path); // todo: noted it
+    object_detect_ptr_ = std::make_shared<ObjectDetect>(paramlist_.model_file_path);
     lidar_odom_ptr_ = std::make_shared<LidarOdom>(config_node["lidar_odom"]);
     ground_seg_ptr_ = std::make_shared<DipgGroundSegment>();
 
@@ -67,47 +65,45 @@ bool FrontEndPipe::Run()
         time_record_ptr_->Start();
 
         std::vector<int> indices;
-        CloudMsg::CLOUD_PTR nan_cloud_ptr_(new CloudMsg::CLOUD());
-        pcl::removeNaNFromPointCloud(*cloud_msg.cloud_ptr, *nan_cloud_ptr_, indices);
-        *cloud_msg.cloud_ptr = *nan_cloud_ptr_;
+        CloudMsg::CLOUD_PTR nan_cloud_ptr(new CloudMsg::CLOUD());
+        pcl::removeNaNFromPointCloud(*cloud_msg.cloud_ptr, *nan_cloud_ptr, indices);
+        *cloud_msg.cloud_ptr = *nan_cloud_ptr;
 
         /*[1]--object detection*/
         ObjectsMsg objects_msg;
         object_detect_ptr_->Detect(cloud_msg, objects_msg);
 
         /*[2]--ground segement*/
-        CloudMsg::CLOUD_PTR ground_cloud_ptr_(new CloudMsg::CLOUD());
-        CloudMsg::CLOUD_PTR no_ground_cloud_ptr_(new CloudMsg::CLOUD());
-        ground_seg_ptr_->Segement(cloud_msg.cloud_ptr, ground_cloud_ptr_, no_ground_cloud_ptr_);
+        // CloudMsg::CLOUD_PTR ground_cloud_ptr(new CloudMsg::CLOUD());
+        // CloudMsg::CLOUD_PTR no_ground_cloud_ptr(new CloudMsg::CLOUD());
+        // ground_seg_ptr_->Segement(cloud_msg.cloud_ptr, ground_cloud_ptr, no_ground_cloud_ptr);
 
         /*[3]--dynamic removal*/
-        CloudMsg::CLOUD_PTR static_cloud_ptr(new CloudMsg::CLOUD());
-        CloudMsg::CLOUD_PTR dynamic_cloud_ptr(new CloudMsg::CLOUD());
-        DorPost(objects_msg, no_ground_cloud_ptr_, static_cloud_ptr, dynamic_cloud_ptr);
-        *cloud_msg.cloud_ptr = *static_cloud_ptr;
+        // CloudMsg::CLOUD_PTR static_cloud_ptr(new CloudMsg::CLOUD());
+        // CloudMsg::CLOUD_PTR dynamic_cloud_ptr(new CloudMsg::CLOUD());
+        // DorPost(objects_msg, no_ground_cloud_ptr_, static_cloud_ptr, dynamic_cloud_ptr);
+        // *cloud_msg.cloud_ptr = *static_cloud_ptr;
 
         /*[4]--lidar odom*/
-        lidar_odom_ptr_->InitPose(Eigen::Matrix4f::Identity());
-        Eigen::Matrix4f pose = Eigen::Matrix4f::Identity();
-        lidar_odom_ptr_->ComputePose(cloud_msg, pose);
+        // lidar_odom_ptr_->InitPose(Eigen::Matrix4f::Identity());
+        // Eigen::Matrix4f pose = Eigen::Matrix4f::Identity();
+        // lidar_odom_ptr_->ComputePose(cloud_msg, pose);
 
         spdlog::info("FrontEnd$ exec {} hz", time_record_ptr_->GetFrequency(1000));
 
         /*[5]--display*/
-#ifdef DEBUG_DOR
         bbx_pub_ptr_->Publish(objects_msg);
-        static_cloud_pub_ptr_->Publish(static_cloud_ptr);
-        dynamic_cloud_pub_ptr_->Publish(dynamic_cloud_ptr);
-        ground_cloud_pub_ptr_->Publish(ground_cloud_ptr_);
-#endif
+        static_cloud_pub_ptr_->Publish(cloud_msg);
+        // ground_cloud_pub_ptr_->Publish(ground_cloud_ptr);
+        // dynamic_cloud_pub_ptr_->Publish(dynamic_cloud_ptr);
 
         /*[6]--copy to frame*/
-        Frame frame;
-        frame.time_stamp = cloud_msg.time_stamp;                 // timestamp
-        frame.pose = pose;                                       // pose
-        *frame.cloud_msg.cloud_ptr = *cloud_msg.cloud_ptr;       // cloud
-        frame.objects_msg.objects_vec = objects_msg.objects_vec; // ods_vec
-        frame_queue_.push_back(frame);
+        // Frame frame;
+        // frame.time_stamp = cloud_msg.time_stamp;                 // timestamp
+        // frame.pose = pose;                                       // pose
+        // *frame.cloud_msg.cloud_ptr = *cloud_msg.cloud_ptr;       // cloud
+        // frame.objects_msg.objects_vec = objects_msg.objects_vec; // ods_vec
+        // frame_queue_.push_back(frame);
     }
     return true;
 }
