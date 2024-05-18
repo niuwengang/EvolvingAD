@@ -99,8 +99,11 @@ For Simulation<br>
 
 ## 8.Updates
 
-**2024/05/20** <br>
+**2024/05/21** <br>
 pre-release-tag v0.1.5 <br>
+1. simple MOT 
+2. slide windows opt method
+3. display for MOT
 
 
 **2024/05/07** <br>
