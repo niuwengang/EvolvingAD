@@ -16,14 +16,16 @@ namespace evolving_ad_ns
 {
 class CloudMsg
 {
-
   public:
-    CloudMsg();
-    ~CloudMsg() = default;
-
     using POINT = pcl::PointXYZI;
     using CLOUD = pcl::PointCloud<POINT>;
     using CLOUD_PTR = CLOUD::Ptr;
+
+  public:
+    CloudMsg();
+    CloudMsg(const CloudMsg &other);
+    CloudMsg &operator=(const CloudMsg &other);
+    ~CloudMsg();
 
     double time_stamp = 0.0;
     CLOUD_PTR cloud_ptr;

@@ -34,6 +34,7 @@ FrontEndPipe::FrontEndPipe(ros::NodeHandle &nh, const std::string package_folder
     dynamic_cloud_pub_ptr_ = std::make_shared<CloudPub>(nh, "dynamic_cloud", "map");
     bbx_pub_ptr_ = std::make_shared<BbxPub>(nh, "bbx", "map");
     veh_tf_pub_ptr_ = std::make_shared<TfPub>("map", "ground_link");
+    lidar_odom_pub_ptr_ = std::make_shared<OdomPub>(nh, "lidar_odom", "map", "lidar");
 
     /*[4]--algorithm module*/
     object_detect_ptr_ = std::make_shared<ObjectDetect>(paramlist_.model_file_path);
@@ -93,9 +94,10 @@ bool FrontEndPipe::Run()
         spdlog::info("FrontEnd$ exec {} hz", time_record_ptr_->GetFrequency(1000));
 
         /*[5]--display*/
-        bbx_pub_ptr_->Publish(objects_msg);
-        static_cloud_pub_ptr_->Publish(cloud_msg);
-        veh_tf_pub_ptr_->SendTransform(Eigen::Matrix4f::Identity());
+        // bbx_pub_ptr_->Publish(objects_msg);
+        // static_cloud_pub_ptr_->Publish(cloud_msg);
+        // veh_tf_pub_ptr_->SendTransform(pose);
+        // lidar_odom_pub_ptr_->Publish(pose);
         // ground_cloud_pub_ptr_->Publish(ground_cloud_ptr);
         // dynamic_cloud_pub_ptr_->Publish(dynamic_cloud_ptr);
 

@@ -10,10 +10,10 @@ namespace evolving_ad_ns
 class Frame
 {
   public:
-    Frame() = default;
+    Frame();
     Frame(const Frame &other);
     Frame &operator=(const Frame &other);
-    ~Frame() = default;
+    ~Frame();
 
     unsigned int index = 0;
     double time_stamp = 0.0;
