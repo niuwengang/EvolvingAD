@@ -60,6 +60,7 @@ class FrontEndPipe
     std::shared_ptr<CloudPub> dynamic_cloud_pub_ptr_ = nullptr;
     std::shared_ptr<CloudPub> ground_cloud_pub_ptr_ = nullptr;
     std::shared_ptr<BbxPub> bbx_pub_ptr_ = nullptr;
+    std::shared_ptr<TfPub> veh_tf_pub_ptr_ = nullptr;
 
     /*variable*/
     std::deque<CloudMsg> cloud_msg_queue_;
