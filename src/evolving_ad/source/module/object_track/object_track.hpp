@@ -9,6 +9,9 @@
 #ifndef _OBJECT_TRACK_HPP_
 #define _OBJECT_TRACK_HPP_
 
+// msg
+#include "msg/object_msg.hpp"
+
 namespace evolving_ad_ns
 {
 class ObjectTrack
@@ -16,7 +19,10 @@ class ObjectTrack
   public:
     ObjectTrack();
     ~ObjectTrack() = default;
-    void Track();
+    void Track(const ObjectsMsg &objects_msg);
+
+  private:
+    bool first_flag_ = true;
 };
 } // namespace evolving_ad_ns
 
