@@ -10,10 +10,14 @@ LidarOdom::LidarOdom(const YAML::Node &config_node)
     paramlist_.keyframe_num = config_node["keyframe_num"].as<int>();
     paramlist_.filter_leaf_size_small = config_node["filter_leaf_size_small"].as<float>();
     paramlist_.filter_leaf_size_media = config_node["filter_leaf_size_media"].as<float>();
+    paramlist_.filter_leaf_size_large = config_node["filter_leaf_size_large"].as<float>();
+
     paramlist_.registration_resolution = config_node["registration_resolution"].as<float>();
 
     filter_small_size_ptr_ = std::make_shared<VoxelFilter>(paramlist_.filter_leaf_size_small);
     filter_media_size_ptr_ = std::make_shared<VoxelFilter>(paramlist_.filter_leaf_size_media);
+    filter_large_size_ptr_ = std::make_shared<VoxelFilter>(paramlist_.filter_leaf_size_large);
+
     registration_ptr_ = std::make_shared<FastGicpRegistration>(paramlist_.registration_resolution, 0.1, 0.01, 30);
 
     local_map_ptr_.reset(new CloudMsg::CLOUD());
@@ -43,27 +47,26 @@ bool LidarOdom::InitPose(const Eigen::Matrix4f &init_pose)
  */
 void LidarOdom::ComputeCorsePose(const CloudMsg &cloud_msg, Eigen::Matrix4f &corse_pose) // add imu
 {
-    std::cout << "ComputeCorsePose" << std::endl;
-    if (!local_keyframe_queue_.empty()) // not use size to judge
+
+    if (first_flag_ == false) // not use size to judge
     {
         CloudMsg::CLOUD_PTR cur_scan_ptr(new CloudMsg::CLOUD());
         filter_small_size_ptr_->Filter(cloud_msg.cloud_ptr, cur_scan_ptr); // lidar coordinate
 
-        CloudMsg::CLOUD_PTR pre_scan_ptr(new CloudMsg::CLOUD());
-        Frame frame = local_keyframe_queue_.back();
-        filter_small_size_ptr_->Filter(frame.cloud_msg.cloud_ptr, pre_scan_ptr); //  lidar coordinate
+        registration_ptr_->SetSourceCloud(cloud_msg_pre_.cloud_ptr);
+        registration_ptr_->SetTargetCloud(cur_scan_ptr);
 
-        registration_ptr_->SetSourceCloud(frame.cloud_msg.cloud_ptr);
-        registration_ptr_->SetTargetCloud(cloud_msg.cloud_ptr);
-
-        static Eigen::Matrix4f predict_pose = Eigen::Matrix4f::Identity();
+        Eigen::Matrix4f predict_pose = Eigen::Matrix4f::Identity();
         CloudMsg::CLOUD_PTR registered_cloud_ptr(new CloudMsg::CLOUD());
         registration_ptr_->Registration(predict_pose, corse_pose, registered_cloud_ptr);
-        std::cout << "ComputeCorsePose over" << std::endl;
+
+        *cloud_msg_pre_.cloud_ptr = *cur_scan_ptr;
     }
     else
     {
+        *cloud_msg_pre_.cloud_ptr = *cloud_msg.cloud_ptr;
         corse_pose = init_pose_;
+        first_flag_ = false;
     }
 }
 
@@ -80,22 +83,21 @@ void LidarOdom::ComputeFinePose(const CloudMsg &cloud_msg, const Eigen::Matrix4f
     static Eigen::Matrix4f last_pose = init_pose_;
     static Eigen::Matrix4f predict_pose = init_pose_;
 
-    std::cout << "ComputeFinePose" << std::endl;
     if (!local_keyframe_queue_.empty()) // not use size to judge
     {
         /*1--registration*/
         CloudMsg::CLOUD_PTR cur_scan_ptr(new CloudMsg::CLOUD());
-        filter_small_size_ptr_->Filter(cloud_msg.cloud_ptr, cur_scan_ptr); // lidar coordinate
+        filter_large_size_ptr_->Filter(cloud_msg.cloud_ptr, cur_scan_ptr); // lidar coordinate
 
         CloudMsg::CLOUD_PTR filtered_local_map_ptr(new CloudMsg::CLOUD());
-        filter_media_size_ptr_->Filter(local_map_ptr_, filtered_local_map_ptr);
+        filter_large_size_ptr_->Filter(local_map_ptr_, filtered_local_map_ptr);
 
         registration_ptr_->SetSourceCloud(cur_scan_ptr);
         registration_ptr_->SetTargetCloud(filtered_local_map_ptr);
 
         CloudMsg::CLOUD_PTR registered_cloud_ptr(new CloudMsg::CLOUD());
 
-        registration_ptr_->Registration(predict_pose, fine_pose, registered_cloud_ptr);
+        registration_ptr_->Registration(last_pose * corse_pose, fine_pose, registered_cloud_ptr);
 
         /*2--predict pose*/
         step_pose = last_pose.inverse() * fine_pose; // postmultiplication

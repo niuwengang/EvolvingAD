@@ -33,23 +33,30 @@ class LidarOdom
   private:
     // void UpdateLocalMap(const Frame &normal_frame);
 
-    std::shared_ptr<CloudFilterInterface> filter_small_size_ptr_ = nullptr;  // filter for single scan
-    std::shared_ptr<CloudFilterInterface> filter_media_size_ptr_ = nullptr;  // filter for local map
-    std::shared_ptr<CloudRegistrationInterface> registration_ptr_ = nullptr; // cloud registration
+    std::shared_ptr<CloudFilterInterface> filter_small_size_ptr_ = nullptr; // filter for single scan
+    std::shared_ptr<CloudFilterInterface> filter_media_size_ptr_ = nullptr; // filter for local map
+    std::shared_ptr<CloudFilterInterface> filter_large_size_ptr_ = nullptr; // filter for local map
+
+    std::shared_ptr<CloudRegistrationInterface> registration_ptr_ = nullptr;           // cloud registration
 
     Eigen::Matrix4f init_pose_ = Eigen::Matrix4f::Identity();
     Eigen::Matrix4f last_keyframe_pose_ = Eigen::Matrix4f::Identity();
     std::deque<Frame> local_keyframe_queue_;
     CloudMsg::CLOUD_PTR local_map_ptr_;
+    CloudMsg cloud_msg_pre_;
     bool init_flag_ = false;
+    bool first_flag_ = true;
 
     struct ParamList
     {
         unsigned int keyframe_num = 10;
         float keyframe_distance = 2.0;
-        float filter_leaf_size_small = 1.0;
-        float filter_leaf_size_media = 0.6;
-        float registration_resolution = 1.0;
+
+        float filter_leaf_size_small = 0.0;
+        float filter_leaf_size_media = 0.0;
+        float filter_leaf_size_large = 0.0;
+
+        float registration_resolution = 0.0;
     } paramlist_;
 };
 
