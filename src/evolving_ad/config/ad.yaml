@@ -13,8 +13,9 @@ topic_sub: #
 lidar_odom:
   keyframe_distance: 2.0
   keyframe_num: 5
-  single_scan_leaf_size: 1.0 #filter size
-  local_map_leaf_size: 1.0
+  filter_leaf_size_small: 1.0 #filter size
+  filter_leaf_size_media: 1.0 #filter size
+  filter_leaf_size_large: 1.0 #filter size
   registration_resolution: 1.0
 
 #

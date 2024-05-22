@@ -8,12 +8,12 @@ LidarOdom::LidarOdom(const YAML::Node &config_node)
     /*[1]--load paramlist*/
     paramlist_.keyframe_distance = config_node["keyframe_distance"].as<float>();
     paramlist_.keyframe_num = config_node["keyframe_num"].as<int>();
-    paramlist_.single_scan_leaf_size = config_node["single_scan_leaf_size"].as<float>();
-    paramlist_.local_map_leaf_size = config_node["local_map_leaf_size"].as<float>();
+    paramlist_.filter_leaf_size_small = config_node["filter_leaf_size_small"].as<float>();
+    paramlist_.filter_leaf_size_media = config_node["filter_leaf_size_media"].as<float>();
     paramlist_.registration_resolution = config_node["registration_resolution"].as<float>();
 
-    single_scan_filter_ptr_ = std::make_shared<VoxelFilter>(paramlist_.single_scan_leaf_size);
-    local_map_filter_ptr_ = std::make_shared<VoxelFilter>(paramlist_.local_map_leaf_size);
+    filter_small_size_ptr_ = std::make_shared<VoxelFilter>(paramlist_.filter_leaf_size_small);
+    filter_media_size_ptr_ = std::make_shared<VoxelFilter>(paramlist_.filter_leaf_size_media);
     registration_ptr_ = std::make_shared<FastGicpRegistration>(paramlist_.registration_resolution, 0.1, 0.01, 30);
 
     local_map_ptr_.reset(new CloudMsg::CLOUD());
@@ -47,19 +47,19 @@ void LidarOdom::ComputeCorsePose(const CloudMsg &cloud_msg, Eigen::Matrix4f &cor
     if (!local_keyframe_queue_.empty()) // not use size to judge
     {
         CloudMsg::CLOUD_PTR cur_scan_ptr(new CloudMsg::CLOUD());
-        single_scan_filter_ptr_->Filter(cloud_msg.cloud_ptr, cur_scan_ptr); // lidar coordinate
+        filter_small_size_ptr_->Filter(cloud_msg.cloud_ptr, cur_scan_ptr); // lidar coordinate
 
         CloudMsg::CLOUD_PTR pre_scan_ptr(new CloudMsg::CLOUD());
         Frame frame = local_keyframe_queue_.back();
-        single_scan_filter_ptr_->Filter(frame.cloud_msg.cloud_ptr, pre_scan_ptr); //  lidar coordinate
+        filter_small_size_ptr_->Filter(frame.cloud_msg.cloud_ptr, pre_scan_ptr); //  lidar coordinate
 
-        registration_ptr_->SetSourceCloud(cur_scan_ptr);
-        registration_ptr_->SetTargetCloud(pre_scan_ptr);
+        registration_ptr_->SetSourceCloud(frame.cloud_msg.cloud_ptr);
+        registration_ptr_->SetTargetCloud(cloud_msg.cloud_ptr);
 
-        Eigen::Matrix4f predict_pose = Eigen::Matrix4f::Identity();
+        static Eigen::Matrix4f predict_pose = Eigen::Matrix4f::Identity();
         CloudMsg::CLOUD_PTR registered_cloud_ptr(new CloudMsg::CLOUD());
         registration_ptr_->Registration(predict_pose, corse_pose, registered_cloud_ptr);
-        corse_pose = corse_pose * frame.pose;
+        std::cout << "ComputeCorsePose over" << std::endl;
     }
     else
     {
@@ -76,23 +76,33 @@ void LidarOdom::ComputeCorsePose(const CloudMsg &cloud_msg, Eigen::Matrix4f &cor
 void LidarOdom::ComputeFinePose(const CloudMsg &cloud_msg, const Eigen::Matrix4f &corse_pose,
                                 Eigen::Matrix4f &fine_pose)
 {
+    static Eigen::Matrix4f step_pose = Eigen::Matrix4f::Identity(); // pose diff
+    static Eigen::Matrix4f last_pose = init_pose_;
+    static Eigen::Matrix4f predict_pose = init_pose_;
+
     std::cout << "ComputeFinePose" << std::endl;
     if (!local_keyframe_queue_.empty()) // not use size to judge
     {
         /*1--registration*/
         CloudMsg::CLOUD_PTR cur_scan_ptr(new CloudMsg::CLOUD());
-        single_scan_filter_ptr_->Filter(cloud_msg.cloud_ptr, cur_scan_ptr); // lidar coordinate
+        filter_small_size_ptr_->Filter(cloud_msg.cloud_ptr, cur_scan_ptr); // lidar coordinate
 
         CloudMsg::CLOUD_PTR filtered_local_map_ptr(new CloudMsg::CLOUD());
-        local_map_filter_ptr_->Filter(local_map_ptr_, filtered_local_map_ptr);
+        filter_media_size_ptr_->Filter(local_map_ptr_, filtered_local_map_ptr);
 
         registration_ptr_->SetSourceCloud(cur_scan_ptr);
         registration_ptr_->SetTargetCloud(filtered_local_map_ptr);
 
         CloudMsg::CLOUD_PTR registered_cloud_ptr(new CloudMsg::CLOUD());
-        registration_ptr_->Registration(corse_pose, fine_pose, registered_cloud_ptr);
 
-        /*2--check keyframe*/
+        registration_ptr_->Registration(predict_pose, fine_pose, registered_cloud_ptr);
+
+        /*2--predict pose*/
+        step_pose = last_pose.inverse() * fine_pose; // postmultiplication
+        predict_pose = fine_pose * step_pose;
+        last_pose = fine_pose;
+
+        /*3--check keyframe*/
         if (fabs(last_keyframe_pose_(0, 3) - fine_pose(0, 3)) + fabs(last_keyframe_pose_(1, 3) - fine_pose(1, 3)) +
                 fabs(last_keyframe_pose_(2, 3) - fine_pose(2, 3)) >=
             paramlist_.keyframe_distance)

@@ -33,8 +33,8 @@ class LidarOdom
   private:
     // void UpdateLocalMap(const Frame &normal_frame);
 
-    std::shared_ptr<CloudFilterInterface> single_scan_filter_ptr_ = nullptr; // filter for single scan
-    std::shared_ptr<CloudFilterInterface> local_map_filter_ptr_ = nullptr;   // filter for local map
+    std::shared_ptr<CloudFilterInterface> filter_small_size_ptr_ = nullptr;  // filter for single scan
+    std::shared_ptr<CloudFilterInterface> filter_media_size_ptr_ = nullptr;  // filter for local map
     std::shared_ptr<CloudRegistrationInterface> registration_ptr_ = nullptr; // cloud registration
 
     Eigen::Matrix4f init_pose_ = Eigen::Matrix4f::Identity();
@@ -47,8 +47,8 @@ class LidarOdom
     {
         unsigned int keyframe_num = 10;
         float keyframe_distance = 2.0;
-        float single_scan_leaf_size = 1.0;
-        float local_map_leaf_size = 0.6;
+        float filter_leaf_size_small = 1.0;
+        float filter_leaf_size_media = 0.6;
         float registration_resolution = 1.0;
     } paramlist_;
 };
