@@ -28,7 +28,7 @@ class LidarOdom
     LidarOdom(const YAML::Node &config_node);
     bool InitPose(const Eigen::Matrix4f &init_pose);
     void ComputeCorsePose(const CloudMsg &cloud_msg, Eigen::Matrix4f &corse_pose);
-    void ComputeFinePose(const CloudMsg &cloud_msg, Eigen::Matrix4f &fine_pose);
+    void ComputeFinePose(const CloudMsg &cloud_msg, const Eigen::Matrix4f &corse_pose, Eigen::Matrix4f &fine_pose);
 
   private:
     // void UpdateLocalMap(const Frame &normal_frame);
@@ -38,6 +38,7 @@ class LidarOdom
     std::shared_ptr<CloudRegistrationInterface> registration_ptr_ = nullptr; // cloud registration
 
     Eigen::Matrix4f init_pose_ = Eigen::Matrix4f::Identity();
+    Eigen::Matrix4f last_keyframe_pose_ = Eigen::Matrix4f::Identity();
     std::deque<Frame> local_keyframe_queue_;
     CloudMsg::CLOUD_PTR local_map_ptr_;
     bool init_flag_ = false;

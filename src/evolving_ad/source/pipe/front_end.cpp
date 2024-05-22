@@ -87,17 +87,18 @@ bool FrontEndPipe::Run()
         // *cloud_msg.cloud_ptr = *static_cloud_ptr;
 
         /*[4]--lidar odom*/
-        // lidar_odom_ptr_->InitPose(Eigen::Matrix4f::Identity());
-        // Eigen::Matrix4f pose = Eigen::Matrix4f::Identity();
-        // lidar_odom_ptr_->ComputePose(cloud_msg, pose);
-
+        lidar_odom_ptr_->InitPose(Eigen::Matrix4f::Identity());
+        // Eigen::Matrix4f corse_pose = Eigen::Matrix4f::Identity();
+        // Eigen::Matrix4f fine_pose = Eigen::Matrix4f::Identity();
+        // lidar_odom_ptr_->ComputeCorsePose(cloud_msg, corse_pose);
+        // lidar_odom_ptr_->ComputeFinePose(cloud_msg, corse_pose, fine_pose);
         spdlog::info("FrontEnd$ exec {} hz", time_record_ptr_->GetFrequency(1000));
 
         /*[5]--display*/
         // bbx_pub_ptr_->Publish(objects_msg);
         // static_cloud_pub_ptr_->Publish(cloud_msg);
         // veh_tf_pub_ptr_->SendTransform(pose);
-        // lidar_odom_pub_ptr_->Publish(pose);
+        // lidar_odom_pub_ptr_->Publish(fine_pose);
         // ground_cloud_pub_ptr_->Publish(ground_cloud_ptr);
         // dynamic_cloud_pub_ptr_->Publish(dynamic_cloud_ptr);
 

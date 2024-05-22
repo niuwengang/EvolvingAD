@@ -22,12 +22,18 @@ CloudMsg::CloudMsg()
 
 CloudMsg::CloudMsg(const CloudMsg &other)
 {
+    cloud_ptr.reset(new CLOUD());
+    cloud_ptr->reserve(576000); // from https://www.robosense.cn/rslidar/RS-Helios
+
     this->time_stamp = other.time_stamp;
     *this->cloud_ptr = *other.cloud_ptr; // not release other
 }
 
 CloudMsg &CloudMsg::operator=(const CloudMsg &other)
 {
+    cloud_ptr.reset(new CLOUD());
+    cloud_ptr->reserve(576000); // from https://www.robosense.cn/rslidar/RS-Helios
+
     this->time_stamp = other.time_stamp;
     *this->cloud_ptr = *other.cloud_ptr; // not release other
     return *this;
