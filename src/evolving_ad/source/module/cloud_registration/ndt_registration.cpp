@@ -62,4 +62,6 @@ bool NdtRegistration::Registration(const Eigen::Matrix4f &predict_pose, Eigen::M
     return true;
 }
 
-} // namespace module
+
+
+} // namespace evolving_ad_ns
