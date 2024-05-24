@@ -6,6 +6,7 @@ Panels:
       Expanded:
         - /front_end1
         - /front_end1/Odometry1
+        - /front_end1/Odometry1/Shape1
         - /MarkerArray1
       Splitter Ratio: 0.5
     Tree Height: 1058
@@ -55,23 +56,18 @@ Visualization Manager:
     - Alpha: 1
       Class: rviz/RobotModel
       Collision Enabled: false
-      Enabled: true
+      Enabled: false
       Links:
         All Links Enabled: true
         Expand Joint Details: false
         Expand Link Details: false
         Expand Tree: false
         Link Tree Style: Links in Alphabetic Order
-        ground_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
       Name: RobotModel
       Robot Description: robot_description
       TF Prefix: ""
       Update Interval: 0
-      Value: true
+      Value: false
       Visual Enabled: true
     - Class: rviz/Group
       Displays:
@@ -171,14 +167,14 @@ Visualization Manager:
               Value: true
             Value: true
           Enabled: true
-          Keep: 0
+          Keep: 1
           Name: Odometry
           Position Tolerance: 0.10000000149011612
           Queue Size: 10
           Shape:
             Alpha: 1
-            Axes Length: 1
-            Axes Radius: 0.10000000149011612
+            Axes Length: 2
+            Axes Radius: 0.20000000298023224
             Color: 255; 25; 0
             Head Length: 0.30000001192092896
             Head Radius: 0.10000000149011612
@@ -227,20 +223,20 @@ Visualization Manager:
     Current:
       Class: jsk_rviz_plugin/TabletViewController
       Control Mode: Orbit
-      Distance: 122.44975280761719
+      Distance: 49.18452072143555
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Eye:
-        X: -35.03840255737305
-        Y: -11.661506652832031
-        Z: 92.96397399902344
+        X: -4.288414001464844
+        Y: 0.007008276879787445
+        Z: 25.982574462890625
       Focus:
-        X: -2.426280975341797
-        Y: -7.828246116638184
-        Z: -25.000839233398438
+        X: 9.385149002075195
+        Y: 0.10641971230506897
+        Z: -21.262962341308594
       Invert Z Axis: false
       Maintain Vertical Axis: true
       Mouse Enabled: true

@@ -6,6 +6,9 @@
  * @version 1.0
  */
 
+#ifndef _IMU_SUB_HPP_
+#define _IMU_SUB_HPP_
+
 // user msg
 #include "msg/imu_msg.hpp"
 // c++ lib
@@ -37,3 +40,5 @@ class ImuSub
     std::mutex mutex_;
 };
 } // namespace evolving_ad_ns
+
+#endif //_IMU_SUB_HPP_

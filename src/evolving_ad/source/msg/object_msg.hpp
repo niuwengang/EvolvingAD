@@ -34,20 +34,19 @@ class ObjectMsg
   public:
     float x = 0, y = 0, z = 0; // center
     float w = 0, l = 0, h = 0; // dim
-
-    Eigen::Quaternionf q;
-    // float heading = 0;
-
-    int id = 0.0; //
-    float score = 0.0;
-    Label label; // od semantic class
+    Eigen::Quaternionf q;      //  heading
+    int id = 0.0;              // id is irrelevant to label
+    float score = 0.0;         // choose more than 0.6
+    Label label;               // od semantic class
 };
 
 class ObjectsMsg
 {
   public:
     ObjectsMsg();
-    ~ObjectsMsg() = default;
+    ObjectsMsg(const ObjectsMsg &other);
+    ObjectsMsg &operator=(const ObjectsMsg &other);
+    ~ObjectsMsg();
 
     double time_stamp = 0.0;
     std::vector<ObjectMsg> objects_vec;

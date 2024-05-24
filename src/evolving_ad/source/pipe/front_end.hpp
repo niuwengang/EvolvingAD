@@ -15,6 +15,7 @@
 #include <ros/ros.h>
 // topic sub
 #include "topic_sub/cloud_sub.hpp"
+#include "topic_sub/imu_sub.hpp"
 // topic pub
 #include "topic_pub/bbx_pub.hpp"
 #include "topic_pub/cloud_pub.hpp"
@@ -55,6 +56,7 @@ class FrontEndPipe
   private:
     /* sub*/
     std::shared_ptr<CloudSub> cloud_sub_ptr_ = nullptr;
+    std::shared_ptr<ImuSub> imu_sub_ptr_ = nullptr;
     /* pub*/
     std::shared_ptr<CloudPub> static_cloud_pub_ptr_ = nullptr;
     std::shared_ptr<CloudPub> dynamic_cloud_pub_ptr_ = nullptr;
@@ -62,16 +64,19 @@ class FrontEndPipe
     std::shared_ptr<BbxPub> bbx_pub_ptr_ = nullptr;
     std::shared_ptr<TfPub> veh_tf_pub_ptr_ = nullptr;
     std::shared_ptr<OdomPub> lidar_odom_pub_ptr_ = nullptr;
-
-    /*variable*/
-    std::deque<CloudMsg> cloud_msg_queue_;
-    std::deque<Frame> frame_queue_;
     /*tools*/
     std::shared_ptr<TimeRecord> time_record_ptr_ = nullptr;
-    /*algorithm module*/
+    /*algorithm*/
     std::shared_ptr<ObjectDetect> object_detect_ptr_ = nullptr;
     std::shared_ptr<LidarOdom> lidar_odom_ptr_ = nullptr;
     std::shared_ptr<GroundSegementInterface> ground_seg_ptr_ = nullptr;
+    /*variable*/
+    std::deque<ImuMsg> imu_msg_queue_;
+    std::deque<CloudMsg> cloud_msg_queue_;
+
+    Frame current_frame_, previous_frame_;
+    bool first_frame_flag_ = true;
+    // std::deque<Frame> frame_queue_;
 
     struct ParamList
     {
@@ -79,6 +84,7 @@ class FrontEndPipe
         std::string package_folder_path;
         std::string model_file_path;
         std::string cloud_sub_topic;
+        std::string imu_sub_topic;
     } paramlist_;
 };
 } // namespace evolving_ad_ns

@@ -31,12 +31,18 @@ void CloudSub::MsgCallback(const sensor_msgs::PointCloud2::ConstPtr &cloud_msg_p
 {
     mutex_.lock();
 
-    /*[1]--load cloud message*/
+    /*--load cloud message*/
     CloudMsg cloud_msg;
     cloud_msg.time_stamp = ros::Time::now().toSec(); // cloud_msg_ptr->header.stamp.toSec();
     pcl::fromROSMsg(*cloud_msg_ptr, *(cloud_msg.cloud_ptr));
 
-    /*[2]--add message to queue*/
+    /*2--remove nan point*/
+    std::vector<int> indices;
+    CloudMsg::CLOUD_PTR nan_cloud_ptr(new CloudMsg::CLOUD());
+    pcl::removeNaNFromPointCloud(*cloud_msg.cloud_ptr, *nan_cloud_ptr, indices);
+    *cloud_msg.cloud_ptr = *nan_cloud_ptr;
+
+    /*3--add message to queue*/
     cloud_msg_queue_.push_back(cloud_msg);
 
     mutex_.unlock();

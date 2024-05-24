@@ -17,25 +17,21 @@ namespace evolving_ad_ns
 CloudMsg::CloudMsg()
 {
     cloud_ptr.reset(new CLOUD());
-    cloud_ptr->reserve(576000); // from https://www.robosense.cn/rslidar/RS-Helios
+    // cloud_ptr->reserve(576000); // from https://www.robosense.cn/rslidar/RS-Helios
 }
 
 CloudMsg::CloudMsg(const CloudMsg &other)
 {
-    cloud_ptr.reset(new CLOUD());
-    cloud_ptr->reserve(576000); // from https://www.robosense.cn/rslidar/RS-Helios
-
+    cloud_ptr.reset();
     this->time_stamp = other.time_stamp;
-    *this->cloud_ptr = *other.cloud_ptr; // not release other
+    this->cloud_ptr.reset(new CLOUD(*other.cloud_ptr)); // not release other
 }
 
 CloudMsg &CloudMsg::operator=(const CloudMsg &other)
 {
-    cloud_ptr.reset(new CLOUD());
-    cloud_ptr->reserve(576000); // from https://www.robosense.cn/rslidar/RS-Helios
-
+    cloud_ptr.reset();
     this->time_stamp = other.time_stamp;
-    *this->cloud_ptr = *other.cloud_ptr; // not release other
+    this->cloud_ptr.reset(new CLOUD(*other.cloud_ptr)); // not release other
     return *this;
 }
 

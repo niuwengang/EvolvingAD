@@ -19,4 +19,21 @@ ObjectsMsg::ObjectsMsg()
 {
     objects_vec.reserve(50); // max is less than 50
 }
+
+ObjectsMsg &ObjectsMsg::operator=(const ObjectsMsg &other)
+{
+    this->time_stamp = other.time_stamp;   // timestamp
+    this->objects_vec = other.objects_vec; // objects_vec
+    return *this;
+}
+
+ObjectsMsg::ObjectsMsg(const ObjectsMsg &other)
+{
+    this->time_stamp = other.time_stamp;   // timestamp
+    this->objects_vec = other.objects_vec; // objects_vec
+}
+
+ObjectsMsg::~ObjectsMsg()
+{
+}
 } // namespace evolving_ad_ns

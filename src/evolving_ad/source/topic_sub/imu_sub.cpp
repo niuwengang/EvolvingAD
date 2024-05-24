@@ -31,7 +31,8 @@ void ImuSub::MsgCallback(const sensor_msgs::ImuConstPtr &imu_msg_ptr)
 {
     mutex_.lock();
     ImuMsg imu_msg;
-    imu_msg.time_stamp = imu_msg_ptr->header.stamp.toSec();
+    imu_msg.time_stamp = ros::Time::now().toSec();
+    // imu_msg_ptr->header.stamp.toSec();
 
     imu_msg.linear_acceleration.x = imu_msg_ptr->linear_acceleration.x;
     imu_msg.linear_acceleration.y = imu_msg_ptr->linear_acceleration.y;

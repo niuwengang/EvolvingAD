@@ -19,8 +19,8 @@ class Frame
     double time_stamp = 0.0;
     Eigen::Matrix4f pose = Eigen::Matrix4f::Identity();
 
-    CloudMsg cloud_msg;     //! attention deep copy
-    ObjectsMsg objects_msg; //! attention difference  ObjectsMsg and ObjectMsg
+    CloudMsg cloud_msg;
+    ObjectsMsg objects_msg;
 };
 
 } // namespace evolving_ad_ns

@@ -6,8 +6,8 @@
  * @version 1.0
  */
 
-#ifndef _IMU_SUB_HPP_
-#define _IMU_SUB_HPP_
+#ifndef _IMU_MSG_HPP_
+#define _IMU_MSG_HPP_
 
 // msg lib
 #include "imu_msg.hpp"

@@ -7,7 +7,7 @@ topic_sub: #
   cloud_sub_topic: /rslidar_points #32 scans
   imu_sub_topic: /imu_raw
   gnss_sub_topic: /ublox_gps_node/fix
-  gt_sub_topic: /novatel_data/inspvax
+  gt_sub_topic: /novatel_data/inspvax #gt
 
 #lidar odom setting-------------------------------------------------
 lidar_odom:
