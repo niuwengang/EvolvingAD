@@ -22,16 +22,16 @@ CloudMsg::CloudMsg()
 
 CloudMsg::CloudMsg(const CloudMsg &other)
 {
-    cloud_ptr.reset();
+    cloud_ptr.reset(new CLOUD());
     this->time_stamp = other.time_stamp;
-    this->cloud_ptr.reset(new CLOUD(*other.cloud_ptr)); // not release other
+    *this->cloud_ptr = *other.cloud_ptr; // not release other
 }
 
 CloudMsg &CloudMsg::operator=(const CloudMsg &other)
 {
-    cloud_ptr.reset();
+    cloud_ptr.reset(new CLOUD());
     this->time_stamp = other.time_stamp;
-    this->cloud_ptr.reset(new CLOUD(*other.cloud_ptr)); // not release other
+    *this->cloud_ptr = *other.cloud_ptr; // not release other
     return *this;
 }
 

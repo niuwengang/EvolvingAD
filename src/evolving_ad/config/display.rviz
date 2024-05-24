@@ -167,7 +167,7 @@ Visualization Manager:
               Value: true
             Value: true
           Enabled: true
-          Keep: 1
+          Keep: 0
           Name: Odometry
           Position Tolerance: 0.10000000149011612
           Queue Size: 10

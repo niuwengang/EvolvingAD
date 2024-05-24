@@ -38,6 +38,8 @@
 #include <pcl/filters/crop_box.h>
 #include <pcl/filters/extract_indices.h>
 
+#include <Eigen/Geometry>
+
 namespace evolving_ad_ns
 {
 class FrontEndPipe

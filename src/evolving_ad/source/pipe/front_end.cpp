@@ -69,14 +69,19 @@ bool FrontEndPipe::Run()
     }
 
     /*2--load infomation into frame*/
+    time_record_ptr_->Start();
     /*2.a--time stamp*/
+    std::cout << "tag------a" << std::endl;
     current_frame_.time_stamp = cloud_msg_queue_.front().time_stamp;
     /*2.b--point cloud*/
+    std::cout << "tag------b" << std::endl;
     current_frame_.cloud_msg = cloud_msg_queue_.front();
     cloud_msg_queue_.pop_front();
     /*2.c--object*/
+    std::cout << "tag------c" << std::endl;
     object_detect_ptr_->Detect(current_frame_.cloud_msg, current_frame_.objects_msg);
     /*2.d--imu relative odom (just a test)*/
+    std::cout << "tag------d" << std::endl;
     Eigen::Matrix4f T = Eigen::Matrix4f::Identity();
     if (first_frame_flag_ == false)
     {
@@ -87,7 +92,7 @@ bool FrontEndPipe::Run()
         {
             imu_msg_queue_.pop_front();
         }
-
+        std::cout << "时间差:" << current_frame_.time_stamp - previous_frame_.time_stamp << std::endl;
         for (const auto &it : imu_msg_queue_)
         {
             double current_frame_imu_dt = current_frame_.time_stamp - it.time_stamp;
@@ -98,7 +103,11 @@ bool FrontEndPipe::Run()
                 imu_msg_vec_selected.push_back(it);
             }
         }
-        std::cout << "imu队列is:" << imu_msg_vec_selected.size() << std::endl;
+        std::sort(imu_msg_vec_selected.begin(), imu_msg_vec_selected.end(),
+                  [](const ImuMsg &imu_msg_1, const ImuMsg &imu_msg_2) {
+                      return imu_msg_1.time_stamp < imu_msg_2.time_stamp;
+                  });
+
         double curr_imu_stamp = 0.;
         double prev_imu_stamp = 0.;
         double dt;
@@ -113,7 +122,7 @@ bool FrontEndPipe::Run()
 
             // Calculate difference in imu measurement times IN SECONDS
             curr_imu_stamp = imu_msg_vec_selected[i].time_stamp;
-            dt = curr_imu_stamp - prev_imu_stamp;
+            dt = (curr_imu_stamp - prev_imu_stamp);
             prev_imu_stamp = curr_imu_stamp;
 
             // Relative gyro propagation quaternion dynamics
@@ -145,12 +154,25 @@ bool FrontEndPipe::Run()
         q.y() /= norm;
         q.z() /= norm;
         T.block(0, 0, 3, 3) = q.toRotationMatrix();
-        std::cout << "T矩阵is:" << T << std::endl;
+        Eigen::Vector3f eulerAngle = q.matrix().eulerAngles(2, 1, 0);
+        std::cout << "yaw is" << eulerAngle[2] * 180.0 / M_PI << std::endl;
     }
-    lidar_odom_pub_ptr_->Publish(T);
-    /*2.e--lidar odom*/
 
+    /*2.e--lidar odom*/
+    std::cout << "tag------e" << std::endl;
+    lidar_odom_ptr_->InitPose(Eigen::Matrix4f::Identity());
+    Eigen::Matrix4f corse_pose = Eigen::Matrix4f::Identity();
+    Eigen::Matrix4f fine_pose = Eigen::Matrix4f::Identity();
+    std::cout << "tag------e1" << std::endl;
+    lidar_odom_ptr_->ComputeCorsePose(current_frame_.cloud_msg, T, corse_pose);
+    std::cout << "tag------e2" << std::endl;
+    lidar_odom_ptr_->ComputeFinePose(current_frame_.cloud_msg, corse_pose, fine_pose);
+
+    spdlog::info("FrontEnd$ exec {} hz", time_record_ptr_->GetFrequency(1000));
     /*x--display*/
+    std::cout << "tag------f" << std::endl;
+    lidar_odom_pub_ptr_->Publish(fine_pose);
+    veh_tf_pub_ptr_->SendTransform(fine_pose);
     static_cloud_pub_ptr_->Publish(current_frame_.cloud_msg);
     bbx_pub_ptr_->Publish(current_frame_.objects_msg);
 
@@ -165,8 +187,6 @@ bool FrontEndPipe::Run()
     //{
     // CloudMsg cloud_msg = cloud_msg_queue_.front();
     // cloud_msg_queue_.pop_front();
-
-    // time_record_ptr_->Start();
 
     /*[1]--object detection*/
 
@@ -187,11 +207,9 @@ bool FrontEndPipe::Run()
     // Eigen::Matrix4f fine_pose = Eigen::Matrix4f::Identity();
     // lidar_odom_ptr_->ComputeCorsePose(cloud_msg, corse_pose);
     // lidar_odom_ptr_->ComputeFinePose(cloud_msg, corse_pose, fine_pose);
-    // spdlog::info("FrontEnd$ exec {} hz", time_record_ptr_->GetFrequency(1000));
 
     /*[5]--display*/
 
-    // veh_tf_pub_ptr_->SendTransform(fine_pose);
     // lidar_odom_pub_ptr_->Publish(fine_pose);
     // ground_cloud_pub_ptr_->Publish(ground_cloud_ptr);
     // dynamic_cloud_pub_ptr_->Publish(dynamic_cloud_ptr);

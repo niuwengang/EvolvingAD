@@ -45,7 +45,8 @@ bool LidarOdom::InitPose(const Eigen::Matrix4f &init_pose)
  * @param[in] corse_pose
  * @note scan to scan for corse align
  */
-void LidarOdom::ComputeCorsePose(const CloudMsg &cloud_msg, Eigen::Matrix4f &corse_pose) // add imu
+void LidarOdom::ComputeCorsePose(const CloudMsg &cloud_msg, const Eigen::Matrix4f &imu_pose,
+                                 Eigen::Matrix4f &corse_pose) // add imu
 {
 
     if (first_flag_ == false) // not use size to judge
@@ -58,7 +59,7 @@ void LidarOdom::ComputeCorsePose(const CloudMsg &cloud_msg, Eigen::Matrix4f &cor
 
         Eigen::Matrix4f predict_pose = Eigen::Matrix4f::Identity();
         CloudMsg::CLOUD_PTR registered_cloud_ptr(new CloudMsg::CLOUD());
-        registration_ptr_->Registration(predict_pose, corse_pose, registered_cloud_ptr);
+        registration_ptr_->Registration(imu_pose, corse_pose, registered_cloud_ptr);
 
         *cloud_msg_pre_.cloud_ptr = *cur_scan_ptr;
     }
@@ -100,8 +101,8 @@ void LidarOdom::ComputeFinePose(const CloudMsg &cloud_msg, const Eigen::Matrix4f
         registration_ptr_->Registration(last_pose * corse_pose, fine_pose, registered_cloud_ptr);
 
         /*2--predict pose*/
-        step_pose = last_pose.inverse() * fine_pose; // postmultiplication
-        predict_pose = fine_pose * step_pose;
+        // step_pose = last_pose.inverse() * fine_pose; // postmultiplication
+        // predict_pose = fine_pose * step_pose;
         last_pose = fine_pose;
 
         /*3--check keyframe*/
