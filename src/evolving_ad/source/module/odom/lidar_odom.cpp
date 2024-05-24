@@ -98,11 +98,14 @@ void LidarOdom::ComputeFinePose(const CloudMsg &cloud_msg, const Eigen::Matrix4f
 
         CloudMsg::CLOUD_PTR registered_cloud_ptr(new CloudMsg::CLOUD());
 
-        registration_ptr_->Registration(last_pose * corse_pose, fine_pose, registered_cloud_ptr);
+        Eigen::Matrix4f infer_pose = Eigen::Matrix4f::Identity();
+        infer_pose.block<3, 3>(0, 0) = (last_pose * corse_pose).block<3, 3>(0, 0); // R
+        infer_pose.block<3, 1>(0, 3) = predict_pose.block<3, 1>(0, 3);             // t
+        registration_ptr_->Registration(infer_pose, fine_pose, registered_cloud_ptr);
 
         /*2--predict pose*/
-        // step_pose = last_pose.inverse() * fine_pose; // postmultiplication
-        // predict_pose = fine_pose * step_pose;
+        step_pose = last_pose.inverse() * fine_pose;
+        predict_pose = fine_pose * step_pose;
         last_pose = fine_pose;
 
         /*3--check keyframe*/
