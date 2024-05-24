@@ -88,11 +88,13 @@ void LidarOdom::ComputeFinePose(const CloudMsg &cloud_msg, const Eigen::Matrix4f
     {
         /*1--registration*/
         CloudMsg::CLOUD_PTR cur_scan_ptr(new CloudMsg::CLOUD());
-        filter_large_size_ptr_->Filter(cloud_msg.cloud_ptr, cur_scan_ptr); // lidar coordinate
+        filter_media_size_ptr_->Filter(cloud_msg.cloud_ptr, cur_scan_ptr); // lidar coordinate
 
         CloudMsg::CLOUD_PTR filtered_local_map_ptr(new CloudMsg::CLOUD());
         filter_large_size_ptr_->Filter(local_map_ptr_, filtered_local_map_ptr);
 
+        std::cout << "cur_scan_ptr size:" << cur_scan_ptr->points.size() << std::endl;
+        std::cout << "filtered_local_map_ptr size:" << filtered_local_map_ptr->points.size() << std::endl;
         registration_ptr_->SetSourceCloud(cur_scan_ptr);
         registration_ptr_->SetTargetCloud(filtered_local_map_ptr);
 
