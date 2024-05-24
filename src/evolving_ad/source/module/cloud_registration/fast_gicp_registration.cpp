@@ -20,7 +20,7 @@ FastGicpRegistration::FastGicpRegistration(const float resolution, const float s
                                            const int max_iter)
 {
     gicp_.setResolution(resolution);
-    // gicp_.setNumThreads(omp_get_thread_limit());//?
+    //gicp_.setNumThreads(omp_get_thread_limit()); //?
     gicp_.setNumThreads(10);
 }
 
@@ -32,6 +32,7 @@ FastGicpRegistration::FastGicpRegistration(const float resolution, const float s
  */
 void FastGicpRegistration::SetSourceCloud(const CloudMsg::CLOUD_PTR &source_cloud_ptr)
 {
+    gicp_.clearSource();
     gicp_.setInputSource(source_cloud_ptr);
 }
 
@@ -43,6 +44,7 @@ void FastGicpRegistration::SetSourceCloud(const CloudMsg::CLOUD_PTR &source_clou
  */
 void FastGicpRegistration::SetTargetCloud(const CloudMsg::CLOUD_PTR &target_cloud_ptr)
 {
+    gicp_.clearTarget();
     gicp_.setInputTarget(target_cloud_ptr);
 }
 
