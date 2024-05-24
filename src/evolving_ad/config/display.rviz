@@ -172,7 +172,7 @@ Visualization Manager:
               Value: true
             Value: true
           Enabled: true
-          Keep: 200
+          Keep: 0
           Name: Odometry
           Position Tolerance: 0.10000000149011612
           Queue Size: 10
@@ -227,7 +227,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/ThirdPersonFollower
-      Distance: 118.12712097167969
+      Distance: 91.06578063964844
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1

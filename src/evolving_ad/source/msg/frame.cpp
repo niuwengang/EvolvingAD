@@ -9,19 +9,26 @@ Frame::Frame()
 
 Frame &Frame::operator=(const Frame &other)
 {
-    this->time_stamp = other.time_stamp;   // timestamp
-    this->pose = other.pose;               // pose
-    this->cloud_msg = other.cloud_msg;     // cloud
-    this->objects_msg = other.objects_msg; // objects
+    if (this != &other)
+    {
+        this->time_stamp = other.time_stamp;   // timestamp
+        this->pose = other.pose;               // pose
+        this->cloud_msg = other.cloud_msg;     // cloud
+        this->objects_msg = other.objects_msg; // objects
+    }
+
     return *this;
 }
 
 Frame::Frame(const Frame &other)
 {
-    this->time_stamp = other.time_stamp;   // timestamp
-    this->pose = other.pose;               // pose
-    this->cloud_msg = other.cloud_msg;     // cloud
-    this->objects_msg = other.objects_msg; // objects
+    if (this != &other)
+    {
+        this->time_stamp = other.time_stamp;   // timestamp
+        this->pose = other.pose;               // pose
+        this->cloud_msg = other.cloud_msg;     // cloud
+        this->objects_msg = other.objects_msg; // objects
+    }
 }
 
 Frame::~Frame()
