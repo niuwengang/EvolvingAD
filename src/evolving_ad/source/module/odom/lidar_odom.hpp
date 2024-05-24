@@ -37,8 +37,7 @@ class LidarOdom
     std::shared_ptr<CloudFilterInterface> filter_media_size_ptr_ = nullptr; // filter for local map
     std::shared_ptr<CloudFilterInterface> filter_large_size_ptr_ = nullptr; // filter for local map
 
-    std::shared_ptr<CloudRegistrationInterface> registration_ptr_ = nullptr; // cloud registration
-
+    std::shared_ptr<FastGicpRegistration> registration_ptr_ = nullptr; // cloud registration
     Eigen::Matrix4f init_pose_ = Eigen::Matrix4f::Identity();
     Eigen::Matrix4f last_keyframe_pose_ = Eigen::Matrix4f::Identity();
     std::deque<Frame> local_keyframe_queue_;
