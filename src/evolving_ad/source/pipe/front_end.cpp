@@ -24,6 +24,11 @@ FrontEndPipe::FrontEndPipe(ros::NodeHandle &nh, const std::string package_folder
     YAML::Node config_node = YAML::LoadFile(paramlist_.package_folder_path + "/config/ad.yaml");
     paramlist_.cloud_sub_topic = config_node["topic_sub"]["cloud_sub_topic"].as<std::string>();
     paramlist_.imu_sub_topic = config_node["topic_sub"]["imu_sub_topic"].as<std::string>();
+    paramlist_.T_lidar2imu_ = Eigen::Map<Eigen::Matrix<float, 4, 4, Eigen::RowMajor>>(
+        config_node["Extrinsic"]["T_lidar2imu"].as<std::vector<float>>().data());
+
+    std::cout << "T_lidar2imu_" << paramlist_.T_lidar2imu_ << std::endl;
+
     paramlist_.model_file_path = paramlist_.package_folder_path + "/model//pointpillar.onnx";
 
     /*2--topic sub */
@@ -114,6 +119,15 @@ bool FrontEndPipe::Run()
         Eigen::Quaternionf q = Eigen::Quaternionf::Identity();
         for (uint32_t i = 0; i < imu_msg_vec_selected.size(); ++i)
         {
+            Eigen::Vector3f w(imu_msg_vec_selected[i].angular_velocity.x, imu_msg_vec_selected[i].angular_velocity.y,
+                              imu_msg_vec_selected[i].angular_velocity.z);
+
+            w = paramlist_.T_lidar2imu_.block<3, 3>(0, 0) * w;
+
+            imu_msg_vec_selected[i].angular_velocity.x = w(0);
+            imu_msg_vec_selected[i].angular_velocity.y = w(1);
+            imu_msg_vec_selected[i].angular_velocity.z = w(2);
+
             if (prev_imu_stamp == 0.)
             {
                 prev_imu_stamp = imu_msg_vec_selected[i].time_stamp;
@@ -164,6 +178,7 @@ bool FrontEndPipe::Run()
     Eigen::Matrix4f corse_pose = Eigen::Matrix4f::Identity();
     Eigen::Matrix4f fine_pose = Eigen::Matrix4f::Identity();
     std::cout << "tag------e1" << std::endl;
+
     lidar_odom_ptr_->ComputeCorsePose(current_frame_.cloud_msg, T, corse_pose);
     std::cout << "tag------e2" << std::endl;
     lidar_odom_ptr_->ComputeFinePose(current_frame_.cloud_msg, corse_pose, fine_pose);

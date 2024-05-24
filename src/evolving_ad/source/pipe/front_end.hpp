@@ -87,6 +87,7 @@ class FrontEndPipe
         std::string model_file_path;
         std::string cloud_sub_topic;
         std::string imu_sub_topic;
+        Eigen::Matrix4f T_lidar2imu_ = Eigen::Matrix4f::Identity();
     } paramlist_;
 };
 } // namespace evolving_ad_ns

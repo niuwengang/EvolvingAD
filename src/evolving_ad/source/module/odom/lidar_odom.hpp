@@ -49,7 +49,7 @@ class LidarOdom
 
     struct ParamList
     {
-        unsigned int keyframe_num = 10;
+        unsigned int keyframe_num = 5;
         float keyframe_distance = 2.0;
 
         float filter_leaf_size_small = 0.0;

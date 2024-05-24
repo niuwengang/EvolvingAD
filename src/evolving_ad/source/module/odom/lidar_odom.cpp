@@ -57,7 +57,7 @@ void LidarOdom::ComputeCorsePose(const CloudMsg &cloud_msg, const Eigen::Matrix4
         registration_ptr_->SetSourceCloud(cloud_msg_pre_.cloud_ptr);
         registration_ptr_->SetTargetCloud(cur_scan_ptr);
 
-        Eigen::Matrix4f predict_pose = Eigen::Matrix4f::Identity();
+        // Eigen::Matrix4f predict_pose = Eigen::Matrix4f::Identity();
         CloudMsg::CLOUD_PTR registered_cloud_ptr(new CloudMsg::CLOUD());
         registration_ptr_->Registration(imu_pose, corse_pose, registered_cloud_ptr);
 
@@ -88,23 +88,31 @@ void LidarOdom::ComputeFinePose(const CloudMsg &cloud_msg, const Eigen::Matrix4f
     {
         /*1--registration*/
         CloudMsg::CLOUD_PTR cur_scan_ptr(new CloudMsg::CLOUD());
-        filter_media_size_ptr_->Filter(cloud_msg.cloud_ptr, cur_scan_ptr); // lidar coordinate
+        filter_large_size_ptr_->Filter(cloud_msg.cloud_ptr, cur_scan_ptr); // lidar coordinate
 
         CloudMsg::CLOUD_PTR filtered_local_map_ptr(new CloudMsg::CLOUD());
-        filter_large_size_ptr_->Filter(local_map_ptr_, filtered_local_map_ptr);
+        if (local_keyframe_queue_.size() >= static_cast<size_t>(paramlist_.keyframe_num))
+        {
+            filter_large_size_ptr_->Filter(local_map_ptr_, filtered_local_map_ptr);
+        }
+        else
+        {
+            *filtered_local_map_ptr = *local_map_ptr_;
+        }
 
         std::cout << "cur_scan_ptr size:" << cur_scan_ptr->points.size() << std::endl;
         std::cout << "filtered_local_map_ptr size:" << filtered_local_map_ptr->points.size() << std::endl;
         registration_ptr_->SetSourceCloud(cur_scan_ptr);
         registration_ptr_->SetTargetCloud(filtered_local_map_ptr);
 
+        std::cout << "test 1" << std::endl;
         CloudMsg::CLOUD_PTR registered_cloud_ptr(new CloudMsg::CLOUD());
 
         Eigen::Matrix4f infer_pose = Eigen::Matrix4f::Identity();
         infer_pose.block<3, 3>(0, 0) = (last_pose * corse_pose).block<3, 3>(0, 0); // R
         infer_pose.block<3, 1>(0, 3) = predict_pose.block<3, 1>(0, 3);             // t
         registration_ptr_->Registration(infer_pose, fine_pose, registered_cloud_ptr);
-
+        std::cout << "test 2" << std::endl;
         /*2--predict pose*/
         step_pose = last_pose.inverse() * fine_pose;
         predict_pose = fine_pose * step_pose;
