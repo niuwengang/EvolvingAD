@@ -54,10 +54,10 @@ void LidarOdom::ComputeCorsePose(const CloudMsg &cloud_msg, const Eigen::Matrix4
         filter_small_size_ptr_->Filter(cloud_msg.cloud_ptr, cur_scan_ptr); // lidar coordinate
 
         registration_ptr_->SetSourceCloud(cloud_msg_pre_.cloud_ptr);
-        // registration_ptr_->SetTargetCloud(cur_scan_ptr);
+        registration_ptr_->SetTargetCloud(cur_scan_ptr);
         CloudMsg::CLOUD_PTR registered_cloud_ptr(new CloudMsg::CLOUD());
         registration_ptr_->Registration(imu_pose, corse_pose, registered_cloud_ptr);
-        //registration_ptr_->swapSourceAndTarget();
+        // registration_ptr_->swapSourceAndTarget();
 
         *cloud_msg_pre_.cloud_ptr = *cur_scan_ptr;
     }
