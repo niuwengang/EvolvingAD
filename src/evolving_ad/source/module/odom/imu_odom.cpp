@@ -44,19 +44,18 @@ void ImuOdom::ComputeRelativePose(std::deque<ImuMsg> &imu_msg_queue, const doubl
         Eigen::Quaternionf q = Eigen::Quaternionf::Identity();
         for (uint32_t index = 0; index < imu_msg_vec_selected.size(); ++index)
         {
-            Eigen::Vector3f w(imu_msg_vec_selected[index].angular_velocity.x,
-                              imu_msg_vec_selected[index].angular_velocity.y,
-                              imu_msg_vec_selected[index].angular_velocity.z);
+            const auto &imu_data = imu_msg_vec_selected[index];
+            Eigen::Vector3f w(imu_data.angular_velocity.x, imu_data.angular_velocity.y, imu_data.angular_velocity.z);
 
             w = T_lidar_imu_.block<3, 3>(0, 0) * w;
 
             if (prev_imu_time_stamp == 0.)
             {
-                prev_imu_time_stamp = imu_msg_vec_selected[index].time_stamp;
+                prev_imu_time_stamp = imu_data.time_stamp;
                 continue;
             }
 
-            curr_imu_time_stamp = imu_msg_vec_selected[index].time_stamp;
+            curr_imu_time_stamp = imu_data.time_stamp;
             dt = curr_imu_time_stamp - prev_imu_time_stamp; // dt
             prev_imu_time_stamp = curr_imu_time_stamp;      // copy
 

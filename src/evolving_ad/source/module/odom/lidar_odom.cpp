@@ -137,13 +137,14 @@ void LidarOdom::ComputeFinePose(const CloudMsg &cloud_msg, const Eigen::Matrix4f
             }
 
             local_map_ptr_.reset(new CloudMsg::CLOUD());
-            for (unsigned int i = 0; i < local_keyframe_queue_.size(); i++)
+            for (unsigned int index = 0; index < local_keyframe_queue_.size(); index++)
             {
+                const auto &frame = local_keyframe_queue_.at(index);
                 CloudMsg::CLOUD_PTR transformed_cloud_ptr(new CloudMsg::CLOUD());
-                pcl::transformPointCloud(*local_keyframe_queue_.at(i).cloud_msg.cloud_ptr, *transformed_cloud_ptr,
-                                         local_keyframe_queue_.at(i).pose);
+                pcl::transformPointCloud(*frame.cloud_msg.cloud_ptr, *transformed_cloud_ptr, frame.pose);
                 *local_map_ptr_ += *transformed_cloud_ptr;
             }
+
             last_keyframe_pose_ = fine_pose;
         }
     }

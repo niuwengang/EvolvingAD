@@ -17,7 +17,7 @@ namespace evolving_ad_ns
 
 ObjectsMsg::ObjectsMsg()
 {
-    // objects_vec.reserve(50); // max is less than 50
+    objects_vec.reserve(100); // max is less than 100
 }
 
 ObjectsMsg &ObjectsMsg::operator=(const ObjectsMsg &other)

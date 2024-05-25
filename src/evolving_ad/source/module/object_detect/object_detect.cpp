@@ -60,9 +60,10 @@ void ObjectDetect::Detect(const CloudMsg &cloud_msg, ObjectsMsg &objects_msg)
 
     for (size_t index = 0; index < num_points; index++)
     {
-        points_in_cpu[index * 4 + 0] = cloud_msg.cloud_ptr->points[index].x;
-        points_in_cpu[index * 4 + 1] = cloud_msg.cloud_ptr->points[index].y;
-        points_in_cpu[index * 4 + 2] = cloud_msg.cloud_ptr->points[index].z;
+        const auto &point = cloud_msg.cloud_ptr->points[index];
+        points_in_cpu[index * 4 + 0] = point.x;
+        points_in_cpu[index * 4 + 1] = point.y;
+        points_in_cpu[index * 4 + 2] = point.z;
         points_in_cpu[index * 4 + 3] = 0.0f; // intensity may need prehandled
     }
 
@@ -93,7 +94,7 @@ void ObjectDetect::Detect(const CloudMsg &cloud_msg, ObjectsMsg &objects_msg)
             object_msg.id = box.id; //! issue
             object_msg.score = box.score;
 
-            objects_msg.objects_vec.push_back(object_msg);
+            objects_msg.objects_vec.emplace_back(object_msg);
         }
     }
 

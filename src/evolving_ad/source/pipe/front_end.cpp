@@ -80,15 +80,19 @@ bool FrontEndPipe::Run()
     cloud_msg_queue_.pop_front();
     /*2.c--object*/
     object_detect_ptr_->Detect(current_frame_.cloud_msg, current_frame_.objects_msg);
-    /*2.d--imu odom(relative ) */
+    /*2.d--ground segement*/
+    CloudMsg::CLOUD_PTR ground_cloud_ptr(new CloudMsg::CLOUD());
+    CloudMsg::CLOUD_PTR no_ground_cloud_ptr(new CloudMsg::CLOUD());
+    ground_seg_ptr_->Segement(current_frame_.cloud_msg.cloud_ptr, ground_cloud_ptr, no_ground_cloud_ptr);
+    *current_frame_.cloud_msg.cloud_ptr = *no_ground_cloud_ptr;
+    /*2.e--imu odom(relative ) */
     Eigen::Matrix4f imu_pose = Eigen::Matrix4f::Identity();
     imu_odom_ptr_->ComputeRelativePose(imu_msg_queue_, previous_frame_.time_stamp, current_frame_.time_stamp, imu_pose);
-    /*2.e--lidar odom*/
+    /*2.f--lidar odom*/
     lidar_odom_ptr_->InitPose(Eigen::Matrix4f::Identity());
     Eigen::Matrix4f corse_pose = Eigen::Matrix4f::Identity();
-    Eigen::Matrix4f fine_pose = Eigen::Matrix4f::Identity();
-
     lidar_odom_ptr_->ComputeCorsePose(current_frame_.cloud_msg, imu_pose, corse_pose);
+    Eigen::Matrix4f fine_pose = Eigen::Matrix4f::Identity();
     lidar_odom_ptr_->ComputeFinePose(current_frame_.cloud_msg, corse_pose, fine_pose);
 
     spdlog::info("FrontEnd$ exec {} hz", time_record_ptr_->GetFrequency(1000));
@@ -103,20 +107,6 @@ bool FrontEndPipe::Run()
     previous_frame_ = current_frame_; // update
 
     return true;
-
-    // static bool first_frame_flag = true;
-
-    // if (!cloud_msg_queue_.empty())
-    //{
-    // CloudMsg cloud_msg = cloud_msg_queue_.front();
-    // cloud_msg_queue_.pop_front();
-
-    /*[1]--object detection*/
-
-    /*[2]--ground segement*/
-    // CloudMsg::CLOUD_PTR ground_cloud_ptr(new CloudMsg::CLOUD());
-    // CloudMsg::CLOUD_PTR no_ground_cloud_ptr(new CloudMsg::CLOUD());
-    // ground_seg_ptr_->Segement(cloud_msg.cloud_ptr, ground_cloud_ptr, no_ground_cloud_ptr);
 
     /*[3]--dynamic removal*/
     // CloudMsg::CLOUD_PTR static_cloud_ptr(new CloudMsg::CLOUD());

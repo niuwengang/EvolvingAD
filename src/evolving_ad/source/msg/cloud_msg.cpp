@@ -17,7 +17,7 @@ namespace evolving_ad_ns
 CloudMsg::CloudMsg()
 {
     cloud_ptr.reset(new CLOUD());
-    // cloud_ptr->reserve(576000); // from https://www.robosense.cn/rslidar/RS-Helios
+    cloud_ptr->reserve(576000); // from https://www.robosense.cn/rslidar/RS-Helios
 }
 
 CloudMsg::CloudMsg(const CloudMsg &other)
