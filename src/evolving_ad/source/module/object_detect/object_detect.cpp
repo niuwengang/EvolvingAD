@@ -43,59 +43,62 @@ ObjectDetect::ObjectDetect(const std::string &model_file_path)
  */
 void ObjectDetect::Detect(const CloudMsg &cloud_msg, ObjectsMsg &objects_msg)
 {
-    /*[1]--reset variable*/
+    /*--clear variable*/
     nms_pred_.clear();               // clear nms predict
     objects_msg.objects_vec.clear(); // clear history
 
-    /*[2]--pointpillar detection*/
-    const size_t num_points = cloud_msg.cloud_ptr->points.size();
-    const size_t num_features = 4; // x y z r
-    float *points_in_cpu = new float[num_points * num_features];
+    /*2--pointpillar detection*/
+    const size_t num_points = cloud_msg.cloud_ptr->points.size();                    // points num
+    const size_t num_features = 4;                                                   // x y z r
+    const unsigned int points_data_size = num_points * num_features * sizeof(float); // points memory
+
+    float *points_in_cpu = nullptr;
+    float *points_in_gpu = nullptr;
+
+    checkCudaErrors(cudaMallocHost(&points_in_cpu, points_data_size)); // malloc memory for points_data
+    checkCudaErrors(cudaMalloc(&points_in_gpu, points_data_size));     // malloc memory for points_data
 
     for (size_t index = 0; index < num_points; index++)
     {
         points_in_cpu[index * 4 + 0] = cloud_msg.cloud_ptr->points[index].x;
         points_in_cpu[index * 4 + 1] = cloud_msg.cloud_ptr->points[index].y;
         points_in_cpu[index * 4 + 2] = cloud_msg.cloud_ptr->points[index].z;
-        points_in_cpu[index * 4 + 3] = 0.0f;
+        points_in_cpu[index * 4 + 3] = 0.0f; // intensity may need prehandled
     }
 
-    float *points_in_gpu = nullptr;                                                // destination data address
-    unsigned int points_data_size = num_points * 4 * sizeof(float);                // destination data size
-    checkCudaErrors(cudaMallocManaged((void **)&points_in_gpu, points_data_size)); // malloc memory for points_data
-    checkCudaErrors(cudaMemcpy(points_in_gpu, points_in_cpu, points_data_size, cudaMemcpyDefault)); // copy a new one
+    checkCudaErrors(
+        cudaMemcpy(points_in_gpu, points_in_cpu, points_data_size, cudaMemcpyHostToDevice)); // copy a new one
     checkCudaErrors(cudaDeviceSynchronize());
     pointpillar_ptr_->doinfer(points_in_gpu, num_points, nms_pred_); // infer and out nms_pred_
 
-    /*[3]--get result */
+    /*3--get result*/
     objects_msg.time_stamp = cloud_msg.time_stamp;
-    for (const auto box : nms_pred_)
+    for (const auto &box : nms_pred_)
     {
-        ObjectMsg object_msg;
-
-        object_msg.x = box.x;
-        object_msg.y = box.y;
-        object_msg.z = box.z;
-
-        object_msg.w = box.w;
-        object_msg.l = box.l;
-        object_msg.h = box.h;
-
-        Eigen::AngleAxisf yawAngle(Eigen::AngleAxisf(box.rt, Eigen::Vector3f::UnitZ()));
-        object_msg.q = yawAngle;
-
-        object_msg.score = box.score;
-        object_msg.id = box.id;
-
-        if (object_msg.score >= 0.6)
+        if (box.score >= 0.6)
         {
+            ObjectMsg object_msg;
+
+            object_msg.x = box.x;
+            object_msg.y = box.y;
+            object_msg.z = box.z;
+
+            object_msg.w = box.w;
+            object_msg.l = box.l;
+            object_msg.h = box.h;
+
+            Eigen::AngleAxisf yawAngle(Eigen::AngleAxisf(box.rt, Eigen::Vector3f::UnitZ()));
+            object_msg.q = yawAngle;
+
+            object_msg.id = box.id; //! issue
+            object_msg.score = box.score;
+
             objects_msg.objects_vec.push_back(object_msg);
         }
     }
 
-    /*[4]--free memory*/
-    delete[] points_in_cpu;
-    points_in_cpu = nullptr;
+    /*4--free memory*/
+    cudaFreeHost(points_in_cpu);
     cudaFree(points_in_gpu);
 }
 

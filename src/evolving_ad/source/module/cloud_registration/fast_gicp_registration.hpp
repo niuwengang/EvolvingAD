@@ -18,7 +18,8 @@ namespace evolving_ad_ns
 class FastGicpRegistration : public CloudRegistrationInterface
 {
   public:
-    FastGicpRegistration(const float resolution, const float step_size, const float trans_eps, const int max_iter);
+    FastGicpRegistration(const float resolution, const float step_size = 0, const float trans_eps = 0,
+                         const int max_iter = 0);
     void SetSourceCloud(const CloudMsg::CLOUD_PTR &source_cloud_ptr) override;
     void SetTargetCloud(const CloudMsg::CLOUD_PTR &target_cloud_ptr) override;
     bool Registration(const Eigen::Matrix4f &predict_pose, Eigen::Matrix4f &result_pose,

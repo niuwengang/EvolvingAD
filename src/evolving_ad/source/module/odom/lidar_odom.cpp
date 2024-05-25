@@ -45,27 +45,33 @@ bool LidarOdom::InitPose(const Eigen::Matrix4f &init_pose)
  * @note scan to scan for corse align
  */
 void LidarOdom::ComputeCorsePose(const CloudMsg &cloud_msg, const Eigen::Matrix4f &imu_pose,
-                                 Eigen::Matrix4f &corse_pose) // add imu
+                                 Eigen::Matrix4f &corse_pose)
 {
 
     if (first_flag_ == false) // not use size to judge
     {
+        /*1--pointcloud filter*/
         CloudMsg::CLOUD_PTR cur_scan_ptr(new CloudMsg::CLOUD());
         filter_small_size_ptr_->Filter(cloud_msg.cloud_ptr, cur_scan_ptr); // lidar coordinate
-        registration_ptr_ = std::make_shared<FastGicpRegistration>(1.0, 0.1, 0.01, 30);
+        /*2--pointcloud registration*/
+        registration_ptr_ = std::make_shared<FastGicpRegistration>(1.0);
         registration_ptr_->SetSourceCloud(cloud_msg_pre_.cloud_ptr);
         registration_ptr_->SetTargetCloud(cur_scan_ptr);
         CloudMsg::CLOUD_PTR registered_cloud_ptr(new CloudMsg::CLOUD());
-        registration_ptr_->Registration(imu_pose, corse_pose, registered_cloud_ptr);
+        predict_pose_.block<3, 3>(0, 0) = imu_pose.block<3, 3>(0, 0);
+        registration_ptr_->Registration(predict_pose_, corse_pose, registered_cloud_ptr);
         registration_ptr_ = nullptr;
 
-        *cloud_msg_pre_.cloud_ptr = *cur_scan_ptr;
+        *cloud_msg_pre_.cloud_ptr = *cur_scan_ptr; // has been filtered
+
+        predict_pose_ = corse_pose;
     }
     else
     {
         *cloud_msg_pre_.cloud_ptr = *cloud_msg.cloud_ptr;
         corse_pose = init_pose_;
         first_flag_ = false;
+        predict_pose_ = Eigen::Matrix4f::Identity();
     }
 }
 
@@ -84,37 +90,38 @@ void LidarOdom::ComputeFinePose(const CloudMsg &cloud_msg, const Eigen::Matrix4f
 
     if (!local_keyframe_queue_.empty()) // not use size to judge
     {
-        /*1--registration*/
+        /*1--pointcloud filter*/
         CloudMsg::CLOUD_PTR cur_scan_ptr(new CloudMsg::CLOUD());
-        filter_media_size_ptr_->Filter(cloud_msg.cloud_ptr, cur_scan_ptr); // lidar coordinate
+        filter_media_size_ptr_->Filter(cloud_msg.cloud_ptr, cur_scan_ptr);
 
         CloudMsg::CLOUD_PTR filtered_local_map_ptr(new CloudMsg::CLOUD());
-        if (local_keyframe_queue_.size() >= static_cast<size_t>(paramlist_.keyframe_num))
-        {
-            filter_large_size_ptr_->Filter(local_map_ptr_, filtered_local_map_ptr);
-        }
-        else
+        if (local_keyframe_queue_.size() < static_cast<size_t>(paramlist_.keyframe_num))
         {
             *filtered_local_map_ptr = *local_map_ptr_;
         }
+        else
+        {
+            filter_large_size_ptr_->Filter(local_map_ptr_, filtered_local_map_ptr);
+        }
 
+        /*2--pointcloud registration*/
         Eigen::Matrix4f infer_pose = Eigen::Matrix4f::Identity();
         infer_pose.block<3, 3>(0, 0) = (last_pose * corse_pose).block<3, 3>(0, 0); // R
         infer_pose.block<3, 1>(0, 3) = predict_pose.block<3, 1>(0, 3);             // t
 
-        registration_ptr_ = std::make_shared<FastGicpRegistration>(1.0, 0.1, 0.01, 30);
+        registration_ptr_ = std::make_shared<FastGicpRegistration>(1.0);
         registration_ptr_->SetSourceCloud(cur_scan_ptr);
         registration_ptr_->SetTargetCloud(filtered_local_map_ptr);
         CloudMsg::CLOUD_PTR registered_cloud_ptr(new CloudMsg::CLOUD());
         registration_ptr_->Registration(infer_pose, fine_pose, registered_cloud_ptr);
         registration_ptr_ = nullptr;
 
-        /*2--predict pose*/
+        /*3--predict pose*/
         step_pose = last_pose.inverse() * fine_pose;
         predict_pose = fine_pose * step_pose;
         last_pose = fine_pose;
 
-        /*3--check keyframe*/
+        /*4--check keyframe*/
         if (fabs(last_keyframe_pose_(0, 3) - fine_pose(0, 3)) + fabs(last_keyframe_pose_(1, 3) - fine_pose(1, 3)) +
                 fabs(last_keyframe_pose_(2, 3) - fine_pose(2, 3)) >=
             paramlist_.keyframe_distance)
@@ -140,7 +147,7 @@ void LidarOdom::ComputeFinePose(const CloudMsg &cloud_msg, const Eigen::Matrix4f
             last_keyframe_pose_ = fine_pose;
         }
     }
-    else
+    else // first
     {
         Frame frame;
         frame.cloud_msg = cloud_msg;
@@ -154,80 +161,5 @@ void LidarOdom::ComputeFinePose(const CloudMsg &cloud_msg, const Eigen::Matrix4f
         *local_map_ptr_ += *transformed_cloud_ptr;
     }
 }
-
-// void LidarOdom::ComputePose(const CloudMsg &cloud_msg, Eigen::Matrix4f &new_pose)
-// {
-
-//     // static Eigen::Matrix4f step_pose = Eigen::Matrix4f::Identity(); // pose diff
-//     // static Eigen::Matrix4f last_pose = init_pose_;
-//     // static Eigen::Matrix4f predict_pose = init_pose_;
-//     // static Eigen::Matrix4f last_key_frame_pose = init_pose_;
-
-//     // Frame normal_frame;
-//     // normal_frame.time_stamp = cloud_msg.time_stamp;
-//     // std::vector<int> indices;
-//     // pcl::removeNaNFromPointCloud(*cloud_msg.cloud_ptr, *normal_frame.cloud_msg.cloud_ptr, indices);
-
-//     // /*[1]--first frame*/
-//     // if (local_keyframe_queue_.size() == 0)
-//     // {
-//     //     new_pose = normal_frame.pose = init_pose_;
-//     //     UpdateLocalMap(normal_frame);
-//     //     return;
-//     // }
-
-//     // /*[2]--not first frame*/
-//     // /*a--cloud registration*/
-//     // CloudMsg::CLOUD_PTR filtered_current_scan_ptr(new CloudMsg::CLOUD());
-//     // CloudMsg::CLOUD_PTR filtered_local_map_ptr(new CloudMsg::CLOUD());
-
-//     // single_scan_filter_ptr_->Filter(normal_frame.cloud_msg.cloud_ptr, filtered_current_scan_ptr);
-//     // local_map_filter_ptr_->Filter(local_map_ptr_, filtered_local_map_ptr);
-
-//     // registration_ptr_->SetSourceCloud(filtered_current_scan_ptr);
-//     // registration_ptr_->SetTargetCloud(filtered_local_map_ptr);
-
-//     // CloudMsg::CLOUD_PTR registered_cloud_ptr(new CloudMsg::CLOUD());
-//     // registration_ptr_->Registration(predict_pose, normal_frame.pose, registered_cloud_ptr);
-//     // new_pose = normal_frame.pose;
-
-//     // /*b--predict next pose*/
-//     // step_pose = last_pose.inverse() * normal_frame.pose; // postmultiplication
-//     // predict_pose = normal_frame.pose * step_pose;
-//     // last_pose = normal_frame.pose;
-
-//     // if (fabs(last_key_frame_pose(0, 3) - normal_frame.pose(0, 3)) +
-//     //         fabs(last_key_frame_pose(1, 3) - normal_frame.pose(1, 3)) +
-//     //         fabs(last_key_frame_pose(2, 3) - normal_frame.pose(2, 3)) >=
-//     //     paramlist_.keyframe_distance)
-//     // {
-//     //     UpdateLocalMap(normal_frame);
-//     //     last_key_frame_pose = normal_frame.pose;
-//     // }
-//     // return;
-// }
-
-// void LidarOdom::UpdateLocalMap(const Frame &normal_frame)
-// {
-//     // /*[1]--add new keyframe to queue*/
-//     // Frame keyframe = normal_frame;
-//     // local_keyframe_queue_.push_back(keyframe);
-
-//     // /*[2]--maintain the local map queue*/
-//     // while (local_keyframe_queue_.size() > static_cast<size_t>(paramlist_.keyframe_num))
-//     // {
-//     //     local_keyframe_queue_.pop_front();
-//     // }
-
-//     // /*[3]--stitch localmap cloud*/ //! accel with omp
-//     // local_map_ptr_.reset(new CloudMsg::CLOUD());
-//     // for (unsigned int i = 0; i < local_keyframe_queue_.size(); i++)
-//     // {
-//     //     CloudMsg::CLOUD_PTR transformed_cloud_ptr(new CloudMsg::CLOUD());
-//     //     pcl::transformPointCloud(*local_keyframe_queue_.at(i).cloud_msg.cloud_ptr, *transformed_cloud_ptr,
-//     //                              local_keyframe_queue_.at(i).pose);
-//     //     *local_map_ptr_ += *transformed_cloud_ptr;
-//     // }
-// }
 
 } // namespace evolving_ad_ns

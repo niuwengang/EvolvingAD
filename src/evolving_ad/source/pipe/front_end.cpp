@@ -99,7 +99,7 @@ bool FrontEndPipe::Run()
     static_cloud_pub_ptr_->Publish(current_frame_.cloud_msg);
     bbx_pub_ptr_->Publish(current_frame_.objects_msg);
 
-    /*4--for circle*/
+    /*4--update*/
     previous_frame_ = current_frame_; // update
 
     return true;

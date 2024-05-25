@@ -50,10 +50,6 @@ void ImuOdom::ComputeRelativePose(std::deque<ImuMsg> &imu_msg_queue, const doubl
 
             w = T_lidar_imu_.block<3, 3>(0, 0) * w;
 
-            imu_msg_vec_selected[index].angular_velocity.x = w(0);
-            imu_msg_vec_selected[index].angular_velocity.y = w(1);
-            imu_msg_vec_selected[index].angular_velocity.z = w(2);
-
             if (prev_imu_time_stamp == 0.)
             {
                 prev_imu_time_stamp = imu_msg_vec_selected[index].time_stamp;

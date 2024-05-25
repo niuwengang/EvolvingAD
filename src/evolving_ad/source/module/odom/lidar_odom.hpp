@@ -40,6 +40,7 @@ class LidarOdom
 
     Eigen::Matrix4f init_pose_ = Eigen::Matrix4f::Identity();
     Eigen::Matrix4f last_keyframe_pose_ = Eigen::Matrix4f::Identity();
+    Eigen::Matrix4f predict_pose_ = Eigen::Matrix4f::Identity();
     std::deque<Frame> local_keyframe_queue_;
     CloudMsg::CLOUD_PTR local_map_ptr_;
     CloudMsg cloud_msg_pre_;
