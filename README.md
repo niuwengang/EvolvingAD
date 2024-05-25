@@ -99,11 +99,11 @@ For Simulation<br>
 
 ## 8.Updates
 
-**2024/05/21** <br>
+**2024/05/26** <br>
 pre-release-tag v0.1.5 <br>
-1. simple MOT 
-2. slide windows opt method
-3. display for MOT
+1. Two stage lidar odom
+2. Slide windows opt method
+3. Display for mot
 
 
 **2024/05/07** <br>
@@ -138,5 +138,3 @@ tag v0.1.1 <br>
 tag v0.1.0 <br>
 1. Added a simple lidar odometry. <br>
 2. Added visualization for odom and pointcloud. <br>
-
-

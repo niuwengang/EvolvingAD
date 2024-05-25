@@ -17,6 +17,7 @@ LidarOdom::LidarOdom(const YAML::Node &config_node)
     filter_small_size_ptr_ = std::make_shared<VoxelFilter>(paramlist_.filter_leaf_size_small);
     filter_media_size_ptr_ = std::make_shared<VoxelFilter>(paramlist_.filter_leaf_size_media);
     filter_large_size_ptr_ = std::make_shared<VoxelFilter>(paramlist_.filter_leaf_size_large);
+    registration_ptr_ = std::make_shared<FastGicpRegistration>(paramlist_.registration_resolution, 0.1, 0.01, 30);
 
     local_map_ptr_.reset(new CloudMsg::CLOUD());
 }
@@ -51,8 +52,7 @@ void LidarOdom::ComputeCorsePose(const CloudMsg &cloud_msg, const Eigen::Matrix4
     {
         CloudMsg::CLOUD_PTR cur_scan_ptr(new CloudMsg::CLOUD());
         filter_small_size_ptr_->Filter(cloud_msg.cloud_ptr, cur_scan_ptr); // lidar coordinate
-
-        registration_ptr_ = std::make_shared<FastGicpRegistration>(paramlist_.registration_resolution, 0.1, 0.01, 30);
+        registration_ptr_ = std::make_shared<FastGicpRegistration>(1.0, 0.1, 0.01, 30);
         registration_ptr_->SetSourceCloud(cloud_msg_pre_.cloud_ptr);
         registration_ptr_->SetTargetCloud(cur_scan_ptr);
         CloudMsg::CLOUD_PTR registered_cloud_ptr(new CloudMsg::CLOUD());
@@ -98,21 +98,17 @@ void LidarOdom::ComputeFinePose(const CloudMsg &cloud_msg, const Eigen::Matrix4f
             *filtered_local_map_ptr = *local_map_ptr_;
         }
 
-        std::cout << "cur_scan_ptr size:" << cur_scan_ptr->points.size() << std::endl;
-        std::cout << "filtered_local_map_ptr size:" << filtered_local_map_ptr->points.size() << std::endl;
-
-        std::cout << "test 1" << std::endl;
         Eigen::Matrix4f infer_pose = Eigen::Matrix4f::Identity();
         infer_pose.block<3, 3>(0, 0) = (last_pose * corse_pose).block<3, 3>(0, 0); // R
         infer_pose.block<3, 1>(0, 3) = predict_pose.block<3, 1>(0, 3);             // t
 
-        registration_ptr_ = std::make_shared<FastGicpRegistration>(paramlist_.registration_resolution, 0.1, 0.01, 30);
+        registration_ptr_ = std::make_shared<FastGicpRegistration>(1.0, 0.1, 0.01, 30);
         registration_ptr_->SetSourceCloud(cur_scan_ptr);
         registration_ptr_->SetTargetCloud(filtered_local_map_ptr);
         CloudMsg::CLOUD_PTR registered_cloud_ptr(new CloudMsg::CLOUD());
         registration_ptr_->Registration(infer_pose, fine_pose, registered_cloud_ptr);
         registration_ptr_ = nullptr;
-        std::cout << "test 2" << std::endl;
+
         /*2--predict pose*/
         step_pose = last_pose.inverse() * fine_pose;
         predict_pose = fine_pose * step_pose;

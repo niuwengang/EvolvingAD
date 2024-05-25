@@ -20,7 +20,7 @@ FastGicpRegistration::FastGicpRegistration(const float resolution, const float s
                                            const int max_iter)
 {
     gicp_.setResolution(resolution);
-    //gicp_.setNumThreads(omp_get_thread_limit()); //?
+    //gicp_.setNumThreads(omp_get_thread_limit()); 
     gicp_.setNumThreads(10);
 }
 
