@@ -13,13 +13,20 @@
 #include "msg/imu_msg.hpp"
 #include <yaml-cpp/yaml.h>
 
+namespace evolving_ad_ns
+{
 class ImuOdom
 {
   public:
-    ImuOdom(const YAML::Node &config_node);
-    // bool ComputeRelativePose(std::deque<ImuMsg> imu_msg_queue);
+    ImuOdom(const Eigen::Matrix4f &T_lidar2imu);
+    // ImuOdom(const YAML::Node &config_node);
+    // bool InitPose(const Eigen::Matrix4f &init_pose);
+    void ComputeRelativePose(std::deque<ImuMsg> &imu_msg_queue, const double prev_time_stamp,
+                             const double curr_time_stamp, Eigen::Matrix4f &relative_pose);
 
   private:
+    bool first_flag_ = true;
+    Eigen::Matrix4f T_lidar_imu_ = Eigen::Matrix4f::Identity();
 };
-
+} // namespace evolving_ad_ns
 #endif

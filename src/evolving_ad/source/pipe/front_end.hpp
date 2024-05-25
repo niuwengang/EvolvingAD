@@ -27,6 +27,7 @@
 #include "module/ground_segement/dipg_ground_segement.hpp"
 #include "module/ground_segement/ground_segement_interface.hpp"
 #include "module/object_detect/object_detect.hpp"
+#include "module/odom/imu_odom.hpp"
 #include "module/odom/lidar_odom.hpp"
 // tools
 #include "tools/tools.hpp"
@@ -71,13 +72,13 @@ class FrontEndPipe
     /*algorithm*/
     std::shared_ptr<ObjectDetect> object_detect_ptr_ = nullptr;
     std::shared_ptr<LidarOdom> lidar_odom_ptr_ = nullptr;
+    std::shared_ptr<ImuOdom> imu_odom_ptr_ = nullptr;
     std::shared_ptr<GroundSegementInterface> ground_seg_ptr_ = nullptr;
     /*variable*/
     std::deque<ImuMsg> imu_msg_queue_;
     std::deque<CloudMsg> cloud_msg_queue_;
 
     Frame current_frame_, previous_frame_;
-    bool first_frame_flag_ = true;
     // std::deque<Frame> frame_queue_;
 
     struct ParamList

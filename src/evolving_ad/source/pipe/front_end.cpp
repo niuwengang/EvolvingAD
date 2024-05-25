@@ -26,9 +26,6 @@ FrontEndPipe::FrontEndPipe(ros::NodeHandle &nh, const std::string package_folder
     paramlist_.imu_sub_topic = config_node["topic_sub"]["imu_sub_topic"].as<std::string>();
     paramlist_.T_lidar2imu_ = Eigen::Map<Eigen::Matrix<float, 4, 4, Eigen::RowMajor>>(
         config_node["Extrinsic"]["T_lidar2imu"].as<std::vector<float>>().data());
-
-    std::cout << "T_lidar2imu_" << paramlist_.T_lidar2imu_ << std::endl;
-
     paramlist_.model_file_path = paramlist_.package_folder_path + "/model//pointpillar.onnx";
 
     /*2--topic sub */
@@ -46,6 +43,7 @@ FrontEndPipe::FrontEndPipe(ros::NodeHandle &nh, const std::string package_folder
     /*4--algorithm module*/
     object_detect_ptr_ = std::make_shared<ObjectDetect>(paramlist_.model_file_path);
     lidar_odom_ptr_ = std::make_shared<LidarOdom>(config_node["lidar_odom"]);
+    imu_odom_ptr_ = std::make_shared<ImuOdom>(paramlist_.T_lidar2imu_);
     ground_seg_ptr_ = std::make_shared<DipgGroundSegment>();
 
     /*5--tools*/
@@ -83,92 +81,14 @@ bool FrontEndPipe::Run()
     /*2.c--object*/
     object_detect_ptr_->Detect(current_frame_.cloud_msg, current_frame_.objects_msg);
     /*2.d--imu odom(relative ) */
-    Eigen::Matrix4f T = Eigen::Matrix4f::Identity();
-    if (first_frame_flag_ == false)
-    {
-        std::vector<ImuMsg> imu_msg_vec_selected;
-
-        while (imu_msg_queue_.empty() == false and
-               (previous_frame_.time_stamp - imu_msg_queue_.front().time_stamp) > 0.)
-        {
-            imu_msg_queue_.pop_front();
-        }
-        for (const auto &it : imu_msg_queue_)
-        {
-            double current_frame_imu_dt = current_frame_.time_stamp - it.time_stamp;
-            double previous_frame_imu_dt = previous_frame_.time_stamp - it.time_stamp;
-
-            if (current_frame_imu_dt >= 0. && previous_frame_imu_dt <= 0.)
-            {
-                imu_msg_vec_selected.push_back(it);
-            }
-        }
-        std::sort(imu_msg_vec_selected.begin(), imu_msg_vec_selected.end(),
-                  [](const ImuMsg &imu_msg_1, const ImuMsg &imu_msg_2) {
-                      return imu_msg_1.time_stamp < imu_msg_2.time_stamp;
-                  });
-
-        double curr_imu_stamp = 0.;
-        double prev_imu_stamp = 0.;
-        double dt;
-        Eigen::Quaternionf q = Eigen::Quaternionf::Identity();
-        for (uint32_t i = 0; i < imu_msg_vec_selected.size(); ++i)
-        {
-            Eigen::Vector3f w(imu_msg_vec_selected[i].angular_velocity.x, imu_msg_vec_selected[i].angular_velocity.y,
-                              imu_msg_vec_selected[i].angular_velocity.z);
-
-            w = paramlist_.T_lidar2imu_.block<3, 3>(0, 0) * w;
-
-            imu_msg_vec_selected[i].angular_velocity.x = w(0);
-            imu_msg_vec_selected[i].angular_velocity.y = w(1);
-            imu_msg_vec_selected[i].angular_velocity.z = w(2);
-
-            if (prev_imu_stamp == 0.)
-            {
-                prev_imu_stamp = imu_msg_vec_selected[i].time_stamp;
-                continue;
-            }
-
-            curr_imu_stamp = imu_msg_vec_selected[i].time_stamp;
-            dt = curr_imu_stamp - prev_imu_stamp;
-            prev_imu_stamp = curr_imu_stamp;
-
-            // Relative gyro propagation quaternion dynamics
-            Eigen::Quaternionf qq = q;
-            q.w() -= 0.5 *
-                     (qq.x() * imu_msg_vec_selected[i].angular_velocity.x +
-                      qq.y() * imu_msg_vec_selected[i].angular_velocity.y +
-                      qq.z() * imu_msg_vec_selected[i].angular_velocity.z) *
-                     dt;
-            q.x() += 0.5 *
-                     (qq.w() * imu_msg_vec_selected[i].angular_velocity.x -
-                      qq.z() * imu_msg_vec_selected[i].angular_velocity.y +
-                      qq.y() * imu_msg_vec_selected[i].angular_velocity.z) *
-                     dt;
-            q.y() += 0.5 *
-                     (qq.z() * imu_msg_vec_selected[i].angular_velocity.x +
-                      qq.w() * imu_msg_vec_selected[i].angular_velocity.y -
-                      qq.x() * imu_msg_vec_selected[i].angular_velocity.z) *
-                     dt;
-            q.z() += 0.5 *
-                     (qq.x() * imu_msg_vec_selected[i].angular_velocity.y -
-                      qq.y() * imu_msg_vec_selected[i].angular_velocity.x +
-                      qq.w() * imu_msg_vec_selected[i].angular_velocity.z) *
-                     dt;
-        }
-        double norm = sqrt(q.w() * q.w() + q.x() * q.x() + q.y() * q.y() + q.z() * q.z());
-        q.w() /= norm;
-        q.x() /= norm;
-        q.y() /= norm;
-        q.z() /= norm;
-        T.block<3, 3>(0, 0) = q.toRotationMatrix();
-    }
-
+    Eigen::Matrix4f imu_pose = Eigen::Matrix4f::Identity();
+    imu_odom_ptr_->ComputeRelativePose(imu_msg_queue_, previous_frame_.time_stamp, current_frame_.time_stamp, imu_pose);
     /*2.e--lidar odom*/
     lidar_odom_ptr_->InitPose(Eigen::Matrix4f::Identity());
     Eigen::Matrix4f corse_pose = Eigen::Matrix4f::Identity();
     Eigen::Matrix4f fine_pose = Eigen::Matrix4f::Identity();
-    lidar_odom_ptr_->ComputeCorsePose(current_frame_.cloud_msg, T, corse_pose);
+
+    lidar_odom_ptr_->ComputeCorsePose(current_frame_.cloud_msg, imu_pose, corse_pose);
     lidar_odom_ptr_->ComputeFinePose(current_frame_.cloud_msg, corse_pose, fine_pose);
 
     spdlog::info("FrontEnd$ exec {} hz", time_record_ptr_->GetFrequency(1000));
@@ -181,7 +101,6 @@ bool FrontEndPipe::Run()
 
     /*4--for circle*/
     previous_frame_ = current_frame_; // update
-    first_frame_flag_ = false;
 
     return true;
 
