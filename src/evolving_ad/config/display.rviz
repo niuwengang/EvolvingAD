@@ -227,7 +227,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/ThirdPersonFollower
-      Distance: 39.93395233154297
+      Distance: 76.01688385009766
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
@@ -238,7 +238,7 @@ Visualization Manager:
         X: 0
         Y: 0
         Z: 0
-      Focal Shape Fixed Size: false
+      Focal Shape Fixed Size: true
       Focal Shape Size: 0.05000000074505806
       Invert Z Axis: false
       Name: Current View
@@ -263,8 +263,8 @@ Window Geometry:
   Views:
     collapsed: false
   Width: 1866
-  X: 2564
-  Y: 376
+  X: 694
+  Y: 339
   back_cam:
     collapsed: false
   front_cam:
