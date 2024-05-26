@@ -76,7 +76,7 @@ void ObjectDetect::Detect(const CloudMsg &cloud_msg, ObjectsMsg &objects_msg)
     objects_msg.time_stamp = cloud_msg.time_stamp;
     for (const auto &box : nms_pred_)
     {
-        if (box.score >= 0.6)
+        if (box.score >= 0.6 and box.id == 0)
         {
             ObjectMsg object_msg;
 
@@ -91,8 +91,9 @@ void ObjectDetect::Detect(const CloudMsg &cloud_msg, ObjectsMsg &objects_msg)
             Eigen::AngleAxisf yawAngle(Eigen::AngleAxisf(box.rt, Eigen::Vector3f::UnitZ()));
             object_msg.q = yawAngle;
 
-            object_msg.id = box.id; //! issue
+            object_msg.label = ObjectMsg::Label::Car;
             object_msg.score = box.score;
+            object_msg.id = 0;
 
             objects_msg.objects_vec.emplace_back(object_msg);
         }

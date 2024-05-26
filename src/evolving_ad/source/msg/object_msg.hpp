@@ -23,6 +23,7 @@ namespace evolving_ad_ns
 
 class ObjectMsg
 {
+  public:
     enum class Label
     {
         Car,
@@ -35,7 +36,7 @@ class ObjectMsg
     float x = 0, y = 0, z = 0; // center
     float w = 0, l = 0, h = 0; // dim
     Eigen::Quaternionf q;      //  heading
-    int id = 0.0;              // id is irrelevant to label
+    unsigned int id = 0;       // id is irrelevant to label
     float score = 0.0;         // choose more than 0.6
     Label label;               // od semantic class
 };

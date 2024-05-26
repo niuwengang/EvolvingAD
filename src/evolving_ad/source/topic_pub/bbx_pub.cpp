@@ -37,7 +37,7 @@ void BbxPub::Publish(const ObjectsMsg &objects_msg)
 
     ods_bbox.header.frame_id = "map";
     ods_bbox.header.stamp = ros::Time(objects_msg.time_stamp);
-    for (auto object_msg : objects_msg.objects_vec)
+    for (const auto &object_msg : objects_msg.objects_vec)
     {
         jsk_recognition_msgs::BoundingBox od_bbox;
 
@@ -52,10 +52,11 @@ void BbxPub::Publish(const ObjectsMsg &objects_msg)
         od_bbox.pose.orientation.y = object_msg.q.y();
         od_bbox.pose.orientation.z = object_msg.q.z();
         od_bbox.pose.orientation.w = object_msg.q.w();
-        od_bbox.dimensions.x = object_msg.w; //! may have issue
+
+        od_bbox.dimensions.x = object_msg.w;
         od_bbox.dimensions.y = object_msg.l;
         od_bbox.dimensions.z = object_msg.h;
-        od_bbox.value = object_msg.score;
+        od_bbox.value = object_msg.score; // confidence
 
         ods_bbox.boxes.push_back(od_bbox);
     }
@@ -89,18 +90,18 @@ void BbxPub::Publish(const ObjectsMsg &objects_msg)
         pose.position.z = 0;
         text_marker.pose = pose;
 
-        text_marker.text = std::to_string(index);
         text_marker_array.markers.push_back(text_marker);
     }
 
     int index = 0;
-    for (auto object_msg : objects_msg.objects_vec)
+    for (const auto &object_msg : objects_msg.objects_vec)
     {
         geometry_msgs::Pose pose;
         pose.position.x = object_msg.x;
         pose.position.y = object_msg.y;
         pose.position.z = object_msg.z;
 
+        text_marker_array.markers[index].text = std::to_string(object_msg.id);
         text_marker_array.markers[index].pose = pose;
         text_marker_array.markers[index].color.a = 1;
         index++;

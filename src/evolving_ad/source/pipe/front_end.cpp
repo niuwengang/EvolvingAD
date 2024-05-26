@@ -73,24 +73,32 @@ bool FrontEndPipe::Run()
 
     /*2--load infomation into frame*/
     time_record_ptr_->Start();
-    /*2.a--time stamp*/
+    /*2.a--time stamp record*/
     current_frame_.time_stamp = cloud_msg_queue_.front().time_stamp;
-    /*2.b--point cloud*/
+    /*2.b--point cloud extract*/
     current_frame_.cloud_msg = cloud_msg_queue_.front();
     cloud_msg_queue_.pop_front();
-    /*2.c--object*/
+    /*2.c--object detect*/
     object_detect_ptr_->Detect(current_frame_.cloud_msg, current_frame_.objects_msg);
-    /*2.d--ground segement*/
+    /*2.d--object track*/
+
+    /*2.e--ground segement*/
     CloudMsg::CLOUD_PTR ground_cloud_ptr(new CloudMsg::CLOUD());
     CloudMsg::CLOUD_PTR no_ground_cloud_ptr(new CloudMsg::CLOUD());
     ground_seg_ptr_->Segement(current_frame_.cloud_msg.cloud_ptr, ground_cloud_ptr, no_ground_cloud_ptr);
     *current_frame_.cloud_msg.cloud_ptr = *no_ground_cloud_ptr;
-    /*2.e--imu odom(relative ) */
+    /*2.f--imu odom(relative) */
     Eigen::Matrix4f imu_pose = Eigen::Matrix4f::Identity();
     imu_odom_ptr_->ComputeRelativePose(imu_msg_queue_, previous_frame_.time_stamp, current_frame_.time_stamp, imu_pose);
-    /*2.f--lidar odom*/
+    /*2.g--lidar odom*/
     lidar_odom_ptr_->InitPose(Eigen::Matrix4f::Identity());
     Eigen::Matrix4f corse_pose = Eigen::Matrix4f::Identity();
+
+    CloudMsg::CLOUD_PTR static_cloud_ptr(new CloudMsg::CLOUD());
+    CloudMsg::CLOUD_PTR dynamic_cloud_ptr(new CloudMsg::CLOUD());
+    DorPost(current_frame_.objects_msg, current_frame_.cloud_msg.cloud_ptr, static_cloud_ptr, dynamic_cloud_ptr);
+    *current_frame_.cloud_msg.cloud_ptr = *static_cloud_ptr;
+
     lidar_odom_ptr_->ComputeCorsePose(current_frame_.cloud_msg, imu_pose, corse_pose);
     Eigen::Matrix4f fine_pose = Eigen::Matrix4f::Identity();
     lidar_odom_ptr_->ComputeFinePose(current_frame_.cloud_msg, corse_pose, fine_pose);
@@ -109,20 +117,8 @@ bool FrontEndPipe::Run()
     return true;
 
     /*[3]--dynamic removal*/
-    // CloudMsg::CLOUD_PTR static_cloud_ptr(new CloudMsg::CLOUD());
-    // CloudMsg::CLOUD_PTR dynamic_cloud_ptr(new CloudMsg::CLOUD());
-    // DorPost(objects_msg, no_ground_cloud_ptr_, static_cloud_ptr, dynamic_cloud_ptr);
-    // *cloud_msg.cloud_ptr = *static_cloud_ptr;
-
-    /*[4]--lidar odom*/
-    // lidar_odom_ptr_->InitPose(Eigen::Matrix4f::Identity());
-    // Eigen::Matrix4f corse_pose = Eigen::Matrix4f::Identity();
-    // Eigen::Matrix4f fine_pose = Eigen::Matrix4f::Identity();
-    // lidar_odom_ptr_->ComputeCorsePose(cloud_msg, corse_pose);
-    // lidar_odom_ptr_->ComputeFinePose(cloud_msg, corse_pose, fine_pose);
 
     /*[5]--display*/
-
     // lidar_odom_pub_ptr_->Publish(fine_pose);
     // ground_cloud_pub_ptr_->Publish(ground_cloud_ptr);
     // dynamic_cloud_pub_ptr_->Publish(dynamic_cloud_ptr);

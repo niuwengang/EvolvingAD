@@ -54,7 +54,7 @@ void LidarOdom::ComputeCorsePose(const CloudMsg &cloud_msg, const Eigen::Matrix4
         CloudMsg::CLOUD_PTR cur_scan_ptr(new CloudMsg::CLOUD());
         filter_small_size_ptr_->Filter(cloud_msg.cloud_ptr, cur_scan_ptr); // lidar coordinate
         /*2--pointcloud registration*/
-        registration_ptr_ = std::make_shared<FastGicpRegistration>(1.0);
+        registration_ptr_ = std::make_shared<FastGicpRegistration>(1.0); // due to a bug
         registration_ptr_->SetSourceCloud(cloud_msg_pre_.cloud_ptr);
         registration_ptr_->SetTargetCloud(cur_scan_ptr);
         CloudMsg::CLOUD_PTR registered_cloud_ptr(new CloudMsg::CLOUD());
