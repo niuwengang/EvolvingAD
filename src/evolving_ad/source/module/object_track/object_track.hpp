@@ -27,7 +27,7 @@ class ObjectTrack
     bool first_flag_ = true;
     const unsigned int max_id = 4294967295;
     unsigned int id_ = 0; // 4294967295
-    ObjectsMsg objects_msg_prev_;
+    ObjectsMsg objects_msg_esti_;
 };
 } // namespace evolving_ad_ns
 

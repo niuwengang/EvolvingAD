@@ -101,9 +101,11 @@ void BbxPub::Publish(const ObjectsMsg &objects_msg)
         pose.position.y = object_msg.y;
         pose.position.z = object_msg.z;
 
-        text_marker_array.markers[index].text = std::to_string(object_msg.id);
+        double speed = sqrt(object_msg.v_x * object_msg.v_x + object_msg.v_y * object_msg.v_y);
+        text_marker_array.markers[index].text = std::to_string(object_msg.id) + "\n" + std::to_string(speed);
         text_marker_array.markers[index].pose = pose;
         text_marker_array.markers[index].color.a = 1;
+
         index++;
     }
     marker_pub_.publish(text_marker_array);
