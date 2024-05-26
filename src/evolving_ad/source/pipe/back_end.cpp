@@ -212,17 +212,5 @@ void BackEndPipe::ReveiveFrameQueue(std::deque<Frame> &frame_queue, std::mutex &
 // cloud_pub_ptr_->Publish(transformed_cloud_ptr, 0.0);
 
 // /*b--display object*/
-// for (auto &object : frame_.objects_msg.objects_vec)
-// {
-//     Eigen::Matrix4f object_pose;
-//     object_pose.block<3, 1>(0, 3) << object.x, object.y, object.z;
-//     object_pose.block<3, 3>(0, 0) = object.q.toRotationMatrix();
 
-//     object_pose = frame_.pose * object_pose; // has been aligned to gnss
-
-//     object.x = object_pose(0, 3);
-//     object.y = object_pose(1, 3);
-//     object.z = object_pose(2, 3);
-//     object.q = Eigen::Quaternionf(object_pose.block<3, 3>(0, 0));
-// }
 // bbx_pub_ptr_->Publish(frame_.objects_msg);

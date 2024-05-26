@@ -42,6 +42,7 @@ FrontEndPipe::FrontEndPipe(ros::NodeHandle &nh, const std::string package_folder
 
     /*4--algorithm module*/
     object_detect_ptr_ = std::make_shared<ObjectDetect>(paramlist_.model_file_path);
+    object_track_ptr_ = std::make_shared<ObjectTrack>();
     lidar_odom_ptr_ = std::make_shared<LidarOdom>(config_node["lidar_odom"]);
     imu_odom_ptr_ = std::make_shared<ImuOdom>(paramlist_.T_lidar2imu_);
     ground_seg_ptr_ = std::make_shared<DipgGroundSegment>();
@@ -92,27 +93,31 @@ bool FrontEndPipe::Run()
     imu_odom_ptr_->ComputeRelativePose(imu_msg_queue_, previous_frame_.time_stamp, current_frame_.time_stamp, imu_pose);
     /*2.g--lidar odom*/
     lidar_odom_ptr_->InitPose(Eigen::Matrix4f::Identity());
-    Eigen::Matrix4f corse_pose = Eigen::Matrix4f::Identity();
 
+    Eigen::Matrix4f corse_pose = Eigen::Matrix4f::Identity();
+    lidar_odom_ptr_->ComputeCorsePose(current_frame_.cloud_msg, imu_pose, corse_pose);
+
+    std::cout << "track 1" << std::endl;
+    object_track_ptr_->Track(current_frame_.objects_msg, corse_pose);
+    std::cout << "track 2" << std::endl;
     CloudMsg::CLOUD_PTR static_cloud_ptr(new CloudMsg::CLOUD());
     CloudMsg::CLOUD_PTR dynamic_cloud_ptr(new CloudMsg::CLOUD());
     DorPost(current_frame_.objects_msg, current_frame_.cloud_msg.cloud_ptr, static_cloud_ptr, dynamic_cloud_ptr);
     *current_frame_.cloud_msg.cloud_ptr = *static_cloud_ptr;
 
-    lidar_odom_ptr_->ComputeCorsePose(current_frame_.cloud_msg, imu_pose, corse_pose);
     Eigen::Matrix4f fine_pose = Eigen::Matrix4f::Identity();
     lidar_odom_ptr_->ComputeFinePose(current_frame_.cloud_msg, corse_pose, fine_pose);
 
     spdlog::info("FrontEnd$ exec {} hz", time_record_ptr_->GetFrequency(1000));
 
     /*3--display*/
-    lidar_odom_pub_ptr_->Publish(fine_pose);
-    veh_tf_pub_ptr_->SendTransform(fine_pose);
+    // lidar_odom_pub_ptr_->Publish(fine_pose);
+    veh_tf_pub_ptr_->SendTransform(Eigen::Matrix4f::Identity());
     static_cloud_pub_ptr_->Publish(current_frame_.cloud_msg);
     bbx_pub_ptr_->Publish(current_frame_.objects_msg);
 
     /*4--update*/
-    previous_frame_ = current_frame_; // update
+    previous_frame_ = current_frame_;
 
     return true;
 

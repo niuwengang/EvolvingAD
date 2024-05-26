@@ -27,6 +27,7 @@
 #include "module/ground_segement/dipg_ground_segement.hpp"
 #include "module/ground_segement/ground_segement_interface.hpp"
 #include "module/object_detect/object_detect.hpp"
+#include "module/object_track/object_track.hpp"
 #include "module/odom/imu_odom.hpp"
 #include "module/odom/lidar_odom.hpp"
 // tools
@@ -71,6 +72,7 @@ class FrontEndPipe
     std::shared_ptr<TimeRecord> time_record_ptr_ = nullptr;
     /*algorithm*/
     std::shared_ptr<ObjectDetect> object_detect_ptr_ = nullptr;
+    std::shared_ptr<ObjectTrack> object_track_ptr_ = nullptr;
     std::shared_ptr<LidarOdom> lidar_odom_ptr_ = nullptr;
     std::shared_ptr<ImuOdom> imu_odom_ptr_ = nullptr;
     std::shared_ptr<GroundSegementInterface> ground_seg_ptr_ = nullptr;

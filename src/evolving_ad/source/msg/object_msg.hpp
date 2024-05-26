@@ -48,6 +48,7 @@ class ObjectsMsg
     ObjectsMsg(const ObjectsMsg &other);
     ObjectsMsg &operator=(const ObjectsMsg &other);
     ~ObjectsMsg();
+    void TransCoord(const Eigen::Matrix4f relative_pose);
 
     double time_stamp = 0.0;
     std::vector<ObjectMsg> objects_vec;

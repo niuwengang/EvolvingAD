@@ -75,10 +75,10 @@ aux_source_directory(thirdpartylib/fast_gicp/src  THIRDPARTY_FAST_GICP_SRC)
 add_library(thirdparty_fast_gicp   ${THIRDPARTY_FAST_GICP_SRC})
 target_link_libraries(thirdparty_fast_gicp ${thirdpartylib} ) 
 
-##thirdparty--hungarian algorithm
-aux_source_directory(thirdpartylib/hungarian_algorithm/src  THIRDPARTY_HUNGARIAN_ALGORITHM)
-add_library(thirdparty_hungarian_algorithm   ${THIRDPARTY_HUNGARIAN_ALGORITHM})
-target_link_libraries(thirdparty_hungarian_algorithm ${thirdpartylib} ) 
+##thirdparty--hungarian
+aux_source_directory(thirdpartylib/hungarian/src  THIRDPARTY_HUNGARIAN)
+add_library(thirdparty_hungarian   ${THIRDPARTY_HUNGARIAN})
+target_link_libraries(thirdparty_hungarian ${thirdpartylib} ) 
 
 #tools--------------------------------------------
 aux_source_directory(source/tools TOOLS_SRC)
@@ -92,7 +92,7 @@ target_link_libraries(module ${catkin_LIBRARIES} ${thirdpartylib}
 msg 
 thirdparty_pointpillar 
 thirdparty_fast_gicp 
-thirdparty_hungarian_algorithm
+thirdparty_hungarian
 ) 
 
 
