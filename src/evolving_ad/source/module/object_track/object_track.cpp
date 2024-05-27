@@ -53,7 +53,7 @@ void ObjectTrack::Track(ObjectsMsg &objects_msg_curr, const Eigen::Matrix4f &rel
                 // d_match&&pmatch
                 if (index_match >= 0) // todo:cost filter
                 {
-                    if (costMatrix[index][index_match] <= 10e2) // todo 3D IoU and dis
+                    if (costMatrix[index][index_match] <= 10) // todo 3D IoU and dis
                     {
                         objects_msg_curr.objects_vec[index].id = objects_msg_esti_.objects_vec[index_match].id;
                         objects_msg_esti_.objects_vec[index_match].KfUpdate(objects_msg_curr.objects_vec[index]);
@@ -80,10 +80,10 @@ void ObjectTrack::Track(ObjectsMsg &objects_msg_curr, const Eigen::Matrix4f &rel
 
         objects_msg_esti_.objects_vec.erase(std::remove_if(objects_msg_esti_.objects_vec.begin(),
                                                            objects_msg_esti_.objects_vec.end(),
-                                                           [](const ObjectMsg &obj) { return obj.lifetime <= 0.3; }),
+                                                           [](const ObjectMsg &obj) { return obj.lifetime <= 0.6; }),
                                             objects_msg_esti_.objects_vec.end());
 
-        // objects_msg_curr = objects_msg_esti_;
+        objects_msg_curr = objects_msg_esti_;
     }
     else // init
     {

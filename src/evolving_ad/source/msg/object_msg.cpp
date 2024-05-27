@@ -45,6 +45,7 @@ void ObjectMsg::KfPredict()
 void ObjectMsg::KfUpdate(const ObjectMsg &detect)
 {
     lifetime += 0.1;
+    lifetime = (lifetime >= 1.0) ? 1.0 : lifetime;
 
     Eigen::Matrix<float, 6, 1> state_est;
     state_est << this->x, this->y, this->z, this->v_x, this->v_y, this->v_z; // dim is 6

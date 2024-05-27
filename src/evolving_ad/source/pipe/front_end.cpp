@@ -111,9 +111,14 @@ bool FrontEndPipe::Run()
     spdlog::info("FrontEnd$ exec {} hz", time_record_ptr_->GetFrequency(1000));
 
     /*3--display*/
-    // lidar_odom_pub_ptr_->Publish(fine_pose);
-    veh_tf_pub_ptr_->SendTransform(Eigen::Matrix4f::Identity());
-    static_cloud_pub_ptr_->Publish(current_frame_.cloud_msg);
+    lidar_odom_pub_ptr_->Publish(fine_pose);
+    veh_tf_pub_ptr_->SendTransform(fine_pose);
+    CloudMsg::CLOUD_PTR transformed_cloud_ptr(new CloudMsg::CLOUD());
+    pcl::transformPointCloud(*current_frame_.cloud_msg.cloud_ptr, *transformed_cloud_ptr, fine_pose);
+    pcl::transformPointCloud(*ground_cloud_ptr, *ground_cloud_ptr, fine_pose);
+    ground_cloud_pub_ptr_->Publish(ground_cloud_ptr);
+    static_cloud_pub_ptr_->Publish(transformed_cloud_ptr);
+    current_frame_.objects_msg.TransCoord(fine_pose);
     bbx_pub_ptr_->Publish(current_frame_.objects_msg);
 
     /*4--update*/
