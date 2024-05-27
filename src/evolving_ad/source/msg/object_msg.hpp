@@ -51,12 +51,13 @@ class ObjectMsg
     Label label;          // od semantic class
     float lifetime = 1.0; // 0.0-1.0
     // kf param
-    Eigen::Matrix<float, 6, 6> kf_F_matrix_ = Eigen::Matrix<float, 6, 6>::Identity();         // xyz vxvyvz
-    Eigen::Matrix<float, 6, 6> kf_P_matrix_ = 0.1 * Eigen::Matrix<float, 6, 6>::Identity();   // xyz vxvyvz
-    Eigen::Matrix<float, 6, 6> kf_Q_matrix_ = 0.001 * Eigen::Matrix<float, 6, 6>::Identity(); // xyz vxvyvz
-    Eigen::Matrix<float, 3, 6> kf_H_matrix_ = Eigen::Matrix<float, 3, 6>::Zero();             // xyz vxvyvz
-    Eigen::Matrix<float, 3, 3> kf_R_matrix_ = 0.1 * Eigen::Matrix<float, 3, 3>::Identity();   // xyz vxvyvz
-    Eigen::Matrix<float, 6, 3> kf_K_matrix_ = Eigen::Matrix<float, 6, 3>::Zero();
+    Eigen::Matrix<float, 6, 6> kf_F_matrix_ = Eigen::Matrix<float, 6, 6>::Identity();
+    Eigen::Matrix<float, 6, 6> kf_P_matrix_ = Eigen::Matrix<float, 6, 6>::Identity();
+    Eigen::Matrix<float, 6, 6> kf_Q_matrix_ = 0 * Eigen::Matrix<float, 6, 6>::Identity();
+
+    Eigen::Matrix<float, 3, 6> kf_H_matrix_ = Eigen::Matrix<float, 3, 6>::Zero();
+    Eigen::Matrix<float, 3, 3> kf_R_matrix_ = Eigen::Matrix<float, 3, 3>::Identity();
+    Eigen::Matrix<float, 6, 3> kf_K_matrix_ = 1 * Eigen::Matrix<float, 6, 3>::Identity();
 };
 
 class ObjectsMsg

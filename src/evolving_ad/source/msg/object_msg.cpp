@@ -18,12 +18,27 @@ namespace evolving_ad_ns
 ObjectMsg::ObjectMsg()
 {
     lifetime = 1.0;
-    const float dt = 0.1; // 100ms
+
+    /*F matrix*/
+    const float dt = 0.1;
     kf_F_matrix_(0, 3) = dt;
     kf_F_matrix_(1, 4) = dt;
     kf_F_matrix_(2, 5) = dt;
 
     kf_H_matrix_.diagonal().setOnes();
+    /*P matrix*/
+    kf_P_matrix_(0, 0) = 1; // x
+    kf_P_matrix_(1, 1) = 1; // y
+    kf_P_matrix_(2, 2) = 1; // z
+
+    kf_P_matrix_(3, 3) = 0.1; // vx
+    kf_P_matrix_(4, 4) = 0.1; // vy
+    kf_P_matrix_(5, 5) = 0.1; // vz
+
+    /*R matrix*/
+    kf_R_matrix_(0, 0) = 0.1; // x
+    kf_R_matrix_(1, 1) = 0.1; // y
+    kf_R_matrix_(2, 2) = 0.1; // z
 }
 
 void ObjectMsg::KfPredict()
@@ -31,8 +46,9 @@ void ObjectMsg::KfPredict()
     lifetime -= 0.1;
     Eigen::Matrix<float, 6, 1> state_est;
 
-    state_est << this->x, this->y, this->z, this->v_x, this->v_y, this->v_z; // dim is 6
-    state_est = this->kf_F_matrix_ * state_est;                              // kf formula 1
+    state_est << this->x, this->y, this->z, this->v_x, this->v_y,
+        this->v_z;                              // dim is 7x1
+    state_est = this->kf_F_matrix_ * state_est; // kf formula 1
 
     this->x = state_est[0];
     this->y = state_est[1];
@@ -40,8 +56,10 @@ void ObjectMsg::KfPredict()
     this->v_x = state_est[3];
     this->v_y = state_est[4];
     this->v_z = state_est[5];
+    // this->q = ObjectMsg::YawAngle2Quaternion(state_est[6]);
 
-    this->kf_P_matrix_ = kf_F_matrix_ * kf_P_matrix_ * kf_F_matrix_.transpose() + kf_Q_matrix_; // kf formula 2
+    this->kf_P_matrix_ =
+        this->kf_F_matrix_ * this->kf_P_matrix_ * this->kf_F_matrix_.transpose() + this->kf_Q_matrix_; // kf formula 2
 }
 void ObjectMsg::KfUpdate(const ObjectMsg &detect)
 {
@@ -49,7 +67,8 @@ void ObjectMsg::KfUpdate(const ObjectMsg &detect)
     lifetime = (lifetime >= 1.0) ? 1.0 : lifetime;
 
     Eigen::Matrix<float, 6, 1> state_est;
-    state_est << this->x, this->y, this->z, this->v_x, this->v_y, this->v_z; // dim is 6
+    state_est << this->x, this->y, this->z, this->v_x, this->v_y,
+        this->v_z; // dim is 7x1
 
     Eigen::Matrix<float, 3, 1> state_detect;
     state_detect << detect.x, detect.y, detect.z;
@@ -65,6 +84,7 @@ void ObjectMsg::KfUpdate(const ObjectMsg &detect)
     this->v_x = state_est[3];
     this->v_y = state_est[4];
     this->v_z = state_est[5];
+    // this->q = ObjectMsg::YawAngle2Quaternion(state_est[6]);
 }
 
 float ObjectMsg::Quaternion2YawAngle(const Eigen::Quaternionf &q)
