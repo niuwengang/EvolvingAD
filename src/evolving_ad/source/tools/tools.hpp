@@ -92,6 +92,7 @@ class WatchDog
     bool time_out_flag_ = false;
 };
 
+
 } // namespace evolving_ad_ns
 
 #endif //_TOOLS_HPP_

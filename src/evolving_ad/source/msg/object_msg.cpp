@@ -30,6 +30,7 @@ void ObjectMsg::KfPredict()
 {
     lifetime -= 0.1;
     Eigen::Matrix<float, 6, 1> state_est;
+
     state_est << this->x, this->y, this->z, this->v_x, this->v_y, this->v_z; // dim is 6
     state_est = this->kf_F_matrix_ * state_est;                              // kf formula 1
 
@@ -65,6 +66,19 @@ void ObjectMsg::KfUpdate(const ObjectMsg &detect)
     this->v_y = state_est[4];
     this->v_z = state_est[5];
 }
+
+float ObjectMsg::Quaternion2YawAngle(const Eigen::Quaternionf &q)
+{
+    Eigen::Vector3f euler_angle = q.matrix().eulerAngles(2, 1, 0); // z-x-y
+    return euler_angle.z();
+}
+Eigen::Quaternionf ObjectMsg::YawAngle2Quaternion(const float yaw)
+{
+    Eigen::AngleAxisf yawAngle(Eigen::AngleAxisf(yaw, Eigen::Vector3f::UnitZ()));
+    Eigen::Quaternionf q(yawAngle);
+    return q;
+}
+
 /*-------------------------------------------------------------------*/
 
 ObjectsMsg::ObjectsMsg()
