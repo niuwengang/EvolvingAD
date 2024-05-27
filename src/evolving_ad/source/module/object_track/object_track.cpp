@@ -17,13 +17,13 @@ void ObjectTrack::Track(ObjectsMsg &objects_msg_curr, const Eigen::Matrix4f &rel
     if (first_flag_ == false)
     {
         /*1.align cooridinates to now*/
-        objects_msg_esti_.TransCoord(relative_pose); // align to current object
+
         /*2--kalman predict*/
         for (auto &object : objects_msg_esti_.objects_vec)
         {
             object.KfPredict();
         }
-
+        objects_msg_esti_.TransCoord(relative_pose); // align to current object
         /*2.data association*/
         const unsigned int curr_size = objects_msg_curr.objects_vec.size();  // row
         const unsigned int esti_size = objects_msg_esti_.objects_vec.size(); // col
@@ -83,6 +83,7 @@ void ObjectTrack::Track(ObjectsMsg &objects_msg_curr, const Eigen::Matrix4f &rel
                                                            [](const ObjectMsg &obj) { return obj.lifetime <= 0.6; }),
                                             objects_msg_esti_.objects_vec.end());
 
+        objects_msg_curr.objects_vec.clear();
         objects_msg_curr = objects_msg_esti_;
     }
     else // init

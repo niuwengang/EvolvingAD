@@ -31,7 +31,7 @@ void ObjectMsg::KfPredict()
     lifetime -= 0.1;
     Eigen::Matrix<float, 6, 1> state_est;
     state_est << this->x, this->y, this->z, this->v_x, this->v_y, this->v_z; // dim is 6
-    state_est = this->kf_F_matrix_ * state_est;                              // update state
+    state_est = this->kf_F_matrix_ * state_est;                              // kf formula 1
 
     this->x = state_est[0];
     this->y = state_est[1];
@@ -40,7 +40,7 @@ void ObjectMsg::KfPredict()
     this->v_y = state_est[4];
     this->v_z = state_est[5];
 
-    this->kf_P_matrix_ = kf_F_matrix_ * kf_P_matrix_ * kf_F_matrix_.transpose() + kf_Q_matrix_;
+    this->kf_P_matrix_ = kf_F_matrix_ * kf_P_matrix_ * kf_F_matrix_.transpose() + kf_Q_matrix_; // kf formula 2
 }
 void ObjectMsg::KfUpdate(const ObjectMsg &detect)
 {
@@ -53,10 +53,17 @@ void ObjectMsg::KfUpdate(const ObjectMsg &detect)
     Eigen::Matrix<float, 3, 1> state_detect;
     state_detect << detect.x, detect.y, detect.z;
 
-    state_est = state_est + kf_K_matrix_ * (state_detect - kf_H_matrix_ * state_est); // error
-    kf_P_matrix_ = kf_P_matrix_ - kf_K_matrix_ * kf_H_matrix_ * kf_P_matrix_;
     kf_K_matrix_ = kf_P_matrix_ * kf_H_matrix_.transpose() *
-                   (kf_H_matrix_ * kf_P_matrix_ * kf_H_matrix_.transpose() + kf_R_matrix_).inverse();
+                   (kf_H_matrix_ * kf_P_matrix_ * kf_H_matrix_.transpose() + kf_R_matrix_).inverse(); // kf formula 3
+    state_est = state_est + kf_K_matrix_ * (state_detect - kf_H_matrix_ * state_est);                 // kf formula 4
+    kf_P_matrix_ = kf_P_matrix_ - kf_K_matrix_ * kf_H_matrix_ * kf_P_matrix_;                         // kf formula 5
+
+    this->x = state_est[0];
+    this->y = state_est[1];
+    this->z = state_est[2];
+    this->v_x = state_est[3];
+    this->v_y = state_est[4];
+    this->v_z = state_est[5];
 }
 /*-------------------------------------------------------------------*/
 

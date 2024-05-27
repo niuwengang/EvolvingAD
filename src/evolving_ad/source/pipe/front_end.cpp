@@ -182,6 +182,12 @@ void FrontEndPipe::DorPost(const ObjectsMsg &objects_msg, const CloudMsg::CLOUD_
 
     for (const auto &object_msg : objects_msg.objects_vec)
     {
+        double speed = sqrt(object_msg.v_x * object_msg.v_x + object_msg.v_y * object_msg.v_y);
+        if (speed <= 0.2)
+        {
+            continue;
+        }
+
         pcl::CropBox<CloudMsg::POINT> clipper;
 
         Eigen::Vector4f minPoint(-object_msg.w * 0.5, -object_msg.l * 0.5, -object_msg.h * 0.5, 1.0);
